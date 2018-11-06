@@ -1,46 +1,60 @@
+$LOAD_PATH << "lib"
+
 require 'curses'
 
-$debug = File.new("debug.out", "w")
-
-RTdown  = 258
-RTup    = 259
-RTleft  = 260
-RTright = 261
-
-RTenter = 10
-RTf1    = 265
-RTf2    = 266
-RTf3    = 267
-RTf4    = 268
-RTf5    = 269
-RTf6    = 270
-RTf7    = 271
-RTf8    = 272
-RTf9    = 273
-RTf10   = 274
-RTf11   = 275
-RTf12   = 276
-
-###
+require 'version'   # skeleton + version
 
 X = Curses  # shorthand
 
+def debug(*args)
+  return unless $debug
+  $debug.puts *args
+end
+
 module RubyText
+
+  module Keys
+    Down  = 258
+    Up    = 259
+    Left  = 260
+    Right = 261
+    Enter = 10
+    F1    = 265
+    F2    = 266
+    F3    = 267
+    F4    = 268
+    F5    = 269
+    F6    = 270
+    F7    = 271
+    F8    = 272
+    F9    = 273
+    F10   = 274
+    F11   = 275
+    F12   = 276
+  end
+
+  Colors = %w[black blue cyan green 
+              magenta red white yellow]
+
   class Window
     def self.main
-$debug.puts "Entering Window.main"
-      main_win = X.init_screen
-      rows, cols = main_win.maxy, main_win.maxx
-$debug.puts "About to call .make"
-      self.make(main_win, rows, cols, 0, 0, false)
+      debug "Entering Window.main"
+      @main_win = X.init_screen
+      X.start_color
+      X.init_pair(1, X::COLOR_BLACK, X::COLOR_WHITE)
+      X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
+      rows, cols = @main_win.maxy, @main_win.maxx
+      debug "About to call .make"
+      @screen = self.make(@main_win, rows, cols, 0, 0, false)
+      @screen
     end
 
     def self.make(cwin, high, wide, r0, c0, border)
-$debug.puts "make: #{[cwin, high, wide, r0, c0, border]}"
+      debug "make: #{[cwin, high, wide, r0, c0, border]}"
       obj = self.allocate
-$debug.puts "Allocate returned a #{obj.class}"
+      debug "Allocate returned a #{obj.class}"
       obj.instance_eval do 
-$debug.puts "  Inside instance_eval..."
+        debug "  Inside instance_eval..."
         @outer = @win = cwin
         @wide, @high, @r0, @c0 = wide, high, r0, c0
         @border = border
@@ -52,7 +66,7 @@ $debug.puts "  Inside instance_eval..."
   end
 end
 
-$debug.puts "Setting STDSCR to Window.main"
+# debug "Setting STDSCR to Window.main"
 
 STDSCR = RubyText::Window.main
 $stdscr = STDSCR
@@ -65,11 +79,11 @@ module RubyText
   # to the lower level...
 
   def self.method_missing(name, *args)
-$debug.puts "method_missing: #{name}  #{args.inspect}"
+    debug "method_missing: #{name}  #{args.inspect}"
     if name[0] == '_'
       X.send(name[1..-1], *args)
     else
-      raise NoMethodError
+      raise "#{name} #{args.inspect}" # NoMethodError
     end
   end
 
@@ -77,7 +91,16 @@ $debug.puts "method_missing: #{name}  #{args.inspect}"
     RubyText::Window.new(high, wide, r0, c0, border)
   end
 
-  def self.start(*args)
+  def self.start(*args, log: nil, fg: nil, bg: nil)
+    $debug = File.new(log, "w") if log
+    fg ||= :white
+    bg ||= :black
+    debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
+    debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
+    fg = X.const_get("COLOR_#{fg.upcase}")
+    bg = X.const_get("COLOR_#{bg.upcase}")
+    X.init_pair(1, bg, fg)
+    X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
     X.noecho
     X.stdscr.keypad(true)
     X.cbreak   # by default
@@ -90,6 +113,8 @@ $debug.puts "method_missing: #{name}  #{args.inspect}"
           X.echo
         when :noecho
           X.noecho
+        when :color
+          X.start_color
       end
     end
   end
@@ -109,20 +134,22 @@ $debug.puts "method_missing: #{name}  #{args.inspect}"
 end
 
 class RubyText::Window
+  Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL  # ?|, ?-    # "\u2502", "\u2500"
+
   attr_reader :win, :rows, :cols, :width, :height
 
   def initialize(high=nil, wide=nil, r0=1, c0=1, border=false)
-$debug.puts "RT::Win.init: #{[high, wide, r0, c0, border]}"
+    debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border = border
     @win = X::Window.new(high, wide, r0, c0)
-$debug.puts "outer = #{@win.inspect}"
-$debug.puts "@border = #@border"
+debug "outer = #{@win.inspect}"
+debug "@border = #@border"
     if @border
-      @win.box(?|, ?-)
+      @win.box(Vert, Horiz)
       @outer = @win
       @outer.refresh
-$debug.puts "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
+debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
       @win = X::Window.new(high-2, wide-2, r0+1, c0+1)  # relative now??
     else
       @outer = @win
@@ -132,27 +159,26 @@ $debug.puts "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
     @win.refresh
   end
 
-  def puts(*args)
+  def delegate_output(sym, *args)
     args = [""] if args.empty?
-$debug.puts  "args = #{args.inspect}"
+    debug "#{sym}: args = #{args.inspect}"
+    args.map!(&:inspect) if sym == :p
     str = sprintf(*args)
-    str << "\n" unless str[-1] == "\n"
+    str << "\n" if sym != :print && str[-1] != "\n"
     @win.addstr(str)
     @win.refresh
+  end
+
+  def puts(*args)
+    delegate_output(:puts, *args)
   end
 
   def print(*args)
-    args = [""] if args.empty?
-    str = sprintf(*args)
-    @win.addstr(str)
-    @win.refresh
-    # X.stdscr.refresh
+    delegate_output(:print, *args)
   end
 
   def p(*args)
-    args = [""] if args.empty?
-    strs = args.map {|x| x.inspect }
-    self.puts strs
+    delegate_output(:p, *args)
   end
 
   def rcprint(r, c, *args)
@@ -202,7 +228,7 @@ $debug.puts  "args = #{args.inspect}"
   end
 
   def boxme
-    @outer.box(?|, ?-) if @border
+    @outer.box(Vert, Horiz)
     @outer.refresh
   end
 
@@ -238,8 +264,4 @@ module Kernel
     X.getch
   end
 end
-
-####
-
-RubyText.start   # May get replaced in client code
 

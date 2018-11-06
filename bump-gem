@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+system("vi lib/version.rb +3")
+
+require 'date'
+
+$LOAD_PATH << "./lib"
+
+require "version"
+
+today = Date.today.strftime("%Y-%m-%d")
+version = RubyText::VERSION
+
+system("git pull")
+system("git add lib/version.rb")
+gs = `git status 2>&1`
+
+if gs =~ /not staged for commit/
+  puts
+  puts gs
+  puts "\n\n Possible bad git status. Continue? (y/n)"
+  resp = gets.chomp
+  case resp 
+    when "y"
+      system("git add -u")
+      print "Commit message = "
+      msg = gets.chomp
+      system("git commit -m '#{msg}' && git push")
+      puts "Now continuing..."
+    else         # assume "no"
+      puts "Exiting.\n "
+      exit
+  end
+else
+  print "Commit message = "
+  msg = gets.chomp
+  system("git commit -m '#{msg}' && git push")
+end
+
+update = <<-EOF
+  gem build rubytext.gemspec && 
+  gem push rubytext-*.gem && 
+  gem uninstall -x rubytext && 
+  gem install rubytext
+EOF
+system(update)
+

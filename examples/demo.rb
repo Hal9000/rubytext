@@ -2,6 +2,8 @@ $LOAD_PATH << "lib"
 
 require 'rubytext'
 
+RubyText.start(:color, log: "mylog.txt", fg: :green)
+
 print "Here goes... "
 sleep 2
 
@@ -65,7 +67,7 @@ mywin.output do
   STDSCR.rcprint 25, 3, "Of course I can still print here if I want."
   sleep 3
   puts "\nOne moment..."
-  sleep 6
+  sleep 4
 end
 
 mywin.output do
@@ -73,7 +75,7 @@ mywin.output do
   puts "The []= method allows us to place characters in"
   puts "the window (without auto-refresh)."
   puts "\nLet's see the '50 stars' trick again:"
-  sleep 6
+  sleep 5
   50.times do
     r = rand(mywin.rows)
     c = rand(mywin.cols)
@@ -85,13 +87,13 @@ end
 sleep 5
 mywin.output do
   mywin.clear
-  mywin.puts "The [] method is still buggy, but let's try it."
+  mywin.puts "The [] method (zero-based) is still buggy, but let's try it."
   mywin.puts "XYZ"
   ch = mywin[2,2]
   mywin.puts "The char at [2,2] is: #{ch.chr.inspect}"
 end
 
-sleep 6
+sleep 4
 mywin.puts "\nThat's all for now."
 sleep 1
 mywin.puts "\nPress any key to exit."
