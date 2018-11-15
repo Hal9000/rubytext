@@ -13,6 +13,18 @@ end
 
 module RubyText
 
+  Colors = %w[black blue cyan green magenta red white yellow]
+  ColorPairs = {}
+  num = 0
+  Colors.each do |fc|
+    Colors.each do |bc|
+      fg = X.const_get("COLOR_#{fc.upcase}")
+      bg = X.const_get("COLOR_#{bc.upcase}")
+      pair = X.init_pair(num+=1, fg, bg)  # FIXME backwards?
+      ColorPairs[[fg, bg]] = pair
+    end
+  end
+
   module Keys
     Down  = 258
     Up    = 259
@@ -33,9 +45,6 @@ module RubyText
     F12   = 276
   end
 
-  Colors = %w[black blue cyan green 
-              magenta red white yellow]
-
   class Window
     def self.main
       debug "Entering Window.main"
@@ -45,12 +54,12 @@ module RubyText
       X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
       rows, cols = @main_win.maxy, @main_win.maxx
       debug "About to call .make"
-      @screen = self.make(@main_win, rows, cols, 0, 0, false)
+      @screen = self.make(@main_win, rows, cols, 0, 0, false, "white", "black")
       @screen
     end
 
-    def self.make(cwin, high, wide, r0, c0, border)
-      debug "make: #{[cwin, high, wide, r0, c0, border]}"
+    def self.make(cwin, high, wide, r0, c0, border, fg, bg)
+      debug "make: #{[cwin, high, wide, r0, c0, border, fg, bg]}"
       obj = self.allocate
       debug "Allocate returned a #{obj.class}"
       obj.instance_eval do 
@@ -87,8 +96,8 @@ module RubyText
     end
   end
 
-  def RubyText.window(high, wide, r0, c0, border=false)
-    RubyText::Window.new(high, wide, r0, c0, border)
+  def RubyText.window(high, wide, r0, c0, border=false, fg="white", bg="black")
+    RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
   end
 
   def self.start(*args, log: nil, fg: nil, bg: nil)
@@ -136,21 +145,22 @@ end
 class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL  # ?|, ?-    # "\u2502", "\u2500"
 
-  attr_reader :win, :rows, :cols, :width, :height
+  attr_reader :win, :rows, :cols, :width, :height, :fg, :bg
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false)
+  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=:white, bg=:black)
     debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border = border
+    @fg, @bg = fg, bg
     @win = X::Window.new(high, wide, r0, c0)
-debug "outer = #{@win.inspect}"
-debug "@border = #@border"
+    debug "outer = #{@win.inspect}"
+    debug "@border = #@border"
     if @border
       @win.box(Vert, Horiz)
       @outer = @win
       @outer.refresh
-debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
-      @win = X::Window.new(high-2, wide-2, r0+1, c0+1)  # relative now??
+      debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
+      @win = X::Window.new(high-2, wide-2, r0+1, c0+1, false, fg, bg)  # relative now??
     else
       @outer = @win
     end
@@ -162,9 +172,14 @@ debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
   def delegate_output(sym, *args)
     args = [""] if args.empty?
     debug "#{sym}: args = #{args.inspect}"
-    args.map!(&:inspect) if sym == :p
+    if sym == :p
+      args.map!(&:inspect) 
+    else
+      args.map!(&:to_s) 
+    end
     str = sprintf(*args)
     str << "\n" if sym != :print && str[-1] != "\n"
+    # color-handling code here
     @win.addstr(str)
     @win.refresh
   end
@@ -243,7 +258,7 @@ end
 ### Stick stuff into Kernel for top level
 
 module Kernel
-  private 
+  # private 
   def puts(*args)       # Doesn't affect STDOUT.puts, etc.
     $stdscr.puts(*args)
   end
