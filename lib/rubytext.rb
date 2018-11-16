@@ -11,17 +11,27 @@ def debug(*args)
   $debug.puts *args
 end
 
+def fb2cp(fg, bg)
+  debug "Colors are: #{fg} on #{bg}"
+  fg = X.const_get("COLOR_#{fg.upcase}")
+  bg = X.const_get("COLOR_#{bg.upcase}")
+  debug "Curses colors are: #{fg} on #{bg}"
+  cp = $ColorPairs[[fg, bg]]
+  debug "cp is: #{cp}"
+  [fg, bg, cp]
+end
+
 module RubyText
 
   Colors = %w[black blue cyan green magenta red white yellow]
-  ColorPairs = {}
+  $ColorPairs = {}
   num = 0
   Colors.each do |fc|
     Colors.each do |bc|
       fg = X.const_get("COLOR_#{fc.upcase}")
       bg = X.const_get("COLOR_#{bc.upcase}")
       X.init_pair(num+=1, fg, bg)  # FIXME backwards?
-      ColorPairs[[fg, bg]] = num
+      $ColorPairs[[fg, bg]] = num
     end
   end
 
@@ -46,20 +56,22 @@ module RubyText
   end
 
   class Window
-    def self.main
-      debug "Entering Window.main"
+    def self.main(fg: nil, bg: nil)
+      debug "Entering Window.main (#{fg}, #{bg}) => "
+      fg, bg, cp = fb2cp(fg, bg)
+      debug "  computed #{fg}, #{bg}, #{cp}"
+      debug "  cp|A_NORMAL = #{cp|X::A_NORMAL}"
       @main_win = X.init_screen
       X.start_color
-#     X.init_pair(1, X::COLOR_BLACK, X::COLOR_WHITE)
-#     X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
+      X.stdscr.bkgd(cp|X::A_NORMAL)
       rows, cols = @main_win.maxy, @main_win.maxx
       debug "About to call .make"
-      @screen = self.make(@main_win, rows, cols, 0, 0, false, "white", "black")
+      @screen = self.make(@main_win, rows, cols, 0, 0, false)
       @screen
     end
 
-    def self.make(cwin, high, wide, r0, c0, border, fg, bg)
-      debug "make: #{[cwin, high, wide, r0, c0, border, fg, bg]}"
+    def self.make(cwin, high, wide, r0, c0, border)
+      debug "make: #{[cwin, high, wide, r0, c0, border]}"
       obj = self.allocate
       debug "Allocate returned a #{obj.class}"
       obj.instance_eval do 
@@ -77,42 +89,36 @@ end
 
 # debug "Setting STDSCR to Window.main"
 
-STDSCR = RubyText::Window.main
-$stdscr = STDSCR
+# STDSCR = RubyText::Window.main
+# $stdscr = STDSCR
+
+=begin
+  Logic flow - 
+    main
+      initscreen
+      start_color
+      make
+    STDSCR = RubyText::Window.main
+    $stdscr = STDSCR
+
+=end
 
 ###
 
 module RubyText
 
-  # For passing through arbitrary method calls
-  # to the lower level...
-
-  def self.method_missing(name, *args)
-    debug "method_missing: #{name}  #{args.inspect}"
-    if name[0] == '_'
-      X.send(name[1..-1], *args)
-    else
-      raise "#{name} #{args.inspect}" # NoMethodError
-    end
-  end
-
-  def RubyText.window(high, wide, r0, c0, border=false, fg="white", bg="black")
-    RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
-  end
-
   def self.start(*args, log: nil, fg: nil, bg: nil)
     $debug = File.new(log, "w") if log
+    Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg))
+    $stdscr = STDSCR
+
     fg ||= :white
     bg ||= :black
     debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
     debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
-debug "Colors are: #{fg} on #{bg}"
-    fg = X.const_get("COLOR_#{fg.upcase}")
-    bg = X.const_get("COLOR_#{bg.upcase}")
-debug "Curses colors are: #{fg} on #{bg}"
-    cp = ColorPairs[[fg, bg]]
-debug "cp is: #{cp}"
-    X.stdscr.bkgd(cp|X::A_NORMAL)
+    fg, bg, cp = fb2cp(fg, bg)
+#   X.bkgd(cp|X::A_NORMAL)
+#   X.clear
     X.noecho
     X.stdscr.keypad(true)
     X.cbreak   # by default
@@ -129,6 +135,22 @@ debug "cp is: #{cp}"
           X.start_color
       end
     end
+  end
+
+  # For passing through arbitrary method calls
+  # to the lower level...
+
+  def self.method_missing(name, *args)
+    debug "method_missing: #{name}  #{args.inspect}"
+    if name[0] == '_'
+      X.send(name[1..-1], *args)
+    else
+      raise "#{name} #{args.inspect}" # NoMethodError
+    end
+  end
+
+  def RubyText.window(high, wide, r0, c0, border=false, fg=nil, bg=nil)
+    RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
   end
 
   def self.hide_cursor
