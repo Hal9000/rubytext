@@ -98,4 +98,6 @@ mywin.puts "\nThat's all for now."
 sleep 1
 mywin.puts "\nPress any key to exit."
 
+
+sleep 7
 getch

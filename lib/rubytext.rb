@@ -20,8 +20,8 @@ module RubyText
     Colors.each do |bc|
       fg = X.const_get("COLOR_#{fc.upcase}")
       bg = X.const_get("COLOR_#{bc.upcase}")
-      pair = X.init_pair(num+=1, fg, bg)  # FIXME backwards?
-      ColorPairs[[fg, bg]] = pair
+      X.init_pair(num+=1, fg, bg)  # FIXME backwards?
+      ColorPairs[[fg, bg]] = num
     end
   end
 
@@ -50,8 +50,8 @@ module RubyText
       debug "Entering Window.main"
       @main_win = X.init_screen
       X.start_color
-      X.init_pair(1, X::COLOR_BLACK, X::COLOR_WHITE)
-      X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
+#     X.init_pair(1, X::COLOR_BLACK, X::COLOR_WHITE)
+#     X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
       rows, cols = @main_win.maxy, @main_win.maxx
       debug "About to call .make"
       @screen = self.make(@main_win, rows, cols, 0, 0, false, "white", "black")
@@ -102,14 +102,19 @@ module RubyText
 
   def self.start(*args, log: nil, fg: nil, bg: nil)
     $debug = File.new(log, "w") if log
-    fg ||= :white
-    bg ||= :black
+#   fg ||= :white
+#   bg ||= :black
+debug "Version = #{RubyText::Version}"
+$debug.flush
     debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
     debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
+debug "Colors are: #{fg} on #{bg}"
     fg = X.const_get("COLOR_#{fg.upcase}")
     bg = X.const_get("COLOR_#{bg.upcase}")
-    X.init_pair(1, bg, fg)
-    X.stdscr.bkgd(X.color_pair(1)|X::A_NORMAL)
+debug "Curses colors are: #{fg} on #{bg}"
+    cp = ColorPairs[[fg, bg]]
+debug "cp is: #{cp}"
+    X.stdscr.bkgd(cp|X::A_NORMAL)
     X.noecho
     X.stdscr.keypad(true)
     X.cbreak   # by default
@@ -160,7 +165,7 @@ class RubyText::Window
       @outer = @win
       @outer.refresh
       debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
-      @win = X::Window.new(high-2, wide-2, r0+1, c0+1, false, fg, bg)  # relative now??
+      @win = X::Window.new(high-2, wide-2, r0+1, c0+1) # , false, fg, bg)  # relative now??
     else
       @outer = @win
     end
@@ -171,7 +176,7 @@ class RubyText::Window
 
   def delegate_output(sym, *args)
     args = [""] if args.empty?
-    debug "#{sym}: args = #{args.inspect}"
+#   debug "#{sym}: args = #{args.inspect}"
     if sym == :p
       args.map!(&:inspect) 
     else
@@ -212,6 +217,11 @@ class RubyText::Window
       yield
       go(*save)   # No block here!
     end
+  end
+
+  def down
+    r, c = rc
+    go r+1, c
   end
 
   def rc
