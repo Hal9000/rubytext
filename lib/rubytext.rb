@@ -102,10 +102,8 @@ module RubyText
 
   def self.start(*args, log: nil, fg: nil, bg: nil)
     $debug = File.new(log, "w") if log
-#   fg ||= :white
-#   bg ||= :black
-debug "Version = #{RubyText::Version}"
-$debug.flush
+    fg ||= :white
+    bg ||= :black
     debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
     debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
 debug "Colors are: #{fg} on #{bg}"
