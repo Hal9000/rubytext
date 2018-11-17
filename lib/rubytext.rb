@@ -13,12 +13,9 @@ end
 def fb2cp(fg, bg)
   fg ||= :blue
   bg ||= :white
-  debug "Colors are: #{fg} on #{bg}"
   fg = X.const_get("COLOR_#{fg.upcase}")
   bg = X.const_get("COLOR_#{bg.upcase}")
-  debug "Curses colors are: #{fg} on #{bg}"
   cp = $ColorPairs[[fg, bg]]
-  debug "cp is: #{cp}"
   [fg, bg, cp]
 end
 
@@ -75,21 +72,31 @@ module RubyText
     end
 
     def self.main(fg: nil, bg: nil)
-      debug "Entering Window.main (#{fg}, #{bg}) => "
       @main_win = X.init_screen
+debug(@main_win.inspect)
       X.start_color
       colors!(@main_win, fg, bg)
-      debug "About to call .make"
       rows, cols = @main_win.maxy, @main_win.maxx
       @screen = self.make(@main_win, rows, cols, 0, 0, false,
                           fg: fg, bg: bg)
+# FIXME Why is this hard to inline?
+#     @win = @main_win
+#     obj = self.allocate
+#     obj.instance_eval do 
+#       @outer = @win = @main_win
+#       @wide, @high, @r0, @c0 = cols, rows, 0, 0
+#       @fg, @bg = fg, bg
+#       @border = false
+#       @rows, @cols = @high, @wide
+#       @width, @height = @cols + 2, @rows + 2 if @border
+#     end
+#     @win = @main_win  # FIXME?
+#     obj
       @screen
     end
 
     def self.make(cwin, high, wide, r0, c0, border, fg: :white, bg: :black)
-      debug "make: #{[cwin, high, wide, r0, c0, border, fg, bg]}"
       obj = self.allocate
-      debug "Allocate returned a #{obj.class}"
       obj.instance_eval do 
         debug "  Inside instance_eval..."
         @outer = @win = cwin
@@ -107,29 +114,22 @@ end
 
 module RubyText
 
+  def self.set(*args)
+    args.each do |arg|
+      flag = arg.to_s
+      flag.sub!(/_/, "no")
+      X.send(flag)
+    end
+  end
+
   def self.start(*args, log: nil, fg: nil, bg: nil)
     $debug = File.new(log, "w") if log
     Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg))
     $stdscr = STDSCR
-
-debug "STDSCR has #{STDSCR.fg} on #{STDSCR.bg}" 
-    debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
-    debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
     fg, bg, cp = fb2cp(fg, bg)
-    X.noecho
-    X.stdscr.keypad(true)
-    X.cbreak   # by default
-
-    args.each do |arg|
-      case arg
-        when :raw
-          X.raw
-        when :echo
-          X.echo
-        when :noecho
-          X.noecho
-      end
-    end
+    self.set(:_echo, :cbreak, :raw)  # defaults
+#   X.stdscr.keypad(true)
+    self.set(*args)  # override defaults
   end
 
   # For passing through arbitrary method calls

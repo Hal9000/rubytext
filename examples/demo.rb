@@ -6,7 +6,7 @@ def delay(sec)
   sleep sec/2.0
 end
 
-RubyText.start(:color, log: "mylog.txt", fg: :green, bg: :black)
+RubyText.start(log: "mylog.txt", fg: :green, bg: :black)
 
 print "Here goes... "
 delay 2
@@ -40,6 +40,7 @@ delay 1
 RubyText.show_cursor
 delay 1
 print "and hide it again. "
+delay 1
 RubyText.hide_cursor
 delay 3
 
