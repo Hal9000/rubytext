@@ -1,0 +1,6 @@
+Note that the prog*.rb files are only fragments
+and NOT complete programs.
+
+They are intended to be run via showme.rb (or all
+in sequence via the 'slides' shell script).
+

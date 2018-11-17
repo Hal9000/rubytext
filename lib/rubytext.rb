@@ -1,7 +1,6 @@
 $LOAD_PATH << "lib"
 
 require 'curses'
-
 require 'version'   # skeleton + version
 
 X = Curses  # shorthand
@@ -58,6 +57,7 @@ module RubyText
   end
 
   class Window
+    attr_reader :fg, :bg
 
     def self.colors(win, fg, bg)
       cfg, cbg, cp = fb2cp(fg, bg)
@@ -65,26 +65,36 @@ module RubyText
       win.color_set(cp|X::A_NORMAL)
     end
 
+    def self.colors!(win, fg, bg)
+      colors(win, fg, bg)
+      num = win.maxx * win.maxy
+      win.setpos(0, 0)
+      win.addstr(' '*num)
+      win.setpos(0, 0)
+      win.refresh
+    end
+
     def self.main(fg: nil, bg: nil)
       debug "Entering Window.main (#{fg}, #{bg}) => "
       @main_win = X.init_screen
       X.start_color
-      colors(@main_win, fg, bg)
-      # FIXME clear??
+      colors!(@main_win, fg, bg)
       debug "About to call .make"
       rows, cols = @main_win.maxy, @main_win.maxx
-      @screen = self.make(@main_win, rows, cols, 0, 0, false)
+      @screen = self.make(@main_win, rows, cols, 0, 0, false,
+                          fg: fg, bg: bg)
       @screen
     end
 
-    def self.make(cwin, high, wide, r0, c0, border)
-      debug "make: #{[cwin, high, wide, r0, c0, border]}"
+    def self.make(cwin, high, wide, r0, c0, border, fg: :white, bg: :black)
+      debug "make: #{[cwin, high, wide, r0, c0, border, fg, bg]}"
       obj = self.allocate
       debug "Allocate returned a #{obj.class}"
       obj.instance_eval do 
         debug "  Inside instance_eval..."
         @outer = @win = cwin
         @wide, @high, @r0, @c0 = wide, high, r0, c0
+        @fg, @bg = fg, bg
         @border = border
         @rows, @cols = high, wide
         @width, @height = @cols + 2, @rows + 2 if @border
@@ -92,27 +102,8 @@ module RubyText
       obj
     end
   end
-
 end
 
-
-# debug "Setting STDSCR to Window.main"
-
-# STDSCR = RubyText::Window.main
-# $stdscr = STDSCR
-
-=begin
-  Logic flow - 
-    main
-      initscreen
-      start_color
-      make
-    STDSCR = RubyText::Window.main
-    $stdscr = STDSCR
-
-=end
-
-###
 
 module RubyText
 
@@ -121,6 +112,7 @@ module RubyText
     Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg))
     $stdscr = STDSCR
 
+debug "STDSCR has #{STDSCR.fg} on #{STDSCR.bg}" 
     debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
     debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
     fg, bg, cp = fb2cp(fg, bg)
@@ -136,8 +128,6 @@ module RubyText
           X.echo
         when :noecho
           X.noecho
-        when :color
-          X.start_color
       end
     end
   end
@@ -185,15 +175,15 @@ class RubyText::Window
     debug "outer = #{@win.inspect}"
     debug "@border = #@border"
     debug "Calling 'colors': #{[@win, fg, bg]}"
-    RubyText::Window.colors(@win, fg, bg)
-    self.clear
+    RubyText::Window.colors!(@win, fg, bg)
+#   self.clear(@main_win)
     if @border
       @win.box(Vert, Horiz)
       @outer = @win
       @outer.refresh
       debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
       @win = X::Window.new(high-2, wide-2, r0+1, c0+1) # , false, fg, bg)  # relative now??
-      RubyText::Window.colors(@win, fg, bg)
+      RubyText::Window.colors!(@win, fg, bg)
     else
       @outer = @win
     end
@@ -202,9 +192,15 @@ class RubyText::Window
     @win.refresh
   end
 
+  def center(row, str)
+    n = @win.maxx - str.length
+    rcprint row, n/2, str
+  end
+
   def delegate_output(sym, *args)
     args = [""] if args.empty?
-    RubyText::Window.colors(@win, fg, bg)  # FIXME?
+debug "delegate: colors are #@fg, #@bg"
+    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
 #   debug "#{sym}: args = #{args.inspect}"
     if sym == :p
       args.map!(&:inspect) 
@@ -264,6 +260,14 @@ class RubyText::Window
 
   def rc
     [@win.cury, @win.curx]
+  end
+
+  def self.clear(win)
+    num = win.maxx * win.maxy
+    win.setpos(0, 0)
+    win.addstr(' '*num)
+    win.setpos(0, 0)
+    win.refresh
   end
 
   def clear

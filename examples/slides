@@ -1,0 +1,7 @@
+ruby showme.rb examples/prog01.rb
+ruby showme.rb examples/prog02.rb
+ruby showme.rb examples/prog03.rb
+ruby showme.rb examples/prog04.rb
+ruby showme.rb examples/prog05.rb
+ruby showme.rb examples/prog06.rb
+ruby showme.rb examples/prog07.rb

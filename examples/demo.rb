@@ -74,7 +74,9 @@ mywin.output do
   puts "will temporarily override STDSCR so that (in the code)"
   puts "we don't have to use the window name over and over for stream I/O."
   delay 4
-  STDSCR.rcprint 25, 3, "Of course I can still print here if I want."
+# STDSCR.rcprint 25, 3, "Of course I can still print here if I want."
+  STDSCR.go 25, 3
+  STDSCR.print "Of course I can still print here if I want."
   delay 3
   puts "\nOne moment..."
   delay 4
