@@ -12,6 +12,8 @@ def debug(*args)
 end
 
 def fb2cp(fg, bg)
+  fg ||= :blue
+  bg ||= :white
   debug "Colors are: #{fg} on #{bg}"
   fg = X.const_get("COLOR_#{fg.upcase}")
   bg = X.const_get("COLOR_#{bg.upcase}")
@@ -56,16 +58,24 @@ module RubyText
   end
 
   class Window
+
+    def self.colors(win, fg, bg)
+      cfg, cbg, cp = fb2cp(fg, bg)
+      X.init_pair(cp, cfg, cbg)
+      win.color_set(cp|X::A_NORMAL)
+      num = win.maxx * win.maxy
+      win.addstr(' '*num)
+      win.setpos(0, 0)
+      win.refresh
+    end
+
     def self.main(fg: nil, bg: nil)
       debug "Entering Window.main (#{fg}, #{bg}) => "
-      fg, bg, cp = fb2cp(fg, bg)
-      debug "  computed #{fg}, #{bg}, #{cp}"
-      debug "  cp|A_NORMAL = #{cp|X::A_NORMAL}"
       @main_win = X.init_screen
       X.start_color
-      X.stdscr.bkgd(cp|X::A_NORMAL)
-      rows, cols = @main_win.maxy, @main_win.maxx
+      colors(@main_win, fg, bg)
       debug "About to call .make"
+      rows, cols = @main_win.maxy, @main_win.maxx
       @screen = self.make(@main_win, rows, cols, 0, 0, false)
       @screen
     end
@@ -85,7 +95,9 @@ module RubyText
       obj
     end
   end
+
 end
+
 
 # debug "Setting STDSCR to Window.main"
 
@@ -112,13 +124,9 @@ module RubyText
     Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg))
     $stdscr = STDSCR
 
-    fg ||= :white
-    bg ||= :black
     debug "fg = #{fg} is not a valid color" unless Colors.include?(fg.to_s)
     debug "bg = #{bg} is not a valid color" unless Colors.include?(bg.to_s)
     fg, bg, cp = fb2cp(fg, bg)
-#   X.bkgd(cp|X::A_NORMAL)
-#   X.clear
     X.noecho
     X.stdscr.keypad(true)
     X.cbreak   # by default
@@ -149,7 +157,7 @@ module RubyText
     end
   end
 
-  def RubyText.window(high, wide, r0, c0, border=false, fg=nil, bg=nil)
+  def RubyText.window(high, wide, r0, c0, border=false, fg: nil, bg: nil)
     RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
   end
 
@@ -168,24 +176,26 @@ module RubyText
 end
 
 class RubyText::Window
-  Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL  # ?|, ?-    # "\u2502", "\u2500"
+  Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
   attr_reader :win, :rows, :cols, :width, :height, :fg, :bg
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=:white, bg=:black)
+  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil)
     debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
-    @border = border
-    @fg, @bg = fg, bg
+    @border, @fg, @bg      = border, fg, bg
     @win = X::Window.new(high, wide, r0, c0)
     debug "outer = #{@win.inspect}"
     debug "@border = #@border"
+    debug "Calling 'colors': #{[@win, fg, bg]}"
+    RubyText::Window.colors(@win, fg, bg)
     if @border
       @win.box(Vert, Horiz)
       @outer = @win
       @outer.refresh
       debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
       @win = X::Window.new(high-2, wide-2, r0+1, c0+1) # , false, fg, bg)  # relative now??
+      RubyText::Window.colors(@win, fg, bg)
     else
       @outer = @win
     end
@@ -203,9 +213,13 @@ class RubyText::Window
       args.map!(&:to_s) 
     end
     str = sprintf(*args)
-    str << "\n" if sym != :print && str[-1] != "\n"
+    flag = true if sym != :print && str[-1] != "\n"
     # color-handling code here
-    @win.addstr(str)
+    str.each_char do |ch|
+      ch == "\n" ? crlf : @win.addch(ch)
+    end
+#   @win.addstr(str)
+    crlf if flag
     @win.refresh
   end
 
@@ -244,12 +258,22 @@ class RubyText::Window
     go r+1, c
   end
 
+  def crlf
+    r, c = rc
+    go r+1, 0
+  end
+
   def rc
     [@win.cury, @win.curx]
   end
 
   def clear
-    @win.clear
+    win = @win
+    num = win.maxx * win.maxy
+    win.setpos(0, 0)
+    win.addstr(' '*num)
+    win.setpos(0, 0)
+    win.refresh
   end
 
   def output(&block)
