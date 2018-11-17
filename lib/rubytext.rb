@@ -290,13 +290,14 @@ debug "delegate: colors are #@fg, #@bg"
     @win.setpos r, c
     ch = @win.inch
     @win.setpos *save
-    ch
+    ch.chr
 #   go(r, c) { ch = @win.inch }
   end
 
   def []=(r, c, char)
     @win.setpos(r, c)
     @win.addstr(char[0])
+    @win.refresh
   end
 
   def boxme
