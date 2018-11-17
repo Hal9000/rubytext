@@ -63,10 +63,6 @@ module RubyText
       cfg, cbg, cp = fb2cp(fg, bg)
       X.init_pair(cp, cfg, cbg)
       win.color_set(cp|X::A_NORMAL)
-      num = win.maxx * win.maxy
-      win.addstr(' '*num)
-      win.setpos(0, 0)
-      win.refresh
     end
 
     def self.main(fg: nil, bg: nil)
@@ -74,6 +70,7 @@ module RubyText
       @main_win = X.init_screen
       X.start_color
       colors(@main_win, fg, bg)
+      # FIXME clear??
       debug "About to call .make"
       rows, cols = @main_win.maxy, @main_win.maxx
       @screen = self.make(@main_win, rows, cols, 0, 0, false)
@@ -189,6 +186,7 @@ class RubyText::Window
     debug "@border = #@border"
     debug "Calling 'colors': #{[@win, fg, bg]}"
     RubyText::Window.colors(@win, fg, bg)
+    self.clear
     if @border
       @win.box(Vert, Horiz)
       @outer = @win
@@ -206,6 +204,7 @@ class RubyText::Window
 
   def delegate_output(sym, *args)
     args = [""] if args.empty?
+    RubyText::Window.colors(@win, fg, bg)  # FIXME?
 #   debug "#{sym}: args = #{args.inspect}"
     if sym == :p
       args.map!(&:inspect) 
