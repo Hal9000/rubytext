@@ -209,11 +209,10 @@ debug "delegate: colors are #@fg, #@bg"
     end
     str = sprintf(*args)
     flag = true if sym != :print && str[-1] != "\n"
-    # color-handling code here
+    # FIXME: color-handling code here
     str.each_char do |ch|
       ch == "\n" ? crlf : @win.addch(ch)
     end
-#   @win.addstr(str)
     crlf if flag
     @win.refresh
   end

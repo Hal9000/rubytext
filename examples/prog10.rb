@@ -9,7 +9,7 @@ STDSCR.puts "...or you can write to STDSCR (standard screen)"
 sleep 1
 puts "STDSCR is the default receiver."
 
-sleep 1
+sleep 2
 STDSCR.go 5, 0
 puts "Nothing stops you from overwriting a window."
 

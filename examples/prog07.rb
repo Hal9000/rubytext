@@ -6,6 +6,7 @@ win.output do
   out = File.new("/tmp/junk", "w")
   out.puts "Nothing to see here."
   sleep 2
+
   print "\nHowever, if you print to STDOUT or STDERR \nwithout redirection, "
   STDOUT.print "you will have some "
   STDERR.print "unexpected/undefined results "
