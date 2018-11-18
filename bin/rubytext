@@ -2,4 +2,4 @@
 
 require 'rubytext'
 
-puts RubyText::Path
+STDOUT.puts RubyText::Path

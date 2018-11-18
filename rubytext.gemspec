@@ -20,11 +20,12 @@ Gem::Specification.new do |s|
   # Files...
   main = Find.find("lib").to_a
   bin  = Find.find("bin").to_a
+  ex   = Find.find("examples").to_a
 
   misc = %w[./README.md ./rubytext.gemspec]
 # test = Find.find("test").to_a
 
-  s.files       =  main + bin + misc # + test
+  s.files       =  main + bin + ex + misc # + test
   s.homepage    = 'https://github.com/Hal9000/rubytext'
   s.license     = "Ruby License"
 end
