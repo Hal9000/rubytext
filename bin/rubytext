@@ -13,6 +13,4 @@ case cmd
     system("ruby #{path}/../examples/demo.rb")
   when "slides"
     system("#{path}/../examples/slides")
-  when "path"
-    STDOUT.puts path
 end
