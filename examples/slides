@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
 mylib = `gem which rubytext`
-mylib.sub!(%r[/lib/rubytext.rb])
-examples = mylib + "/examples"
+examples = mylib.sub(%r[/lib/rubytext.rb], "/examples")
 
 rc = system("ruby #{examples}/check.rb")
 exit unless rc
