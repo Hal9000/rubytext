@@ -3,15 +3,13 @@
 rc = system("ruby examples/check.rb")
 exit unless rc
 
-system("ruby showme.rb examples/prog01.rb")
-system("ruby showme.rb examples/prog02.rb")
-system("ruby showme.rb examples/prog03.rb")
-system("ruby showme.rb examples/prog04.rb")
-system("ruby showme.rb examples/prog05.rb")
-system("ruby showme.rb examples/prog06.rb")
-system("ruby showme.rb examples/prog07.rb")
-system("ruby showme.rb examples/prog08.rb")
-system("ruby showme.rb examples/prog09.rb")
-system("ruby showme.rb examples/prog10.rb")
-#system("ruby showme.rb examples/prog11.rb")
-system("ruby showme.rb examples/prog12.rb")
+# FIXME 
+#   - use names instead of numbers?
+#   - convert rt-show into a method?
+
+1.upto(19) do |n|
+  num = '%02d' % n
+  prog = "examples/prog#{num}.rb"
+  system("ruby examples/showme.rb #{prog}")
+end
+

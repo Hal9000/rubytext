@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+lines = `gem list rubytext`.split("\n")
+
+line = lines[-1]
+ver = line.split[1][1..-2]
+path = "/Users/Hal/.rvm/gems/ruby-2.4.2/gems/rubytext-#{ver}/lib/"
+
+cmd = "cp lib/* #{path}"
+system cmd
+cmd = "cp bin/* #{path}/../bin"
+system cmd
+cmd = "cp examples/* #{path}/../examples"
+system cmd

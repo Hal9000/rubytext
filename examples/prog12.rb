@@ -1,4 +1,4 @@
-win = RubyText.window(12, 65, 1, 5, true, fg: :black, bg: :blue)
+win = RubyText.window(12, 65, 1, 5, true, fg: :yellow, bg: :blue)
 
 win.output do
   puts "You can detect the size and cursor position of any window."

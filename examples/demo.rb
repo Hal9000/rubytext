@@ -2,8 +2,8 @@ $LOAD_PATH.unshift "lib"
 
 require 'rubytext'
 
-def delay(sec)
-  sleep sec/2.0
+def delay(sec, speed=1.0)
+  sleep sec/speed
 end
 
 RubyText.start(log: "mylog.txt", fg: :green, bg: :black)

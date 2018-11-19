@@ -1,5 +1,16 @@
 #!/usr/bin/env ruby
 
-require 'rubytext'
+require 'rubytext'   # Remember: Specify STDOUT as needed!
 
-STDOUT.puts RubyText::Path
+path = RubyText::Path
+
+cmd = ARGV.first
+
+case cmd
+  when nil
+    STDOUT.puts "Usage: rubytext [demo|slides]"
+  when "demo"
+    system("ruby #{path}/../examples/demo.rb")
+  when "slides"
+    system("#{path}/../examples/slides")
+end

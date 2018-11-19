@@ -73,7 +73,6 @@ module RubyText
 
     def self.main(fg: nil, bg: nil)
       @main_win = X.init_screen
-debug(@main_win.inspect)
       X.start_color
       colors!(@main_win, fg, bg)
       rows, cols = @main_win.maxy, @main_win.maxx
@@ -192,9 +191,16 @@ class RubyText::Window
     @win.refresh
   end
 
-  def center(row, str)
+  def center(str)
+    r, c = self.rc
     n = @win.maxx - str.length
-    rcprint row, n/2, str
+    go r, n/2
+    puts str
+  end
+
+  def putch(ch)
+    r, c = self.rc
+    self[r, c] = ch[0]
   end
 
   def delegate_output(sym, *args)
@@ -247,9 +253,58 @@ debug "delegate: colors are #@fg, #@bg"
     end
   end
 
-  def down
+  def up(n=1)
     r, c = rc
-    go r+1, c
+    go r-n, c
+  end
+
+  def down(n=1)
+    r, c = rc
+    go r+n, c
+  end
+
+  def left(n=1)
+    r, c = rc
+    go r, c-n
+  end
+
+  def right(n=1)
+    r, c = rc
+    go r, c+n
+  end
+
+  def top
+    r, c = rc
+    go 0, c
+  end
+
+  def bottom 
+    r, c = rc
+    rmax = self.rows - 1
+    go rmax, c
+  end
+
+  def up!
+    top
+  end
+
+  def down!
+    bottom
+  end
+
+  def left!
+    r, c = rc
+    go r, 0
+  end
+
+  def right!
+    r, c = rc
+    cmax = self.cols - 1
+    go r, cmax
+  end
+
+  def home
+    go 0, 0
   end
 
   def crlf
@@ -295,7 +350,7 @@ debug "delegate: colors are #@fg, #@bg"
 
   def []=(r, c, char)
     @win.setpos(r, c)
-    @win.addstr(char[0])
+    @win.addch(char[0])
     @win.refresh
   end
 
@@ -315,7 +370,6 @@ end
 ### Stick stuff into Kernel for top level
 
 module Kernel
-  # private 
   def puts(*args)       # Doesn't affect STDOUT.puts, etc.
     $stdscr.puts(*args)
   end
