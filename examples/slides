@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
-rc = system("ruby examples/check.rb")
+path = `rubytext path`
+examples = path + "/../examples"
+
+rc = system("ruby #{examples}/check.rb")
 exit unless rc
 
 # FIXME 
@@ -10,6 +13,6 @@ exit unless rc
 1.upto(19) do |n|
   num = '%02d' % n
   prog = "examples/prog#{num}.rb"
-  system("ruby examples/showme.rb #{prog}")
+  system("ruby #{examples}/showme.rb #{prog}")
 end
 
