@@ -3,7 +3,9 @@
 mylib = `gem which rubytext`.chomp
 examples = mylib.sub(%r[/lib/rubytext.rb], "/examples")
 
-rc = system("ruby #{examples}/check.rb")
+Dir.chdir(examples)
+
+rc = system("ruby check.rb")
 exit unless rc
 
 # FIXME 
@@ -12,7 +14,7 @@ exit unless rc
 
 1.upto(19) do |n|
   num = '%02d' % n
-  prog = "examples/prog#{num}.rb"
-  system("ruby #{examples}/showme.rb #{prog}")
+  prog = "prog#{num}.rb"
+  system("ruby showme.rb #{prog}")
 end
 
