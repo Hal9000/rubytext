@@ -38,7 +38,7 @@ end
 
 #### Main
 
-RubyText.start(:cbreak, log: "showme.log", fg: :white, bg: :black)
+RubyText.start(:cbreak, log: "/tmp/showme.log", fg: :white, bg: :black)
 
 @cmax = STDSCR.cols
 @rmax = STDSCR.rows
