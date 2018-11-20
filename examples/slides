@@ -12,7 +12,7 @@ exit unless rc
 #   - use names instead of numbers?
 #   - convert showme into a method?
 
-1.upto(19) do |n|
+1.upto(21) do |n|
   next if n == 11  # junk this one
   num = '%02d' % n
   prog = "prog#{num}.rb"
