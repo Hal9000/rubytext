@@ -13,25 +13,27 @@ end
 def fb2cp(fg, bg)
   fg ||= :blue
   bg ||= :white
-  fg = X.const_get("COLOR_#{fg.upcase}")
-  bg = X.const_get("COLOR_#{bg.upcase}")
+  f2 = X.const_get("COLOR_#{fg.upcase}")
+  b2 = X.const_get("COLOR_#{bg.upcase}")
   cp = $ColorPairs[[fg, bg]]
-  [fg, bg, cp]
+  [f2, b2, cp]
 end
 
 module RubyText
 
-  Colors = %w[black blue cyan green magenta red white yellow]
+  Colors = [:black, :blue, :cyan, :green, :magenta, :red, :white, :yellow]
   $ColorPairs = {}
   num = 0
-  Colors.each do |fc|
-    Colors.each do |bc|
-      fg = X.const_get("COLOR_#{fc.upcase}")
-      bg = X.const_get("COLOR_#{bc.upcase}")
+  Colors.each do |fsym|
+    Colors.each do |bsym|
+      fg = X.const_get("COLOR_#{fsym.upcase}")
+      bg = X.const_get("COLOR_#{bsym.upcase}")
       X.init_pair(num+=1, fg, bg)  # FIXME backwards?
-      $ColorPairs[[fg, bg]] = num
+      $ColorPairs[[fsym, bsym]] = num
     end
   end
+
+# $ColorPairs.each_pair {|k, v| STDOUT.puts "#{k.inspect} => #{v}" }
 
   module Keys
     Down  = 258
@@ -107,6 +109,10 @@ module RubyText
       end
       obj
     end
+
+    def fg=(sym)
+      self.colors(@win, fg, @bg)
+    end
   end
 end
 
@@ -114,11 +120,34 @@ end
 module RubyText
 
   def self.set(*args)
+    # Allow a block?
+    standard = [:cbreak, :raw, :echo, :keypad]
+    @flags = []   # FIXME can set/reset individually. hmmm
     args.each do |arg|
-      flag = arg.to_s
-      flag.sub!(/_/, "no")
-      X.send(flag)
+      if standard.include? arg
+        flag = arg.to_s
+        @flags << arg
+        flag.sub!(/_/, "no")
+        X.send(flag)
+      else
+        @flags << arg
+        case arg
+          when :cursor
+            X.show_cursor
+          when :_cursor, :nocursor
+            X.hide_cursor
+        end
+      end
     end
+  end
+
+  def save_flags
+    @fstack ||= []
+    @fstack.push @flags
+  end
+
+  def rest_flags
+    @flags = @fstack.pop
   end
 
   def self.start(*args, log: nil, fg: nil, bg: nil)
@@ -159,12 +188,65 @@ module RubyText
     X.curs_set(2)  # Doesn't work?
   end
 
+  def self.saveback(high, wide, r, c)
+    @pos = STDSCR.rc
+    @save = []
+    0.upto(high) do |h|
+      0.upto(wide) do |w|
+        @save << STDSCR[h+r, w+c]
+      end
+    end
+  end
+
+  def self.restback(high, wide, r, c)
+    0.upto(high) do |h|
+      0.upto(wide) do |w|
+        STDSCR[h+r, w+c] = @save.shift
+      end
+    end
+    STDSCR.go *@pos
+    STDSCR.refresh
+  end
+
+  def self.menu(r: 0, c: 0, items:)
+    high = items.size + 2
+    wide = items.map(&:length).max + 2
+    saveback(high, wide, r, c)
+    @mywin = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
+    RubyText.set(:raw)
+    X.stdscr.keypad(true)
+    RubyText.hide_cursor
+    sel = 0
+    max = items.size - 1
+    loop do
+      items.each.with_index do |item, row|
+        @mywin.go row, 0
+        color = sel == row ? :yellow : :white
+        @mywin.puts color, " #{item} "
+      end
+      ch = getch
+      case ch
+        when X::KEY_UP
+          sel -= 1 if sel > 0
+        when X::KEY_DOWN
+          sel += 1 if sel < max
+        when 27
+          restback(high, wide, r, c)
+          return nil
+        when 10
+          restback(high, wide, r, c)
+          return sel
+      end
+    end
+  end
+
 end
 
 class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
-  attr_reader :win, :rows, :cols, :width, :height, :fg, :bg
+  attr_reader :win, :rows, :cols, :width, :height
+  attr_writer :fg, :bg
 
   def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil)
     debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
@@ -203,23 +285,37 @@ class RubyText::Window
     self[r, c] = ch[0]
   end
 
+  def need_crlf?(sym, args)
+    sym != :print &&      # print doesn't default to crlf
+    args[-1][-1] != "\n"  # last char is a literal linefeed
+  end
+
   def delegate_output(sym, *args)
     args = [""] if args.empty?
-debug "delegate: colors are #@fg, #@bg"
     RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
-#   debug "#{sym}: args = #{args.inspect}"
     if sym == :p
       args.map!(&:inspect) 
     else
-      args.map!(&:to_s) 
+      args.map! do |x|
+        if RubyText::Colors.include? x
+          x
+        else
+          x.to_s
+        end
+      end
     end
-    str = sprintf(*args)
-    flag = true if sym != :print && str[-1] != "\n"
-    # FIXME: color-handling code here
-    str.each_char do |ch|
-      ch == "\n" ? crlf : @win.addch(ch)
+# STDOUT.puts "again: #{args.inspect}"
+    flag = need_crlf?(sym, args)
+    # Limitation: Can't print color symbols!
+    args.each do |arg|  
+      if arg.is_a? Symbol # must be a color
+        RubyText::Window.colors(@win, arg, @bg)  # FIXME?
+      else
+        arg.each_char {|ch| ch == "\n" ? crlf : @win.addch(ch) }
+      end
     end
     crlf if flag
+    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
     @win.refresh
   end
 

@@ -7,31 +7,34 @@ end
 
 require 'rubytext'
 
-print " "  # FIXME - bug requires this?
+RubyText.start
+
+# print " "  # FIXME - bug requires this?
 
 @lib, @code = ARGV
 
 def menu
 $debug.puts "Entering menu"
-  m = @mywin
-  m.boxme   # FIXME - dumb hack
-  m.clear
-  m.puts
-  m.puts " World's Simplest Ruby IDE\n "
-  m.puts " Lib  = #{@lib}"
-  m.puts " Code = #{@code}"
-  m.puts 
-  m.puts " 1  Edit lib"
-  m.puts " 2  Edit code"
-  m.puts " 3  Run code"
-  m.puts " 4  pry"
-  m.puts " 5  Shell"
-  m.puts " 6  irb"
-  m.puts " 7  RubyDocs"
-  m.puts
-  m.puts " 0  Quit"
-  m.print "\n  Choice = "
-  m.refresh   # FIXME - dumb hack
+  @mywin.output do
+#   boxme   # FIXME - dumb hack
+    @mywin.clear
+    puts
+    puts " World's Simplest Ruby IDE\n "
+    puts " Lib  = #{@lib}"
+    puts " Code = #{@code}"
+    puts 
+    puts " 1  Edit lib"
+    puts " 2  Edit code"
+    puts " 3  Run code"
+    puts " 4  pry"
+    puts " 5  Shell"
+    puts " 6  irb"
+    puts " 7  RubyDocs"
+    puts
+    puts " 0  Quit"
+    print "\n  Choice = "
+    @mywin.refresh   # FIXME - dumb hack
+  end
 $debug.puts "Exiting menu"
 end
 
@@ -50,9 +53,7 @@ end
 
 loop do 
   menu
-  # $debug.puts "about to call getch"
   cmd = getch.chr
-  # $debug.puts "called getch - '#{cmd}'"
   case cmd
     when "1"; system("vi #{@lib}")
     when "2"; system("vi #{@code}") 

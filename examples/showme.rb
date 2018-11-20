@@ -21,7 +21,8 @@ def show_code(prog)
                          true, fg: :green, bg: :black)
   code.puts text
 
-  STDSCR.go prog_top, 61
+  right = STDSCR.cols - prog.length - 8
+  STDSCR.go prog_top, right 
   STDSCR.print "[ #{prog} ]"
   STDSCR.go 0,0
 end

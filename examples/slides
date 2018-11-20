@@ -10,7 +10,7 @@ exit unless rc
 
 # FIXME 
 #   - use names instead of numbers?
-#   - convert rt-show into a method?
+#   - convert showme into a method?
 
 1.upto(19) do |n|
   next if n == 11  # junk this one
