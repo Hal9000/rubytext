@@ -5,8 +5,8 @@ win.output do
   puts "This behavior will probably change later."
   sleep 2
   puts "Let's print 10 more lines now:"
-  sleep 2
+  sleep 1
   
-  10.times {|i| puts "Printing line #{i}..."; sleep 0.5 }
+  10.times {|i| puts "Printing line #{i}..."; sleep 0.3 }
 end
 

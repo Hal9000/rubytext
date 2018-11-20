@@ -7,6 +7,7 @@ getch
 days = %w[Monday Tuesday Wednesday Thursday Friday]
 picked = RubyText.menu(c: 30, items: days)
 
+puts
 if picked.nil?
   puts "You picked nothing!"
 else
