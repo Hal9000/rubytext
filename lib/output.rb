@@ -1,0 +1,180 @@
+$LOAD_PATH << "lib"
+
+def debug(*args)
+  return unless $debug
+  $debug.puts *args
+end
+
+def fb2cp(fg, bg)
+  fg ||= :blue
+  bg ||= :white
+  f2 = X.const_get("COLOR_#{fg.upcase}")
+  b2 = X.const_get("COLOR_#{bg.upcase}")
+  cp = $ColorPairs[[fg, bg]]
+  [f2, b2, cp]
+end
+
+module RubyText
+
+  Colors = [:black, :blue, :cyan, :green, :magenta, :red, :white, :yellow]
+  $ColorPairs = {}
+  num = 0
+  Colors.each do |fsym|
+    Colors.each do |bsym|
+      fg = X.const_get("COLOR_#{fsym.upcase}")
+      bg = X.const_get("COLOR_#{bsym.upcase}")
+      X.init_pair(num+=1, fg, bg)  # FIXME backwards?
+      $ColorPairs[[fsym, bsym]] = num
+    end
+  end
+
+end
+
+
+class RubyText::Window
+
+  def center(str)
+    r, c = self.rc
+    n = @win.maxx - str.length
+    go r, n/2
+    puts str
+  end
+
+  def putch(ch)
+    r, c = self.rc
+    self[r, c] = ch[0]
+  end
+
+  def need_crlf?(sym, args)
+    sym != :print &&      # print doesn't default to crlf
+    args[-1][-1] != "\n"  # last char is a literal linefeed
+  end
+
+  def delegate_output(sym, *args)
+    args = [""] if args.empty?
+    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
+    if sym == :p
+      args.map!(&:inspect) 
+    else
+      args.map! do |x|
+        if RubyText::Colors.include? x
+          x
+        else
+          x.to_s
+        end
+      end
+    end
+# STDOUT.puts "again: #{args.inspect}"
+    flag = need_crlf?(sym, args)
+    # Limitation: Can't print color symbols!
+    args.each do |arg|  
+      if arg.is_a? Symbol # must be a color
+        RubyText::Window.colors(@win, arg, @bg)  # FIXME?
+      else
+        arg.each_char {|ch| ch == "\n" ? crlf : @win.addch(ch) }
+      end
+    end
+    crlf if flag
+    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
+    @win.refresh
+  end
+
+  def puts(*args)
+    delegate_output(:puts, *args)
+  end
+
+  def print(*args)
+    delegate_output(:print, *args)
+  end
+
+  def p(*args)
+    delegate_output(:p, *args)
+  end
+
+  def rcprint(r, c, *args)
+    self.go(r, c) { self.print *args }
+  end
+
+  def rcprint!(r, c, *args)
+    @win.setpos(r, c)  # Cursor isn't restored
+    self.print *args
+  end
+
+  def crlf
+    # Technically not output...
+    r, c = rc
+    go r+1, 0
+  end
+
+  def self.clear(win)
+    num = win.maxx * win.maxy
+    win.setpos(0, 0)
+    win.addstr(' '*num)
+    win.setpos(0, 0)
+    win.refresh
+  end
+
+  def clear
+    win = @win
+    num = win.maxx * win.maxy
+    win.setpos(0, 0)
+    win.addstr(' '*num)
+    win.setpos(0, 0)
+    win.refresh
+  end
+
+  def output(&block)
+    $stdscr = self
+    block.call
+    $stdscr = STDSCR
+  end
+
+  def [](r, c)
+    save = self.rc
+    @win.setpos r, c
+    ch = @win.inch
+    @win.setpos *save
+    ch.chr
+#   go(r, c) { ch = @win.inch }
+  end
+
+  def []=(r, c, char)
+    @win.setpos(r, c)
+    @win.addch(char[0])
+    @win.refresh
+  end
+
+  def boxme
+    @outer.box(Vert, Horiz)
+    @outer.refresh
+  end
+
+  def refresh
+    @win.refresh
+  end
+end
+
+### Stick stuff into Kernel for top level
+
+module Kernel
+  def puts(*args)       # Doesn't affect STDOUT.puts, etc.
+    $stdscr.puts(*args)
+  end
+
+  def print(*args)
+    $stdscr.print(*args)
+  end
+
+  def p(*args)
+    $stdscr.p(*args)
+  end
+
+  def rcprint(r, c, *args)
+    $stdscr.rcprint r, c, *args
+  end
+
+  def getch
+    X.getch
+  end
+end
+
