@@ -1,6 +1,6 @@
 
 module RubyText
-  VERSION = "0.0.44"
+  VERSION = "0.0.45"
 
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end

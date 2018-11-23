@@ -10,7 +10,7 @@ require 'output'       # RubyText, RubyText::Window, Kernel
 require 'keys'         # RubyText::Keys
 require 'menu'         # RubyText
 require 'window'       # RubyText::Window
-require 'colors'       # RubyText, RubyText::Window
+require 'color'        # RubyText, RubyText::Window
 require 'navigation'   # RubyText::Window
 require 'settings'     # RubyText
 
