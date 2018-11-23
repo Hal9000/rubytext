@@ -20,21 +20,21 @@ module RubyText
     STDSCR.refresh
   end
 
-  def self.menu(r: 0, c: 0, items:)
+  def self.menu(r: 0, c: 0, items:, curr: 0)
     high = items.size + 2
     wide = items.map(&:length).max + 4
     saveback(high, wide, r, c)
-    @mywin = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
+    win = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
     RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
-    sel = 0
+    sel = curr
     max = items.size - 1
     loop do
       items.each.with_index do |item, row|
-        @mywin.go row, 0
+        win.go row, 0
         color = sel == row ? :yellow : :white
-        @mywin.puts color, " #{item} "
+        win.puts color, " #{item} "
       end
       ch = getch
       case ch
@@ -44,10 +44,10 @@ module RubyText
           sel += 1 if sel < max
         when 27
           restback(high, wide, r, c)
-          return nil
+          return [nil, nil]
         when 10
           restback(high, wide, r, c)
-          return sel
+          return [sel, items[sel]]
       end
     end
   end
@@ -85,9 +85,6 @@ module RubyText
             handler.call(sel, items[sel])
           end
         when quit  # parameter
-          win2.clear
-          win2.puts "About to quit..."
-          sleep 1
           exit
       end
     end

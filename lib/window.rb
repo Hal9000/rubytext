@@ -27,20 +27,6 @@ class RubyText::Window
     @width, @height = @cols + 2, @rows + 2 if @border
     @win.refresh
   end
-  def self.colors(win, fg, bg)
-    cfg, cbg, cp = fb2cp(fg, bg)
-    X.init_pair(cp, cfg, cbg)
-    win.color_set(cp|X::A_NORMAL)
-  end
-
-  def self.colors!(win, fg, bg)
-    colors(win, fg, bg)
-    num = win.maxx * win.maxy
-    win.setpos(0, 0)
-    win.addstr(' '*num)
-    win.setpos(0, 0)
-    win.refresh
-  end
 
   def self.main(fg: nil, bg: nil)
     @main_win = X.init_screen
@@ -78,14 +64,4 @@ class RubyText::Window
     end
     obj
   end
-
-  def fg=(sym)
-    self.colors(@win, fg, @bg)
-  end
-
-  def self.wocka
-    STDSCR.puts "HELLO!!!!!!"
-    sleep 5
-  end
 end
-

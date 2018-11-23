@@ -5,11 +5,11 @@ puts "Press any key to display the menu..."
 getch
 
 days = %w[Monday Tuesday Wednesday Thursday Friday]
-picked = RubyText.menu(c: 30, items: days)
+num, day = RubyText.menu(c: 30, items: days)
 
 puts
-if picked.nil?
+if day.nil?
   puts "You picked nothing!"
 else
-  puts "You picked item #{picked} which is #{days[picked].inspect}"
+  puts "You picked item #{num} which is #{day.inspect}"
 end

@@ -5,34 +5,7 @@ def debug(*args)
   $debug.puts *args
 end
 
-def fb2cp(fg, bg)
-  fg ||= :blue
-  bg ||= :white
-  f2 = X.const_get("COLOR_#{fg.upcase}")
-  b2 = X.const_get("COLOR_#{bg.upcase}")
-  cp = $ColorPairs[[fg, bg]]
-  [f2, b2, cp]
-end
-
-module RubyText
-
-  Colors = [:black, :blue, :cyan, :green, :magenta, :red, :white, :yellow]
-  $ColorPairs = {}
-  num = 0
-  Colors.each do |fsym|
-    Colors.each do |bsym|
-      fg = X.const_get("COLOR_#{fsym.upcase}")
-      bg = X.const_get("COLOR_#{bsym.upcase}")
-      X.init_pair(num+=1, fg, bg)  # FIXME backwards?
-      $ColorPairs[[fsym, bsym]] = num
-    end
-  end
-
-end
-
-
 class RubyText::Window
-
   def center(str)
     r, c = self.rc
     n = @win.maxx - str.length
