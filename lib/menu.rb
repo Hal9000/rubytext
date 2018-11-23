@@ -22,7 +22,7 @@ module RubyText
 
   def self.menu(r: 0, c: 0, items:)
     high = items.size + 2
-    wide = items.map(&:length).max + 2
+    wide = items.map(&:length).max + 4
     saveback(high, wide, r, c)
     @mywin = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
     RubyText.set(:raw)
@@ -77,10 +77,12 @@ module RubyText
         when X::KEY_UP
           if sel > 0
             sel -= 1
+            handler.call(sel, items[sel])
           end
         when X::KEY_DOWN
           if sel < max
             sel += 1
+            handler.call(sel, items[sel])
           end
         when quit  # parameter
           win2.clear

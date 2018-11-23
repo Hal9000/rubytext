@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Hal Fulton"]
   s.email       = 'rubyhacker@gmail.com'
   s.executables << "rubytext"
-  s.add_runtime_dependency 'curses'
+  s.add_runtime_dependency 'curses', ">= 1.2.5"
 
   # Files...
   main = Find.find("lib").to_a
