@@ -1,7 +1,10 @@
-  - Add (some) automated tests
+----  * = in progress   x = finished
+
+* - Add (some) automated tests
 * - set method for flags (with block)
 * - save/restore all flags
 * - Attrs (effects?) and puts/print
+
   - debugging on/off
   - Scrolling
   - Scroll buffers

@@ -1,7 +1,12 @@
 module RubyText
+  # Hmm, all these are module-level.
+  def self.flags
+    @fstack.last
+  end
+
   def self.set(*args)   # Allow a block?
     standard = [:cbreak, :raw, :echo, :keypad]
-    @defaults = [:cbreak, :echo, :keypad, :cursor]
+    @defaults = [:cbreak, :echo, :keypad, :cursor, :_raw]
     @flags = @defaults.dup
     save_flags
     args.each do |arg|
@@ -18,7 +23,9 @@ module RubyText
             X.show_cursor
           when :_cursor, :nocursor
             X.hide_cursor
-          else puts "wtf is #{arg}?"
+          else 
+            self.stop
+            raise RTError
         end
       end
     end
@@ -51,6 +58,12 @@ module RubyText
     self.set(:_echo, :cbreak, :raw)  # defaults
 #   X.stdscr.keypad(true)
     self.set(*args)  # override defaults
+  rescue 
+    raise RTError
+  end
+
+  def self.stop
+    X.close_screen
   end
 
   # For passing through arbitrary method calls
@@ -65,7 +78,7 @@ module RubyText
     end
   end
 
-  def RubyText.window(high, wide, r0, c0, border=false, fg: nil, bg: nil)
+  def self.window(high, wide, r0, c0, border=false, fg: nil, bg: nil)
     RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
   end
 
