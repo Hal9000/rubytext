@@ -1,7 +1,18 @@
 module RubyText
   # Hmm, all these are module-level.
+
   def self.flags
-    @fstack.last
+    @flags.uniq!
+    @flags
+  end
+
+  def self.inverse_flag(flag)
+    sflag = flag.to_s
+    if sflag[0] == "_"
+      sflag[1..-1].to_sym
+    else
+      ("_" + sflag).to_sym
+    end
   end
 
   def self.set(*args)   # Allow a block?
@@ -10,7 +21,11 @@ module RubyText
     @flags = @defaults.dup
     save_flags
     args.each do |arg|
-      @flags << arg
+puts "\n@flags = #{@flags.inspect}... add #{arg}, remove #{inverse_flag(arg)}"
+      @flags += [arg]
+      @flags -= [inverse_flag(arg)]
+      @flags.uniq!
+puts "@flags = #{@flags.inspect}"
       flag = arg.to_s
       if standard.include? flag.to_sym
         X.send(flag)
@@ -20,15 +35,16 @@ module RubyText
       else
         case arg
           when :cursor
-            X.show_cursor
+            X.curs_set(1)
           when :_cursor, :nocursor
-            X.hide_cursor
+            X.curs_set(0)
           else 
             self.stop
             raise RTError
         end
       end
     end
+
     if block_given?
       yield
       rest_flags
@@ -36,16 +52,18 @@ module RubyText
   end
 
   def self.reset
-    restflags
+    rest_flags
   end
 
   def self.save_flags
     @fstack ||= []
+    @flags.uniq!
     @fstack.push @flags
   end
 
   def self.rest_flags
     @flags = @fstack.pop
+    @flags.uniq!
   rescue 
     @flags = @defaults
   end
@@ -58,7 +76,9 @@ module RubyText
     self.set(:_echo, :cbreak, :raw)  # defaults
 #   X.stdscr.keypad(true)
     self.set(*args)  # override defaults
-  rescue 
+  rescue => err
+    debug(err.inspect)
+    debug(err.backtrace)
     raise RTError
   end
 
