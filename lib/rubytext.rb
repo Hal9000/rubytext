@@ -11,8 +11,10 @@ require 'keys'         # RubyText::Keys
 require 'menu'         # RubyText
 require 'window'       # RubyText::Window
 require 'color'        # RubyText, RubyText::Window
+require 'effects'
 require 'navigation'   # RubyText::Window
 require 'settings'     # RubyText
+
 
 # Skeleton... Can't put at top because of #initalize
 

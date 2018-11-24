@@ -30,7 +30,7 @@ class RubyText::Window
       args.map!(&:inspect) 
     else
       args.map! do |x|
-        if RubyText::Colors.include? x
+        if RubyText::Colors.include?(x) || x.is_a?(RubyText::Effects)
           x
         else
           x.to_s
@@ -43,6 +43,8 @@ class RubyText::Window
     args.each do |arg|  
       if arg.is_a? Symbol # must be a color
         RubyText::Window.colors(@win, arg, @bg)  # FIXME?
+      elsif arg.is_a? RubyText::Effects
+        X.attrset(arg.value)
       else
         arg.each_char {|ch| ch == "\n" ? crlf : @win.addch(ch) }
       end

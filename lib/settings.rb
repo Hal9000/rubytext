@@ -1,33 +1,46 @@
 module RubyText
-  def self.set(*args)
-    # Allow a block?
+  def self.set(*args)   # Allow a block?
     standard = [:cbreak, :raw, :echo, :keypad]
-    @flags = []   # FIXME can set/reset individually. hmmm
+    @defaults = [:cbreak, :echo, :keypad, :cursor]
+    @flags = @defaults.dup
+    save_flags
     args.each do |arg|
-      if standard.include? arg
-        flag = arg.to_s
-        @flags << arg
-        flag.sub!(/_/, "no")
+      @flags << arg
+      flag = arg.to_s
+      if standard.include? flag.to_sym
+        X.send(flag)
+      elsif flag[0] == "_" && standard.include?(flag[1..-1].to_sym)
+        flag.sub!(/^_/, "no")
         X.send(flag)
       else
-        @flags << arg
         case arg
           when :cursor
             X.show_cursor
           when :_cursor, :nocursor
             X.hide_cursor
+          else puts "wtf is #{arg}?"
         end
       end
     end
+    if block_given?
+      yield
+      rest_flags
+    end
   end
 
-  def save_flags
+  def self.reset
+    restflags
+  end
+
+  def self.save_flags
     @fstack ||= []
     @fstack.push @flags
   end
 
-  def rest_flags
+  def self.rest_flags
     @flags = @fstack.pop
+  rescue 
+    @flags = @defaults
   end
 
   def self.start(*args, log: nil, fg: nil, bg: nil)

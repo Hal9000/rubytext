@@ -27,7 +27,7 @@ class RubyText::Window
   def self.colors(win, fg, bg)
     cfg, cbg, cp = fb2cp(fg, bg)
     X.init_pair(cp, cfg, cbg)
-    win.color_set(cp|X::A_NORMAL)
+    win.color_set(cp)  # |X::A_NORMAL)
   end
 
   def self.colors!(win, fg, bg)

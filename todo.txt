@@ -1,0 +1,21 @@
+  - Add (some) automated tests
+* - set method for flags (with block)
+* - save/restore all flags
+* - Attrs (effects?) and puts/print
+  - debugging on/off
+  - Scrolling
+  - Scroll buffers
+  - Slide: Attrs
+  - Slide: getch
+  - Color object??
+  - Screen dump
+  - Readline clone?
+  - Better gets()?
+  - Menus?
+  - CDK?
+  - Forms and fields
+
+x - Split up source?
+x - Kernel import a la carte?
+x - move cursor: up, down, left, right, top, bottom, home
+x - Slide: rcprint
