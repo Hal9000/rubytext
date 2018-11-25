@@ -4,7 +4,8 @@ require 'curses'
 
 X = Curses  # shorthand
 
-RTError = StandardError.dup
+module RubyText
+end
 
 require 'version'
 
@@ -19,7 +20,7 @@ require 'settings'     # RubyText
 require 'widgets'
 
 
-# Skeleton... Can't put at top because of #initalize
+# Skeleton... Can't put classes at top because of #initalize
 
 module RubyText
   module Keys
@@ -48,4 +49,6 @@ def make_exception(sym, str)
     Object.class_eval(sym.to_s).new(msg)
   end
 end
+
+make_exception(:RTError, "General error: $1 $2 $3")
 

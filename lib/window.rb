@@ -54,7 +54,7 @@ class RubyText::Window
   def self.make(cwin, high, wide, r0, c0, border, fg: :white, bg: :black)
     obj = self.allocate
     obj.instance_eval do 
-      debug "  Inside instance_eval..."
+      #  debug "  Inside instance_eval..."
       @outer = @win = cwin
       @wide, @high, @r0, @c0 = wide, high, r0, c0
       @fg, @bg = fg, bg
@@ -63,5 +63,18 @@ class RubyText::Window
       @width, @height = @cols + 2, @rows + 2 if @border
     end
     obj
+  end
+
+  def screen_text(file = nil)
+    lines = []
+    0.upto(self.rows-1) do |r|
+      line = ""
+      0.upto(self.cols-1) do |c|
+        line << self[r, c]
+      end
+      lines << line
+    end
+    File.open(file, "w") {|f| f.puts lines }  if file
+    lines
   end
 end

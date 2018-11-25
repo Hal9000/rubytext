@@ -22,23 +22,24 @@ module RubyText
     save_flags
     args.each do |arg|
       @flags += [arg]
-      @flags -= [inverse_flag(arg)]
+      inv = inverse_flag(arg)
+      @flags -= [inv]
       @flags.uniq!
       flag = arg.to_s
-      if standard.include? flag.to_sym
+      if standard.include?(flag.to_sym) || standard.include?(flag.sub(/no/, "_").to_sym)
         X.send(flag)
       elsif flag[0] == "_" && standard.include?(flag[1..-1].to_sym)
         flag.sub!(/^_/, "no")
         X.send(flag)
       else
-        case arg
+        case flag
           when :cursor
             X.curs_set(1)
           when :_cursor, :nocursor
             X.curs_set(0)
           else 
             self.stop
-            raise RTError
+            raise RTError("flag = #{flag.inspect}")
         end
       end
     end
@@ -72,12 +73,11 @@ module RubyText
     $stdscr = STDSCR
     fg, bg, cp = fb2cp(fg, bg)
     self.set(:_echo, :cbreak, :raw)  # defaults
-#   X.stdscr.keypad(true)
     self.set(*args)  # override defaults
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
-    raise RTError
+    raise RTError("#{err}")
   end
 
   def self.stop
