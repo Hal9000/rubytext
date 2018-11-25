@@ -16,6 +16,7 @@ require 'color'        # RubyText, RubyText::Window
 require 'effects'
 require 'navigation'   # RubyText::Window
 require 'settings'     # RubyText
+require 'widgets'
 
 
 # Skeleton... Can't put at top because of #initalize

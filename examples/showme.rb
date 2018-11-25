@@ -5,18 +5,18 @@ def next_slide
   RubyText.hide_cursor
   sleep 2
   Timeout.timeout(999) do
-    STDSCR.go @rmax-1, 0
+    STDSCR.go @rmax-1-@upward, 0
     STDSCR.center "Press any key..."
     getch
   end
 rescue Timeout::Error
 end
 
-def show_code(prog)
+def show_code(prog, upward=0)
   text = File.read(prog)
   nlines = text.split("\n").size
 
-  prog_top = @rmax-nlines-3
+  prog_top = @rmax-nlines-3 - upward.to_i
   code = RubyText.window(nlines+2, @cmax-2, prog_top, 1, 
                          true, fg: :green, bg: :black)
   code.puts text
@@ -48,10 +48,11 @@ RubyText.hide_cursor
 
 check_window
 
-prog = ARGV.first
+prog, @upward = ARGV
+@upward ||= 0
 
-show_code(prog)
+show_code(prog, @upward)
 
 require_relative prog
 
-next_slide
+next_slide # if @upward == 0

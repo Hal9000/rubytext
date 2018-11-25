@@ -42,6 +42,7 @@ update = <<-EOF
   gem push rubytext-*.gem && 
   gem uninstall -x rubytext && 
   gem install rubytext
+  rm rubytext-*.gem
 EOF
 system(update)
 

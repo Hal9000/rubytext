@@ -21,11 +21,9 @@ module RubyText
     @flags = @defaults.dup
     save_flags
     args.each do |arg|
-puts "\n@flags = #{@flags.inspect}... add #{arg}, remove #{inverse_flag(arg)}"
       @flags += [arg]
       @flags -= [inverse_flag(arg)]
       @flags.uniq!
-puts "@flags = #{@flags.inspect}"
       flag = arg.to_s
       if standard.include? flag.to_sym
         X.send(flag)
@@ -111,7 +109,7 @@ puts "@flags = #{@flags.inspect}"
   end
 
   def self.show_cursor!
-    X.curs_set(2)  # Doesn't work?
+    X.curs_set(2)  # Doesn't work? Device-dependent?
   end
 end
 
