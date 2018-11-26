@@ -1,10 +1,8 @@
 ----  * = in progress   x = finished
 
-* - Add (some) automated tests
-* - set method for flags (with block)
-* - save/restore all flags
 * - Attrs (effects?) and puts/print
-  - border as keyword arg
+  - fix menu (no dependency on STDSCR)
+  - fix selector (no dependency on STDSCR)
 
   - Scrolling
   - debugging on/off
@@ -18,6 +16,10 @@
   - CDK?
   - Forms and fields
 
+x - Add (some) automated tests
+x - set method for flags (with block)
+x - save/restore all flags
+x - border as keyword arg
 x - Simple color names (constants)
 x - Primitive screen dump
 x - Split up source?
