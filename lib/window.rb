@@ -9,7 +9,7 @@ class RubyText::Window
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @win = X::Window.new(high, wide, r0, c0)
-    @win.scrollok(true)
+#   @win.scrollok(true)
     debug "outer = #{@win.inspect}"
     debug "@border = #@border"
     debug "Calling 'colors': #{[@win, fg, bg]}"
