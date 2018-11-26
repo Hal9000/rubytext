@@ -30,6 +30,8 @@ puts "Hello, world!"
 getch
 ```
 
+<img src=readme-images/hw.png>
+
 You invoke `RubyText.start` to initialize the curses environment with default settings. If you
 then use `puts`, it will write to the standard screen (called `STDSCR` in this library).
 
