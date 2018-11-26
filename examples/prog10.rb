@@ -1,4 +1,4 @@
-win = RubyText.window(6, 30, 2, 5, true, fg: :yellow, bg: :blue)
+win = RubyText.window(6, 30, 2, 5, true, fg: Yellow, bg: Blue)
 
 win.puts "You can write to a window..."
 

@@ -32,13 +32,14 @@ module RubyText
         flag.sub!(/^_/, "no")
         X.send(flag)
       else
-        case flag
+        case flag.to_sym
           when :cursor
             X.curs_set(1)
           when :_cursor, :nocursor
             X.curs_set(0)
           else 
             self.stop
+            rest_flags  # prevent propagating error in test
             raise RTError("flag = #{flag.inspect}")
         end
       end

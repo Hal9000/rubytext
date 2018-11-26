@@ -1,4 +1,4 @@
-win = RubyText.window(12, 65, 0, 6, true, fg: :green, bg: :blue)
+win = RubyText.window(12, 65, 0, 6, true, fg: Green, bg: Blue)
 
 win.puts "This is EXPERIMENTAL."
 win.puts "Use a color symbol to change text color temporarily:\n "

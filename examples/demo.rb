@@ -6,7 +6,7 @@ def delay(sec, speed=1.0)
   sleep sec/speed
 end
 
-RubyText.start(log: "mylog.txt", fg: :green, bg: :black)
+RubyText.start(:_cbreak, log: "mylog.txt", fg: :green, bg: :black)
 
 print "Here goes... "
 delay 2

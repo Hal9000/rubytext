@@ -1,4 +1,4 @@
-win = RubyText.window(11, 65, 1, 6, true, fg: :blue, bg: :white)
+win = RubyText.window(11, 65, 1, 6, true, fg: Blue, bg: White)
 
 win.puts "Methods up/down/left/right can also take an integer..."
 

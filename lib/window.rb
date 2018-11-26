@@ -65,6 +65,11 @@ class RubyText::Window
     obj
   end
 
+  def scroll(n=1)
+    @win.scrl(n) 
+    @win.refresh
+  end
+
   def screen_text(file = nil)
     lines = []
     0.upto(self.rows-1) do |r|

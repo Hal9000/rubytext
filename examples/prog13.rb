@@ -1,4 +1,4 @@
-win = RubyText.window(11, 65, 0, 15, true, fg: :blue, bg: :black)
+win = RubyText.window(11, 65, 0, 15, true, fg: Blue, bg: Black)
 
 win.puts "The #go method will move the cursor to a specific location."
 win.go 2, 5

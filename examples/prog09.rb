@@ -1,4 +1,4 @@
-win = RubyText.window(12, 60, 2, 5, true, fg: :yellow, bg: :blue)
+win = RubyText.window(12, 60, 2, 5, true, fg: Yellow, bg: Blue)
 
 win.puts "ABCDE    Method [] can retrieve characters "
 win.puts "FGHIJ    from a window."
