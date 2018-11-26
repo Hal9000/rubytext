@@ -53,6 +53,9 @@ win = RubyText.window(6, 25, 2, 34,
 win.puts "This is a window..."
 ```
 
+<img src=readme-images/prog01.png>
+
+
 How `output` works. This name may change.
 ```ruby
 require 'rubytext'
