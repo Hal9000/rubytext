@@ -18,7 +18,7 @@ def show_code(prog, upward=0)
 
   prog_top = @rmax-nlines-3 - upward.to_i
   code = RubyText.window(nlines+2, @cmax-2, prog_top, 1, 
-                         true, fg: :green, bg: :black)
+                         fg: Green, bg: Black)
   code.puts text
 
   right = STDSCR.cols - prog.length - 8
@@ -39,7 +39,7 @@ end
 
 #### Main
 
-RubyText.start(:cbreak, log: "/tmp/showme.log", fg: :white, bg: :black)
+RubyText.start(:cbreak, log: "/tmp/showme.log", fg: White, bg: Black)
 
 @cmax = STDSCR.cols
 @rmax = STDSCR.rows

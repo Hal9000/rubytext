@@ -1,4 +1,4 @@
-win = RubyText.window(10, 60, 2, 14, true, fg: Blue, bg: Black)
+win = RubyText.window(10, 60, 2, 14, fg: Blue, bg: Black)
 
 win.output do
   puts "The #print and #p methods also act as you expect."

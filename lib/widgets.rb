@@ -1,8 +1,8 @@
 module RubyText
   def self.ticker(row: STDSCR.rows-1, col: 0, width: STDSCR.cols, 
-                  fg: :white, bg: :blue, text:, delay: 0.1)
+                  fg: White, bg: Blue, text:, delay: 0.1)
     text = text.gsub("\n", " ") + " "
-    win = RubyText.window(1, width, row, col, false, fg: fg, bg: bg)
+    win = RubyText.window(1, width, row, col, border: false, fg: fg, bg: bg)
     leader = " "*width + text
     leader = text.chars.cycle.each_cons(width)
     width.times { win.rcprint 0, 0, leader.next.join }

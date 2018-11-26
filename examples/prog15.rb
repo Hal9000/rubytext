@@ -1,4 +1,4 @@
-win = RubyText.window(11, 65, 0, 6, true, fg: Blue, bg: White)
+win = RubyText.window(11, 65, 0, 6, fg: Blue, bg: White)
 
 win.go 2,0
 win.puts "   Method #home will home the cursor..."

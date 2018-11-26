@@ -6,7 +6,7 @@ X = Curses  # shorthand
 
 # Colors are 'global' for now
 Black, Blue, Cyan, Green, Magenta, Red, White, Yellow = 
-:black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
+  :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
 
 require 'version'
 require 'output'       # RubyText, RubyText::Window, Kernel

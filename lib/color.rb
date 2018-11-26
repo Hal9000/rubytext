@@ -1,7 +1,7 @@
 
 def fb2cp(fg, bg)
-  fg ||= :blue
-  bg ||= :white
+  fg ||= Blue
+  bg ||= White
   f2 = X.const_get("COLOR_#{fg.upcase}")
   b2 = X.const_get("COLOR_#{bg.upcase}")
   cp = $ColorPairs[[fg, bg]]
@@ -9,8 +9,7 @@ def fb2cp(fg, bg)
 end
 
 module RubyText
-  Colors = [:black, :blue, :cyan, :green, :magenta, 
-            :red, :white, :yellow]
+  Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
   $ColorPairs = {}
   num = 0
   Colors.each do |fsym|
@@ -27,7 +26,7 @@ class RubyText::Window
   def self.colors(win, fg, bg)
     cfg, cbg, cp = fb2cp(fg, bg)
     X.init_pair(cp, cfg, cbg)
-    win.color_set(cp)  # |X::A_NORMAL)
+    win.color_set(cp)
   end
 
   def self.colors!(win, fg, bg)

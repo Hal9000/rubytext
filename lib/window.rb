@@ -51,7 +51,7 @@ class RubyText::Window
     @screen
   end
 
-  def self.make(cwin, high, wide, r0, c0, border, fg: :white, bg: :black)
+  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black)
     obj = self.allocate
     obj.instance_eval do 
       #  debug "  Inside instance_eval..."

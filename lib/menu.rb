@@ -24,7 +24,7 @@ module RubyText
     high = items.size + 2
     wide = items.map(&:length).max + 4
     saveback(high, wide, r, c)
-    win = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
+    win = RubyText.window(high, wide, r, c, fg: White, bg: Blue)
     RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
@@ -33,7 +33,7 @@ module RubyText
     loop do
       items.each.with_index do |item, row|
         win.go row, 0
-        color = sel == row ? :yellow : :white
+        color = sel == row ? Yellow : White
         win.puts color, " #{item} "
       end
       ch = getch
@@ -57,7 +57,7 @@ module RubyText
     high = rows
     wide = cols
     saveback(high, wide, r, c)
-    menu_win = RubyText.window(high, wide, r, c, true, fg: :white, bg: :blue)
+    menu_win = RubyText.window(high, wide, r, c, fg: White, bg: Blue)
     win2 = win
     handler = callback
     RubyText.set(:raw)
@@ -69,7 +69,7 @@ module RubyText
     loop do
       items.each.with_index do |item, row|
         menu_win.go row, 0
-        color = sel == row ? :yellow : :white
+        color = sel == row ? Yellow : White
         menu_win.puts color, " #{item} "
       end
       ch = getch

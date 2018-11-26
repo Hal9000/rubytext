@@ -6,6 +6,8 @@ module RubyText
     @flags
   end
 
+# FIXME Refactor the Hal out of this.
+
   def self.inverse_flag(flag)
     sflag = flag.to_s
     if sflag[0] == "_"
@@ -97,7 +99,7 @@ module RubyText
     end
   end
 
-  def self.window(high, wide, r0, c0, border=false, fg: nil, bg: nil)
+  def self.window(high, wide, r0, c0, border: true, fg: nil, bg: nil)
     RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
   end
 
