@@ -395,6 +395,9 @@ threads << Thread.new { getch; exit }   # quitter thread...
 threads.each {|t| t.join } 
 ```
 
+<img src=readme-images/prog22.png>
+
+
 
 *More later...*
 
