@@ -4,12 +4,13 @@ class RubyText::Window
   attr_reader :win, :rows, :cols, :width, :height
   attr_writer :fg, :bg
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil)
+  # Better to use Window.window IRL
+
+  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil, scroll=false)
     debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @win = X::Window.new(high, wide, r0, c0)
-#   @win.scrollok(true)
     debug "outer = #{@win.inspect}"
     debug "@border = #@border"
     debug "Calling 'colors': #{[@win, fg, bg]}"
@@ -19,23 +20,24 @@ class RubyText::Window
       @outer = @win
       @outer.refresh
       debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
-      @win = X::Window.new(high-2, wide-2, r0+1, c0+1) # , false, fg, bg)  # relative now??
+      @win = X::Window.new(high-2, wide-2, r0+1, c0+1)
       RubyText::Window.colors!(@win, fg, bg)
     else
       @outer = @win
     end
     @rows, @cols = @win.maxy, @win.maxx  # unnecessary really...
     @width, @height = @cols + 2, @rows + 2 if @border
+    @win.scrollok(true) if scroll
     @win.refresh
   end
 
-  def self.main(fg: nil, bg: nil)
+  def self.main(fg: nil, bg: nil, scroll: false)
     @main_win = X.init_screen
     X.start_color
     colors!(@main_win, fg, bg)
     rows, cols = @main_win.maxy, @main_win.maxx
     @screen = self.make(@main_win, rows, cols, 0, 0, false,
-                        fg: fg, bg: bg)
+                        fg: fg, bg: bg, scroll: scroll)
 # FIXME Why is this hard to inline?
 #     @win = @main_win
 #     obj = self.allocate
@@ -52,7 +54,7 @@ class RubyText::Window
     @screen
   end
 
-  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black)
+  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black, scroll: false)
     obj = self.allocate
     obj.instance_eval do 
       #  debug "  Inside instance_eval..."
@@ -66,8 +68,23 @@ class RubyText::Window
     obj
   end
 
+  def scrolling
+    @win.scrollok(true)
+  end
+
+  def noscroll
+    @win.scrollok(false)
+  end
+
   def scroll(n=1)
-    n.times { @win.scroll }
+    n.times do |i|
+      @win.scroll
+      go(@rows-1, 0)
+      noscroll
+      print(' '*@cols)
+      scrolling
+      left!
+    end
     @win.refresh
   end
 

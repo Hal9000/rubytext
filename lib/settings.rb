@@ -99,8 +99,8 @@ module RubyText
     end
   end
 
-  def self.window(high, wide, r0, c0, border: true, fg: nil, bg: nil)
-    RubyText::Window.new(high, wide, r0, c0, border, fg, bg)
+  def self.window(high, wide, r0, c0, border: true, fg: nil, bg: nil, scroll: false)
+    RubyText::Window.new(high, wide, r0, c0, border, fg, bg, scroll)
   end
 
   def self.hide_cursor
