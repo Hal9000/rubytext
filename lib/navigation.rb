@@ -62,10 +62,10 @@ class RubyText::Window
     go 0, 0
   end
 
-  def crlf
-    r, c = rc
-    go r+1, 0
-  end
+# def crlf
+#   r, c = rc
+#   go r+1, 0
+# end
 
   def rc
     [@cwin.cury, @cwin.curx]

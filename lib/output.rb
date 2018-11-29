@@ -1,11 +1,6 @@
 $LOAD_PATH << "lib"
 
-require 'global'  # FIXME later
-
-def debug(*args)
-  return unless $debug
-  $debug.puts *args
-end
+# require 'global'  # FIXME later
 
 class RubyText::Window
   def center(str)
@@ -25,6 +20,8 @@ class RubyText::Window
     args[-1][-1] != "\n"  # last char is a literal linefeed
   end
 
+# FIXME Please refactor the Hal out of this.
+
   def delegate_output(sym, *args)
     args = [""] if args.empty?
     RubyText::Window.colors(@cwin, @fg, @bg)  # FIXME?
@@ -39,16 +36,20 @@ class RubyText::Window
         end
       end
     end
-# STDOUT.puts "again: #{args.inspect}"
-    flag = need_crlf?(sym, args)
-    # Limitation: Can't print color symbols!
+    flag = need_crlf?(sym, args)   # Limitation: Can't print color symbols!
     args.each do |arg|  
       if arg.is_a? Symbol # must be a color
         RubyText::Window.colors(@cwin, arg, @bg)  # FIXME?
       elsif arg.is_a? RubyText::Effects
         X.attrset(arg.value)
       else
-        arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
+        arg.each_char do |ch| 
+          if ch == "\n" 
+            crlf 
+          else
+            @cwin.addch(ch)
+          end
+        end
       end
     end
     crlf if flag
@@ -77,13 +78,21 @@ class RubyText::Window
     self.print *args
   end
 
-  def crlf
-    # Technically not output...
+  def crlf     # Technically not output...
     r, c = rc
-    if r < @rows - 1 && !@scrolling
-      go r+1, 0
+    if @scrolling
+      if r == @rows - 1  # bottom row
+        scroll
+        left!
+      else
+        go r+1, 0
+      end
     else
-      scroll
+      if r == @rows - 1  # bottom row
+        left!
+      else
+        go r+1, 0
+      end
     end
   end
 

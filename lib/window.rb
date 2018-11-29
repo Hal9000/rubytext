@@ -1,25 +1,20 @@
 class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
-  attr_reader :cwin, :rows, :cols, :width, :height
+  attr_reader :cwin, :rows, :cols, :width, :height, :scrolling
   attr_writer :fg, :bg
 
   # Better to use Window.window IRL
 
   def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil, scroll=false)
-    debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @cwin = X::Window.new(high, wide, r0, c0)
-    debug "outer = #{@cwin.inspect}"
-    debug "@border = #@border"
-    debug "Calling 'colors': #{[@cwin, fg, bg]}"
     RubyText::Window.colors!(@cwin, fg, bg)
     if @border
       @cwin.box(Vert, Horiz)
       @outer = @cwin
       @outer.refresh
-      debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
       @cwin = X::Window.new(high-2, wide-2, r0+1, c0+1)
       RubyText::Window.colors!(@cwin, fg, bg)
     else
@@ -33,33 +28,17 @@ class RubyText::Window
   end
 
   def self.main(fg: nil, bg: nil, scroll: false)
-    @main_win = X.init_screen
+    main_win = X.init_screen
     X.start_color
-    colors!(@main_win, fg, bg)
-    @cwin = @main_win  # FIXME?
-    rows, cols = @main_win.maxy, @main_win.maxx
-    @screen = self.make(@main_win, rows, cols, 0, 0, border: false,
-                        fg: fg, bg: bg, scroll: scroll)
-# FIXME Why is this hard to inline?
-##  Must be params...?
-##  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black, scroll: false)
-#     obj = self.allocate
-#     obj.instance_eval do 
-#       @outer = @cwin = @main_win
-#       @wide, @high, @r0, @c0 = cols, rows, 0, 0
-#       @fg, @bg = fg, bg
-#       @border = false
-#       @rows, @cols = @high, @wide
-#       @width, @height = @cols + 2, @rows + 2 if @border
-#     end
-#     obj.scrolling(scroll)
-#     obj
+    colors!(main_win, fg, bg)
+    rows, cols = main_win.maxy, main_win.maxx
+    self.make(main_win, rows, cols, 0, 0, border: false,
+              fg: fg, bg: bg, scroll: scroll)
   end
 
   def self.make(cwin, high, wide, r0, c0, border: true, fg: White, bg: Black, scroll: false)
     obj = self.allocate
     obj.instance_eval do 
-      #  debug "  Inside instance_eval..."
       @outer = @cwin = cwin
       @wide, @high, @r0, @c0 = wide, high, r0, c0
       @fg, @bg = fg, bg
@@ -74,21 +53,26 @@ class RubyText::Window
   # FIXME refactor bad code
 
   def scrolling(flag=true)
+    @scrolling = flag
     @cwin.scrollok(flag)
   end
 
   def noscroll
+    @scrolling = false
     @cwin.scrollok(false)
   end
 
   def scroll(n=1)
-    n.times do |i|
-      @cwin.scroll
-      go(@rows-1, 0)
-      noscroll
-      print(' '*@cols)
-      scrolling
-      left!
+    if n < 0
+      @cwin.scrl(n)
+      (-n).times {|i| rcprint i, 0, (' '*@cols) }
+    else
+      n.times do |i|
+        @cwin.scroll
+        scrolling(false)
+        rcprint @rows-1, 0, (' '*@cols)
+        scrolling
+      end
     end
     @cwin.refresh
   end
