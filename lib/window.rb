@@ -1,7 +1,7 @@
 class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
-  attr_reader :win, :rows, :cols, :width, :height
+  attr_reader :cwin, :rows, :cols, :width, :height
   attr_writer :fg, :bg
 
   # Better to use Window.window IRL
@@ -10,82 +10,87 @@ class RubyText::Window
     debug "RT::Win.init: #{[high, wide, r0, c0, border]}"
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
-    @win = X::Window.new(high, wide, r0, c0)
-    debug "outer = #{@win.inspect}"
+    @cwin = X::Window.new(high, wide, r0, c0)
+    debug "outer = #{@cwin.inspect}"
     debug "@border = #@border"
-    debug "Calling 'colors': #{[@win, fg, bg]}"
-    RubyText::Window.colors!(@win, fg, bg)
+    debug "Calling 'colors': #{[@cwin, fg, bg]}"
+    RubyText::Window.colors!(@cwin, fg, bg)
     if @border
-      @win.box(Vert, Horiz)
-      @outer = @win
+      @cwin.box(Vert, Horiz)
+      @outer = @cwin
       @outer.refresh
       debug "About to call again: params = #{[high-2, wide-2, r0+1, c0+1]}"
-      @win = X::Window.new(high-2, wide-2, r0+1, c0+1)
-      RubyText::Window.colors!(@win, fg, bg)
+      @cwin = X::Window.new(high-2, wide-2, r0+1, c0+1)
+      RubyText::Window.colors!(@cwin, fg, bg)
     else
-      @outer = @win
+      @outer = @cwin
     end
-    @rows, @cols = @win.maxy, @win.maxx  # unnecessary really...
+    @rows, @cols = @cwin.maxy, @cwin.maxx  # unnecessary really...
     @width, @height = @cols + 2, @rows + 2 if @border
-    @win.scrollok(true) if scroll
-    @win.refresh
+    @scrolling = scroll
+    @cwin.scrollok(scroll) 
+    @cwin.refresh
   end
 
   def self.main(fg: nil, bg: nil, scroll: false)
     @main_win = X.init_screen
     X.start_color
     colors!(@main_win, fg, bg)
+    @cwin = @main_win  # FIXME?
     rows, cols = @main_win.maxy, @main_win.maxx
-    @screen = self.make(@main_win, rows, cols, 0, 0, false,
+    @screen = self.make(@main_win, rows, cols, 0, 0, border: false,
                         fg: fg, bg: bg, scroll: scroll)
 # FIXME Why is this hard to inline?
-#     @win = @main_win
+##  Must be params...?
+##  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black, scroll: false)
 #     obj = self.allocate
 #     obj.instance_eval do 
-#       @outer = @win = @main_win
+#       @outer = @cwin = @main_win
 #       @wide, @high, @r0, @c0 = cols, rows, 0, 0
 #       @fg, @bg = fg, bg
 #       @border = false
 #       @rows, @cols = @high, @wide
 #       @width, @height = @cols + 2, @rows + 2 if @border
 #     end
-#     @win = @main_win  # FIXME?
+#     obj.scrolling(scroll)
 #     obj
-    @screen
   end
 
-  def self.make(cwin, high, wide, r0, c0, border, fg: White, bg: Black, scroll: false)
+  def self.make(cwin, high, wide, r0, c0, border: true, fg: White, bg: Black, scroll: false)
     obj = self.allocate
     obj.instance_eval do 
       #  debug "  Inside instance_eval..."
-      @outer = @win = cwin
+      @outer = @cwin = cwin
       @wide, @high, @r0, @c0 = wide, high, r0, c0
       @fg, @bg = fg, bg
       @border = border
       @rows, @cols = high, wide
       @width, @height = @cols + 2, @rows + 2 if @border
     end
+    obj.scrolling(scroll)
     obj
   end
 
-  def scrolling
-    @win.scrollok(true)
+  # FIXME refactor bad code
+
+  def scrolling(flag=true)
+    @cwin.scrollok(flag)
   end
 
   def noscroll
-    @win.scrollok(false)
+    @cwin.scrollok(false)
   end
 
   def scroll(n=1)
     n.times do |i|
-      @win.scroll
+      @cwin.scroll
       go(@rows-1, 0)
       noscroll
       print(' '*@cols)
       scrolling
       left!
     end
-    @win.refresh
+    @cwin.refresh
   end
 
   def screen_text(file = nil)

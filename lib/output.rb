@@ -1,5 +1,7 @@
 $LOAD_PATH << "lib"
 
+require 'global'  # FIXME later
+
 def debug(*args)
   return unless $debug
   $debug.puts *args
@@ -8,7 +10,7 @@ end
 class RubyText::Window
   def center(str)
     r, c = self.rc
-    n = @win.maxx - str.length
+    n = @cwin.maxx - str.length
     go r, n/2
     puts str
   end
@@ -25,7 +27,7 @@ class RubyText::Window
 
   def delegate_output(sym, *args)
     args = [""] if args.empty?
-    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
+    RubyText::Window.colors(@cwin, @fg, @bg)  # FIXME?
     if sym == :p
       args.map!(&:inspect) 
     else
@@ -42,16 +44,16 @@ class RubyText::Window
     # Limitation: Can't print color symbols!
     args.each do |arg|  
       if arg.is_a? Symbol # must be a color
-        RubyText::Window.colors(@win, arg, @bg)  # FIXME?
+        RubyText::Window.colors(@cwin, arg, @bg)  # FIXME?
       elsif arg.is_a? RubyText::Effects
         X.attrset(arg.value)
       else
-        arg.each_char {|ch| ch == "\n" ? crlf : @win.addch(ch) }
+        arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
       end
     end
     crlf if flag
-    RubyText::Window.colors(@win, @fg, @bg)  # FIXME?
-    @win.refresh
+    RubyText::Window.colors(@cwin, @fg, @bg)  # FIXME?
+    @cwin.refresh
   end
 
   def puts(*args)
@@ -71,14 +73,18 @@ class RubyText::Window
   end
 
   def rcprint!(r, c, *args)
-    @win.setpos(r, c)  # Cursor isn't restored
+    @cwin.setpos(r, c)  # Cursor isn't restored
     self.print *args
   end
 
   def crlf
     # Technically not output...
     r, c = rc
-    go r+1, 0
+    if r < @rows - 1 && !@scrolling
+      go r+1, 0
+    else
+      scroll
+    end
   end
 
   def self.clear(win)
@@ -90,7 +96,7 @@ class RubyText::Window
   end
 
   def clear
-    win = @win
+    win = @cwin
     num = win.maxx * win.maxy
     win.setpos(0, 0)
     win.addstr(' '*num)
@@ -106,17 +112,17 @@ class RubyText::Window
 
   def [](r, c)
     save = self.rc
-    @win.setpos r, c
-    ch = @win.inch
-    @win.setpos *save
+    @cwin.setpos r, c
+    ch = @cwin.inch
+    @cwin.setpos *save
     ch.chr
-#   go(r, c) { ch = @win.inch }
+#   go(r, c) { ch = @cwin.inch }
   end
 
   def []=(r, c, char)
-    @win.setpos(r, c)
-    @win.addch(char[0])
-    @win.refresh
+    @cwin.setpos(r, c)
+    @cwin.addch(char[0])
+    @cwin.refresh
   end
 
   def boxme
@@ -125,7 +131,7 @@ class RubyText::Window
   end
 
   def refresh
-    @win.refresh
+    @cwin.refresh
   end
 end
 

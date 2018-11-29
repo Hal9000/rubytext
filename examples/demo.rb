@@ -6,6 +6,10 @@ def delay(sec, speed=1.0)
   sleep sec/speed
 end
 
+speed = ARGV.first || 1.0
+speed = speed.to_f
+delay(speed)
+
 RubyText.start(:_cbreak, log: "mylog.txt", fg: :green, bg: :black)
 
 print "Here goes... "
@@ -46,7 +50,7 @@ delay 3
 
 puts "\n\nNow watch as I create a window:"
 
-mywin = RubyText.window(16, 40, 8, 14, true, fg: :blue, bg: :yellow)
+mywin = RubyText.window(16, 40, 8, 14, fg: :blue, bg: :yellow)
 
 delay 3
 mywin.puts "\nNow I'm writing in a window."
@@ -94,7 +98,7 @@ mywin.output do
     c = rand(mywin.cols)
     mywin[r, c] =  "*"
   end
-  mywin.win.refresh 
+  mywin.cwin.refresh 
 end
 
 delay 5

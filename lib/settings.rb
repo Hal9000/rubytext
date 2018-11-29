@@ -70,9 +70,9 @@ module RubyText
     @flags = @defaults
   end
 
-  def self.start(*args, log: nil, fg: nil, bg: nil)
+  def self.start(*args, log: nil, fg: nil, bg: nil, scroll: false)
     $debug = File.new(log, "w") if log
-    Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg))
+    Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg, scroll: scroll))
     $stdscr = STDSCR
     fg, bg, cp = fb2cp(fg, bg)
     self.set(:_echo, :cbreak, :raw)  # defaults

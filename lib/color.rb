@@ -39,6 +39,6 @@ class RubyText::Window
   end
 
   def fg=(sym)
-    self.colors(@win, fg, @bg)
+    self.colors(@cwin, fg, @bg)
   end
 end

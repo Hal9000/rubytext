@@ -8,6 +8,9 @@ X = Curses  # shorthand
 Black, Blue, Cyan, Green, Magenta, Red, White, Yellow = 
   :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
 
+module RubyText
+end
+
 require 'version'
 require 'output'       # RubyText, RubyText::Window, Kernel
 require 'keys'         # RubyText::Keys

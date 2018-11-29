@@ -1,7 +1,7 @@
 class RubyText::Window
   def go(r, c)
     save = self.rc
-    @win.setpos(r, c)
+    @cwin.setpos(r, c)
     if block_given?
       yield
       go(*save)   # No block here!
@@ -68,6 +68,6 @@ class RubyText::Window
   end
 
   def rc
-    [@win.cury, @win.curx]
+    [@cwin.cury, @cwin.curx]
   end
 end
