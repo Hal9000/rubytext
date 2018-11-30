@@ -75,7 +75,7 @@ module RubyText
     Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg, scroll: scroll))
     $stdscr = STDSCR
     fg, bg, cp = fb2cp(fg, bg)
-    self.set(:_echo, :cbreak, :raw)  # defaults
+    self.set(:_echo, :cbreak)  # defaults
     self.set(*args)  # override defaults
   rescue => err
     debug(err.inspect)

@@ -2,7 +2,6 @@ msg = <<~EOS
  A "ticker" example that actually uses threads. Maybe Curses is not as slow as 
  you thought? PRESS ANY KEY TO EXIT...
 EOS
-
 w, h = STDSCR.cols, STDSCR.rows - 1
 threads = []
 
@@ -15,6 +14,5 @@ t5 = -> { r.ticker(text: msg) }  # All defaults -- goes at bottom
 
 threads << Thread.new { t1.call } << Thread.new { t2.call } << Thread.new { t3.call } << 
            Thread.new { t4.call } << Thread.new { t5.call }
-
 threads << Thread.new { getch; exit }   # quitter thread...
 threads.each {|t| t.join } 

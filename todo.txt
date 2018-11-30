@@ -1,23 +1,30 @@
 ----  * = in progress   x = finished
 
-* - Attrs (effects?) and puts/print
-  - fix menu (no dependency on STDSCR)
-  - fix selector (no dependency on STDSCR)
+  - fix menu and selector (no dependency on STDSCR)
+  - fix menu and selector (colors/highlighting)
 
-  - Scrolling
+  - refactor puts/print/scrolling
+  - start docs
+  - first-class "color pairs"
+  - move colors into attrs
+  - add gets() into RubyText
+  - Readline-like features in gets()?
+  - fix gets() color bug
+  - figure out settings and document them
+
   - debugging on/off
   - Scroll buffers
   - Slide: Attrs
   - Slide: getch
+  - Slide: spinner
   - Color object??
-  - Readline clone?
-  - Better gets()?
-  - Menus?
   - CDK?
   - Forms and fields
 
+x - Scrolling
 x - Add (some) automated tests
 x - set method for flags (with block)
+x - Attrs (effects?) and puts/print
 x - save/restore all flags
 x - border as keyword arg
 x - Simple color names (constants)

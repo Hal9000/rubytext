@@ -10,7 +10,7 @@ speed = ARGV.first || 1.0
 speed = speed.to_f
 delay(speed)
 
-RubyText.start(:_cbreak, log: "mylog.txt", fg: :green, bg: :black)
+RubyText.start(log: "mylog.txt", fg: :green, bg: :black)
 
 print "Here goes... "
 delay 2
