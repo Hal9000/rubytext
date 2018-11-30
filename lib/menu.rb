@@ -52,8 +52,8 @@ module RubyText
     end
   end
 
-  def selector(r: 0, c: 0, rows: 10, cols: 20, items:, 
-               win:, callback:, quit: "q")
+  def self.selector(r: 0, c: 0, rows: 10, cols: 20, items:, 
+               win:, callback:, enter: nil, quit: "q")
     high = rows
     wide = cols
     saveback(high, wide, r, c)
@@ -65,7 +65,7 @@ module RubyText
     RubyText.hide_cursor
     sel = 0
     max = items.size - 1
-    handler.call(0, items[0])
+    send(handler, sel, items[sel], win2)
     loop do
       items.each.with_index do |item, row|
         menu_win.go row, 0
@@ -77,17 +77,27 @@ module RubyText
         when X::KEY_UP
           if sel > 0
             sel -= 1
-            handler.call(sel, items[sel])
+            send(handler, sel, items[sel], win2)
           end
         when X::KEY_DOWN
           if sel < max
             sel += 1
-            handler.call(sel, items[sel])
+            send(handler, sel, items[sel], win2)
+          end
+        when 10  # Enter
+          if enter
+            del = send(enter, sel, items[sel], win2)
+            if del
+              items -= [items[sel]]
+              raise 
+            end
           end
         when quit  # parameter
           exit
       end
     end
+  rescue
+    retry
   end
 end
 
