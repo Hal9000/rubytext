@@ -1,23 +1,24 @@
 ----  * = in progress   x = finished
 
-  - fix menu and selector (no dependency on STDSCR)
-  - fix menu and selector (colors/highlighting)
-
-  - refactor puts/print/scrolling
-  - start docs
+* - refactor puts/print/scrolling
+  - Color object??
+  - refactor color management
   - first-class "color pairs"
-  - move colors into attrs
+  - move colors into effects
+* - start docs
+  - figure out settings and document them
   - add gets() into RubyText
   - Readline-like features in gets()?
   - fix gets() color bug
-  - figure out settings and document them
+  - Kernel changes only after #start?
+  - fix menu and selector (no dependency on STDSCR)
+  - fix menu and selector (colors/highlighting)
 
   - debugging on/off
   - Scroll buffers
   - Slide: Attrs
   - Slide: getch
   - Slide: spinner
-  - Color object??
   - CDK?
   - Forms and fields
 

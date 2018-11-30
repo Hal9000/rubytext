@@ -1,0 +1,27 @@
+<body bgcolor=gray>
+RubyText is a curses wrapper. The modern variant is ncurses, and there are also 
+others. This tutorial doesn't cover much of "real" curses, as the aim is to 
+wrap it and make it simpler.
+
+This project is somewhat in its infancy. Once it is a little more mature, I
+hope to produce an Elixir version. (Elixir is not usually used at the desktop,
+but it _can be.)
+
+.def example
+   arg = _args.first
+   file = arg + ".rb.html"
+   sshot = arg + ".png"
+   code = File.read(file)
+   _puts "<table border=1 cellpadding=4><tr><td width=50% valign=top>"
+   _puts code
+   _puts "</td><td><img src=#{sshot}></td></tr></table>"
+.end
+
+Let's start at the beginning with the overused "hello world" example.
+
+.example hw
+
+
+That's all for now.
+
+
