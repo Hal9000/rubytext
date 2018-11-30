@@ -11,6 +11,8 @@ Black, Blue, Cyan, Green, Magenta, Red, White, Yellow =
 module RubyText
 end
 
+$debug = File.new("wtf.out", "w")
+
 require 'version'
 require 'output'       # RubyText, RubyText::Window, Kernel
 require 'keys'         # RubyText::Keys

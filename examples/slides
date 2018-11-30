@@ -16,7 +16,7 @@ exit unless rc
   next if n == 11  # junk this one
   num = '%02d' % n
   prog = "prog#{num}.rb"
-  upward = 15 if n == 22  # dumbest hack ever!
+  upward = 10 if n == 22  # dumbest hack ever!
   system("ruby showme.rb #{prog} #{upward}")
 end
 

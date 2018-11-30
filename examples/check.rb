@@ -1,6 +1,6 @@
 require 'rubytext'
 
-RubyText.start(:raw, fg: :white, bg: :black)
+RubyText.start(:raw, log: "foo", fg: :white, bg: :black)
 
 cmax = STDSCR.cols
 rmax = STDSCR.rows

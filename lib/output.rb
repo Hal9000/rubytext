@@ -1,13 +1,11 @@
 $LOAD_PATH << "lib"
 
-# require 'global'  # FIXME later
-
 class RubyText::Window
   def center(str)
     r, c = self.rc
     n = @cwin.maxx - str.length
     go r, n/2
-    puts str
+    self.puts str
   end
 
   def putch(ch)
@@ -15,44 +13,32 @@ class RubyText::Window
     self[r, c] = ch[0]
   end
 
-  def need_crlf?(sym, args)
-    sym != :print &&      # print doesn't default to crlf
-    args[-1][-1] != "\n"  # last char is a literal linefeed
-  end
-
 # FIXME Please refactor the Hal out of this.
+
+  def special?(arg)
+     RubyText::Colors.include?(arg) || 
+       arg.is_a?(RubyText::Effects)
+  end
 
   def delegate_output(sym, *args)
     args = [""] if args.empty?
+    args += ["\n"] unless sym == :print
     RubyText::Window.colors(@cwin, @fg, @bg)  # FIXME?
     if sym == :p
       args.map!(&:inspect) 
     else
-      args.map! do |x|
-        if RubyText::Colors.include?(x) || x.is_a?(RubyText::Effects)
-          x
-        else
-          x.to_s
-        end
-      end
+      args.map! {|x| special?(x) ? x : x.to_s }
     end
-    flag = need_crlf?(sym, args)   # Limitation: Can't print color symbols!
     args.each do |arg|  
-      if arg.is_a? Symbol # must be a color
+    case
+      when arg.is_a?(Symbol) # must be a color
         RubyText::Window.colors(@cwin, arg, @bg)  # FIXME?
-      elsif arg.is_a? RubyText::Effects
+      when arg.is_a?(RubyText::Effects)
         X.attrset(arg.value)
       else
-        arg.each_char do |ch| 
-          if ch == "\n" 
-            crlf 
-          else
-            @cwin.addch(ch)
-          end
-        end
+        arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
       end
     end
-    crlf if flag
     RubyText::Window.colors(@cwin, @fg, @bg)  # FIXME?
     @cwin.refresh
   end
@@ -105,12 +91,11 @@ class RubyText::Window
   end
 
   def clear
-    win = @cwin
-    num = win.maxx * win.maxy
-    win.setpos(0, 0)
-    win.addstr(' '*num)
-    win.setpos(0, 0)
-    win.refresh
+    num = @cwin.maxx * @cwin.maxy
+    home
+    @cwin.addstr(' '*num)
+    home
+    @cwin.refresh
   end
 
   def output(&block)
@@ -120,12 +105,10 @@ class RubyText::Window
   end
 
   def [](r, c)
-    save = self.rc
-    @cwin.setpos r, c
-    ch = @cwin.inch
-    @cwin.setpos *save
+    ch = nil
+    go(r, c) { ch = @cwin.inch }
+    debug "ch = #{ch}  ch.chr = #{ch.chr}"
     ch.chr
-#   go(r, c) { ch = @cwin.inch }
   end
 
   def []=(r, c, char)

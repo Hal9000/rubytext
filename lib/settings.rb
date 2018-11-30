@@ -71,8 +71,9 @@ module RubyText
   end
 
   def self.start(*args, log: nil, fg: nil, bg: nil, scroll: false)
-    $debug = File.new(log, "w") if log
-    Object.const_set(:STDSCR, RubyText::Window.main(fg: fg, bg: bg, scroll: scroll))
+    $debug ||= File.new(log, "w") if log
+    main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
+    Object.const_set(:STDSCR, main)
     $stdscr = STDSCR
     fg, bg, cp = fb2cp(fg, bg)
     self.set(:_echo, :cbreak)  # defaults
@@ -80,7 +81,8 @@ module RubyText
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
-    raise RTError("#{err}")
+exit
+    # raise RTError("#{err}")
   end
 
   def self.stop
