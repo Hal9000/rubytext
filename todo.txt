@@ -1,17 +1,15 @@
 ----  * = in progress   x = finished
 
-* - refactor puts/print/scrolling
-  - multitest example
-  - Color object??
-  - refactor color management
-  - first-class "color pairs"
+* - is scroll(n) broken?
+* - multitest example
   - move colors into effects
 * - start docs
   - figure out settings and document them
+  - toplevel changes (puts etc.) only after #start?
   - add gets() into RubyText
+  - let go() accept symbols like :top, :left? (Top, Left)
   - Readline-like features in gets()?
   - fix gets() color bug
-  - Kernel changes only after #start?
   - fix menu and selector (no dependency on STDSCR)
   - fix menu and selector (colors/highlighting)
   - use screen dump (and logging) for automated tests
@@ -25,6 +23,10 @@
   - CDK?
   - Forms and fields
 
+x - refactor puts/print/scrolling
+x - Color object??
+x - refactor color management
+x - first-class "color pairs"
 x - Scrolling
 x - Add (some) automated tests
 x - set method for flags (with block)

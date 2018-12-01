@@ -12,6 +12,8 @@ end
 Black, Blue, Cyan, Green, Magenta, Red, White, Yellow = 
   :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
 
+Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
+
 class RubyText::Color
   Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
 
