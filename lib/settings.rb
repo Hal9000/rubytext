@@ -81,7 +81,6 @@ module RubyText
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
-exit
     # raise RTError("#{err}")
   end
 

@@ -1,6 +1,7 @@
 ----  * = in progress   x = finished
 
 * - refactor puts/print/scrolling
+  - multitest example
   - Color object??
   - refactor color management
   - first-class "color pairs"
@@ -13,7 +14,9 @@
   - Kernel changes only after #start?
   - fix menu and selector (no dependency on STDSCR)
   - fix menu and selector (colors/highlighting)
-
+  - use screen dump (and logging) for automated tests
+  - word wrapping (per output? per window?)
+  - putch with an attr list
   - debugging on/off
   - Scroll buffers
   - Slide: Attrs

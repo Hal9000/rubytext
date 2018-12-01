@@ -10,13 +10,13 @@ class RubyText::Window
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @cwin = X::Window.new(high, wide, r0, c0)
-    RubyText::Window.colors!(@cwin, fg, bg)
+    colorize!(fg, bg)
     if @border
       @cwin.box(Vert, Horiz)
       @outer = @cwin
       @outer.refresh
       @cwin = X::Window.new(high-2, wide-2, r0+1, c0+1)
-      RubyText::Window.colors!(@cwin, fg, bg)
+      colorize!(fg, bg)
     else
       @outer = @cwin
     end
@@ -30,10 +30,12 @@ class RubyText::Window
   def self.main(fg: nil, bg: nil, scroll: false)
     main_win = X.init_screen
     X.start_color
-    colors!(main_win, fg, bg)
+    self.colorize!(main_win, fg, bg)
     rows, cols = main_win.maxy, main_win.maxx
     self.make(main_win, rows, cols, 0, 0, border: false,
               fg: fg, bg: bg, scroll: scroll)
+  rescue => err
+    File.open("/tmp/main.out", "w") {|f| f.puts err.inspect; f.puts err.backtrace } 
   end
 
   def self.make(cwin, high, wide, r0, c0, border: true, fg: White, bg: Black, scroll: false)

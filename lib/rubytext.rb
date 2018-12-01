@@ -4,10 +4,6 @@ require 'curses'
 
 X = Curses  # shorthand
 
-# Colors are 'global' for now
-Black, Blue, Cyan, Green, Magenta, Red, White, Yellow = 
-  :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
-
 module RubyText
 end
 
