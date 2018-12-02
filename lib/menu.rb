@@ -65,15 +65,15 @@ module RubyText
     RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
+    norm = RubyText::Effects.new(:normal, White)
+    rev  = RubyText::Effects.new(:reverse, White)
     sel = 0
     max = items.size - 1
     send(handler, sel, items[sel], win2)
     loop do
       items.each.with_index do |item, row|
-        menu_win.go row, 0
-        norm = RubyText::Effects.new(:normal, White)
-        rev  = RubyText::Effects.new(:reverse, White)
-        style = sel == row ? Yellow : White
+        menu_win.left
+        style = (sel == row) ? rev : norm
         menu_win.puts style, " #{item} "
       end
       ch = getch

@@ -2,23 +2,27 @@
 
 * - multitest example
 * - start docs
+  - bold/reverse/etc. are broken
+  - putch with an attr list
   - figure out settings and document them
   - more exceptions
   - fix automated tests
-  - fix menu/selector (color/highlighting bug in lib/output?)
+  -   use screen dump (and logging) for automated tests
+  -   more automated tests
+  - fix menu/selector (colors/highlighting) (see above?)
+  -   fix menu/selector (no dependency on STDSCR)
+  - play with fviewer again
   - concept of "current window"? (not thread-safe?)
   - more standard debug statements
   - window positions: accept :top/:bottom/:center, :left/:right/:center
+  -   go() should accept symbols like :top, :left? (Top, Left) :center?
+  -   rcprint also?
   - add gets() into RubyText
-  - let go() accept symbols like :top, :left? (Top, Left)
-  - Readline-like features in gets()?
-  - fix gets() color bug
+  -   fix gets() color bug
+  -   Readline-like features in gets()?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
-  - fix menu and selector (no dependency on STDSCR)
-  - fix menu and selector (colors/highlighting)
-  - use screen dump (and logging) for automated tests
   - word wrapping (per output? per window?)
-  - putch with an attr list
+  - selective "toplevel import" feature
   - debugging on/off
   - Scroll buffers
   - Slide: Attrs
