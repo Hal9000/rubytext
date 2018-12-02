@@ -30,11 +30,13 @@ module RubyText
     RubyText.hide_cursor
     sel = curr
     max = items.size - 1
+    norm = RubyText::Effects.new(win, :normal, White)
+    bold = RubyText::Effects.new(win, :bold, Yellow)
     loop do
       items.each.with_index do |item, row|
         win.go row, 0
-        color = sel == row ? Yellow : White
-        win.puts color, " #{item} "
+        style = (sel == row) ? bold : norm
+        win.print style, " #{item} "
       end
       ch = getch
       case ch
@@ -69,8 +71,10 @@ module RubyText
     loop do
       items.each.with_index do |item, row|
         menu_win.go row, 0
-        color = sel == row ? Yellow : White
-        menu_win.puts color, " #{item} "
+        norm = RubyText::Effects.new(:normal, White)
+        rev  = RubyText::Effects.new(:reverse, White)
+        style = sel == row ? Yellow : White
+        menu_win.puts style, " #{item} "
       end
       ch = getch
       case ch

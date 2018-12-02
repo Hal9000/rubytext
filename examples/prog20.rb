@@ -1,13 +1,15 @@
-win = RubyText.window(12, 65, 0, 6, fg: Green, bg: Blue)
+def fx(*args) # find better way
+  RubyText::Effects.new(*args)
+end
+
+win = RubyText.window(9, 65, 2, 26, fg: Green, bg: Blue)
+fg, bg = Green, Blue
 
 win.puts "This is EXPERIMENTAL."
-win.puts "Use a color symbol to change text color temporarily:\n "
+win.puts "Use an \"effect\" to change the color or \"look\""
+win.puts "of the text (temporarily):\n "
 
-win.puts "This is", :yellow, " another color", :white, " and yet another."
-win.puts "And this is normal again.\n "
-
-win.puts "This does mean that you can't print a symbol that is"
-win.puts "also a color name... you'd need a workaround.\n "
-
-sym = :red
-win.puts "The symbol is ", sym.inspect, " which works", sym, " just fine."
+win.puts "This is", fx(win, Yellow), " another color ", 
+          fx(win, White), "and yet another."
+win.puts "This is ", fx(win, :bold, Red), "bold red ", 
+         fx(win, :normal, fg), "and this is normal again.\n "

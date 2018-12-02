@@ -6,7 +6,7 @@ class RubyText::Window
 
   # Better to use Window.window IRL
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=nil, bg=nil, scroll=false)
+  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=White, bg=Blue, scroll=false)
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @cwin = X::Window.new(high, wide, r0, c0)
@@ -27,7 +27,7 @@ class RubyText::Window
     @cwin.refresh
   end
 
-  def self.main(fg: nil, bg: nil, scroll: false)
+  def self.main(fg: White, bg: Blue, scroll: false)
     main_win = X.init_screen
     X.start_color
     self.colorize!(main_win, fg, bg)
@@ -90,5 +90,13 @@ class RubyText::Window
     end
     File.open(file, "w") {|f| f.puts lines }  if file
     lines
+  end
+
+  def fg=(sym)
+    set_colors(fg, @bg)
+  end
+
+  def bg=(sym)
+    set_colors(@fg, bg)
   end
 end

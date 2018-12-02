@@ -7,8 +7,6 @@ X = Curses  # shorthand
 module RubyText
 end
 
-$debug = File.new("wtf.out", "w")
-
 require 'version'
 require 'output'       # RubyText, RubyText::Window, Kernel
 require 'keys'         # RubyText::Keys
@@ -46,7 +44,8 @@ def make_exception(sym, str)
   Object.const_set(sym, StandardError.dup)
   define_method(sym) do |*args|
     msg = str
-    args.each.with_index {|arg, i| msg.sub!("$#{i+1}", arg) }
+    list = (args + [nil]*2)[0..2]
+    list.each.with_index {|arg, i| msg.sub!("$#{i+1}", arg) }
     Object.class_eval(sym.to_s).new(msg)
   end
 end
@@ -54,7 +53,7 @@ end
 make_exception(:RTError, "General error: $1 $2 $3")
 
 def debug(*args)
-  return unless $debug
   $debug.puts *args
+  $debug.flush
 end
 

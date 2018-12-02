@@ -1,13 +1,4 @@
 
-def fb2cp(fg, bg)
-  fg ||= Blue
-  bg ||= White
-  f2 = X.const_get("COLOR_#{fg.upcase}")
-  b2 = X.const_get("COLOR_#{bg.upcase}")
-  cp = $ColorPairs[[fg, bg]]
-  [f2, b2, cp]
-end
-
 # Colors are 'global' for now
 Black, Blue, Cyan, Green, Magenta, Red, White, Yellow = 
   :black, :blue, :cyan, :green, :magenta, :red, :white, :yellow
@@ -26,7 +17,15 @@ class RubyText::Color
   end
 
   def self.pair(fg, bg)
-    num = 8*index(fg) + index(bg)
+    nf = index(fg)
+    nb = index(bg)
+    File.open("/tmp/pair.out", "w") do |f| 
+      f.puts "fg, bg = #{[fg, bg].inspect}" 
+      f.puts "Colors = #{Colors.inspect}"
+      f.puts "index fg = #{nf.inspect}"
+      f.puts "index bg = #{nb.inspect}"
+    end
+    num = 8*nf + nb
     X.init_pair(num, sym2const(fg), sym2const(bg))
     num
   end
@@ -34,6 +33,9 @@ end
 
 class RubyText::Window
   def self.colorize!(win, fg, bg)
+    File.open("/tmp/cize.out", "w") do |f|
+      f.puts "colorize: fg, bg = #{[fg, bg].inspect}"
+    end
     cp = RubyText::Color.pair(fg, bg)
     win.color_set(cp)
     num = win.maxx * win.maxy
@@ -41,6 +43,11 @@ class RubyText::Window
     win.addstr(' '*num)
     win.setpos 0,0
     win.refresh
+  rescue => err
+    File.open("/tmp/#{__method__}.out", "w") do |f|
+      f.puts err
+      f.puts err.backtrace
+    end
   end
 
   def set_colors(fg, bg)
@@ -57,11 +64,11 @@ class RubyText::Window
   end
 
   def fg=(sym)
-    set_colors(fg, @bg)
+    set_colors(sym, @bg)
   end
 
   def bg=(sym)
-    set_colors(@fg, bg)
+    set_colors(@fg, sym)
   end
 end
 

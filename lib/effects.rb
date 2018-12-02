@@ -1,17 +1,21 @@
 class RubyText::Effects   # dumb name?
-  Modes = %w[A_BOLD A_NORMAL A_PROTECT A_REVERSE A_STANDOUT A_UNDERLINE]
+  Modes  = {bold:    X::A_BOLD,
+            normal:  X:: A_NORMAL,
+            reverse: X:: A_REVERSE, 
+            under:   X:: A_UNDERLINE}
 
-  attr_reader :value
+  Others = %[:show, :hide]  # show/hide cursor; more later??
+
+  attr_reader :value, :fg
   
-  def initialize(bg, *args)
+  def initialize(win, *args)
     bits = 0
     args.each do |arg|
-      if Modes.include?(arg)
-        val = eval("X::A_#{arg.to_s.upcase}")
+      if Modes.keys.include?(arg)
+        val = Modes[arg]
         bits ||= val
-      elsif RubyText::Colors.include?(arg)
-        val = eval("X::COLOR_#{arg.to_s.upcase}")
-        bits ||= val
+      elsif ::Colors.include?(arg)
+        @fg = arg   # symbol
       end
     end
     @value = bits

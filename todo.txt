@@ -1,15 +1,19 @@
 ----  * = in progress   x = finished
 
-* - is scroll(n) broken?
 * - multitest example
-  - move colors into effects
 * - start docs
   - figure out settings and document them
-  - toplevel changes (puts etc.) only after #start?
+  - more exceptions
+  - fix automated tests
+  - fix menu/selector (color/highlighting bug in lib/output?)
+  - concept of "current window"? (not thread-safe?)
+  - more standard debug statements
+  - window positions: accept :top/:bottom/:center, :left/:right/:center
   - add gets() into RubyText
   - let go() accept symbols like :top, :left? (Top, Left)
   - Readline-like features in gets()?
   - fix gets() color bug
+  - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - fix menu and selector (no dependency on STDSCR)
   - fix menu and selector (colors/highlighting)
   - use screen dump (and logging) for automated tests
@@ -23,6 +27,9 @@
   - CDK?
   - Forms and fields
 
+x - move colors into effects
+x - toplevel changes (puts etc.) only after #start?
+x - is scroll(n) broken?
 x - refactor puts/print/scrolling
 x - Color object??
 x - refactor color management

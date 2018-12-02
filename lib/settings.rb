@@ -40,7 +40,7 @@ module RubyText
           when :_cursor, :nocursor
             X.curs_set(0)
           else 
-            self.stop
+            # self.stop
             rest_flags  # prevent propagating error in test
             raise RTError("flag = #{flag.inspect}")
         end
@@ -70,18 +70,18 @@ module RubyText
     @flags = @defaults
   end
 
-  def self.start(*args, log: nil, fg: nil, bg: nil, scroll: false)
+  def self.start(*args, log: nil, fg: White, bg: Blue, scroll: false)
     $debug ||= File.new(log, "w") if log
     main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
-    Object.const_set(:STDSCR, main)
+    Object.const_set(:STDSCR, main) unless defined? STDSCR
     $stdscr = STDSCR
-    fg, bg, cp = fb2cp(fg, bg)
+    Object.include(WindowIO)
     self.set(:_echo, :cbreak)  # defaults
     self.set(*args)  # override defaults
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
-    # raise RTError("#{err}")
+    raise RTError("#{err}")
   end
 
   def self.stop
@@ -100,7 +100,7 @@ module RubyText
     end
   end
 
-  def self.window(high, wide, r0, c0, border: true, fg: nil, bg: nil, scroll: false)
+  def self.window(high, wide, r0, c0, border: true, fg: White, bg: Blue, scroll: false)
     RubyText::Window.new(high, wide, r0, c0, border, fg, bg, scroll)
   end
 

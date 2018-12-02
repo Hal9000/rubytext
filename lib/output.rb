@@ -15,9 +15,8 @@ class RubyText::Window
 
 # FIXME Please refactor the Hal out of this.
 
-  def special?(arg)
-     RubyText::Color::Colors.include?(arg) || 
-       arg.is_a?(RubyText::Effects)
+  def effect?(arg)
+    arg.is_a?(RubyText::Effects)
   end
 
   def delegate_output(sym, *args)
@@ -27,14 +26,13 @@ class RubyText::Window
     if sym == :p
       args.map!(&:inspect) 
     else
-      args.map! {|x| special?(x) ? x : x.to_s }
+      args.map! {|x| effect?(x) ? x : x.to_s }
     end
     args.each do |arg|  
     case
-      when arg.is_a?(Symbol) # must be a color
-        set_colors(arg, @bg)  # FIXME?
       when arg.is_a?(RubyText::Effects)
         X.attrset(arg.value)
+        self.set_colors(arg.fg, @bg) if arg.fg
       else
         arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
       end
@@ -129,6 +127,7 @@ end
 
 # into top level...
 
+module WindowIO
   def puts(*args)       # Doesn't affect STDOUT.puts, etc.
     $stdscr.puts(*args)
   end
@@ -148,4 +147,5 @@ end
   def getch
     X.getch
   end
+end
 

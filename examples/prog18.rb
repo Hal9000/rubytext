@@ -1,4 +1,4 @@
-win = RubyText.window(11, 65, 1, 6, fg: Blue, bg: White)
+win = RubyText.window(11, 65, 4, 14, fg: Blue, bg: White)
 
 win.go 2,0
 win.puts "#top and #bottom are the same as #up! and #down!"
