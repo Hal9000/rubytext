@@ -1,3 +1,11 @@
+MODE             buffering?         erase/kill?    IQSF   NOTES
+
+cbreak           no                 no             yes    cbreak overrides raw.
+_cbreak          yes                yes
+raw              no                 no             no     reads: interrupt, quit, suspend, flow control 
+
+Defaults: cbreak, _echo, keypad
+
 cbreak routine disables line buffering and erase/kill character-processing 
 (interrupt and flow control characters are unaffected), making characters 
 typed by the user immediately available to the program. 
@@ -10,6 +18,7 @@ Note that cbreak overrides raw.
 
 The echo and noecho routines control whether characters are echoed by getch
 Echoing by the tty driver is always disabled, but initially getch is in echo mode.
+
 most interactive programs disable echoing 
 
 keypad option enables keypad of user's terminal. 

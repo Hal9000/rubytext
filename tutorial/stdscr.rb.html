@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>~/Dropbox/files/rubytext/tutorial/stdscr.rb.html</title>
+<meta name="Generator" content="Vim/7.4">
+<meta name="plugin-version" content="vim7.4_v2">
+<meta name="syntax" content="ruby">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=">
+<meta name="colorscheme" content="darkblue">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+pre {font-size: 16}
+tt  {font-size: 16}
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+* { font-size: 1em; }
+.Constant { color: #ff40ff; }
+.Special { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Type { color: #00ff00; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">require</span> <span class="Special">'</span><span class="Constant">rubytext</span><span class="Special">'</span>
+
+<span class="Type">RubyText</span>.start(<span class="Constant">fg</span>: <span class="Type">Yellow</span>, <span class="Constant">bg</span>: <span class="Type">Blue</span>)
+
+puts <span class="Special">&quot;</span><span class="Constant">This writes by default to STDSCR</span><span class="Special">&quot;</span>
+<span class="Type">STDSCR</span>.puts <span class="Special">&quot;</span><span class="Constant">and this does the same thing.</span><span class="Special">\n</span><span class="Constant"> </span><span class="Special">&quot;</span>
+
+print <span class="Special">&quot;</span><span class="Constant">Only one line </span><span class="Special">&quot;</span>
+print <span class="Special">&quot;</span><span class="Constant">of output </span><span class="Special">&quot;</span>
+print <span class="Special">&quot;</span><span class="Constant">printed </span><span class="Special">&quot;</span>
+puts  <span class="Special">&quot;</span><span class="Constant">here.</span><span class="Special">&quot;</span>
+
+puts
+
+array = [<span class="Constant">1</span>, <span class="Constant">2</span>, <span class="Constant">3</span>, <span class="Constant">4</span>, <span class="Constant">5</span>]
+
+puts <span class="Special">&quot;</span><span class="Constant">p also works:</span><span class="Special">&quot;</span>
+p array
+
+puts
+
+getch
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

@@ -22,11 +22,11 @@ class MyTest < Minitest::Test
     assert curr == [:cbreak, :echo, :keypad, :cursor, :_raw]
   end
 
-  def test_002_start_bad_param
+  def xtest_002_start_bad_param
     assert_raises(RTError) { RubyText.start(:foobar); RubyText.stop }
   end
 
-  def test_003_start_bad_color
+  def xtest_003_start_bad_color
     assert_raises(RTError) { RubyText.start(fg: :chartreuse); RubyText.stop }
   end
 

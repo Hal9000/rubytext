@@ -1,6 +1,20 @@
 module RubyText
   # Hmm, all these are module-level.
 
+  def self.start(*args, log: nil, fg: White, bg: Blue, scroll: false)
+    $debug ||= File.new(log, "w") if log
+    main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
+    Object.const_set(:STDSCR, main) unless defined? STDSCR
+    $stdscr = STDSCR
+    Object.include(WindowIO)
+    self.set(:_echo, :cbreak)  # defaults
+    self.set(*args)  # override defaults
+  rescue => err
+    debug(err.inspect)
+    debug(err.backtrace)
+    raise RTError("#{err}")
+  end
+
   def self.flags
     @flags.uniq!
     @flags
@@ -68,20 +82,6 @@ module RubyText
     @flags.uniq!
   rescue 
     @flags = @defaults
-  end
-
-  def self.start(*args, log: nil, fg: White, bg: Blue, scroll: false)
-    $debug ||= File.new(log, "w") if log
-    main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
-    Object.const_set(:STDSCR, main) unless defined? STDSCR
-    $stdscr = STDSCR
-    Object.include(WindowIO)
-    self.set(:_echo, :cbreak)  # defaults
-    self.set(*args)  # override defaults
-  rescue => err
-    debug(err.inspect)
-    debug(err.backtrace)
-    raise RTError("#{err}")
   end
 
   def self.stop

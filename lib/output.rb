@@ -22,33 +22,34 @@ class RubyText::Window
   def delegate_output(sym, *args)
     self.cwin.attrset(0)
     args = [""] if args.empty?
-    args += ["\n"] unless sym == :print
-    debug "\ndelegate_output:"
-    debug "  1. args = #{args.inspect}"
+    args += ["\n"] if sym == :puts
+#   debug "\ndelegate_output:"
+#   debug "  1. args = #{args.inspect}"
     set_colors(@fg, @bg)
     debug "  set colors: #{[@fg, @bg].inspect}"
     if sym == :p
       args.map! {|x| effect?(x) ? x : x.inspect }
-      debug "  2. args = #{args.inspect}"
+#     debug "  2. args = #{args.inspect}"
     else
       args.map! {|x| effect?(x) ? x : x.to_s }
-      debug "  3. args = #{args.inspect}"
+#     debug "  3. args = #{args.inspect}"
     end
     args.each do |arg|  
-      debug "  loop: arg = #{arg.inspect}"
+#     debug "  loop: arg = #{arg.inspect}"
       if arg.is_a?(RubyText::Effects)
-        debug "    arg.value = #{arg.value.inspect}, fg = #{arg.fg.inspect}"
-        self.cwin.attrset(arg.value)
-        debug "    set colors = #{[arg.fg, @bg]}"
+#       debug "    arg.value = #{arg.value.inspect}, fg = #{arg.fg.inspect}"
+        self.cwin.attron(arg.value)
+#       debug "    set colors = #{[arg.fg, @bg]}"
         self.set_colors(arg.fg, @bg) if arg.fg
       else
-        debug "    printing arg = #{arg.inspect}"
+#       debug "    printing arg = #{arg.inspect}"
         arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
         @cwin.refresh
       end
     end
+    crlf if sym == :p
     set_colors(@fg, @bg)
-    debug "  set colors: #{[@fg, @bg].inspect}"
+#   debug "  set colors: #{[@fg, @bg].inspect}"
     @cwin.refresh
   end
 

@@ -2,10 +2,13 @@
 
 * - multitest example
 * - start docs
-  - bold/reverse/etc. are broken
   - putch with an attr list
   - figure out settings and document them
   - more exceptions
+  - default log file
+  - better handling of curses attrs
+  - maintain my own info on screen attrs?
+  - something like fx("some str", :bold, Red)...?
   - fix automated tests
   -   use screen dump (and logging) for automated tests
   -   more automated tests
@@ -31,6 +34,7 @@
   - CDK?
   - Forms and fields
 
+x - bold/reverse/etc. are broken
 x - move colors into effects
 x - toplevel changes (puts etc.) only after #start?
 x - is scroll(n) broken?

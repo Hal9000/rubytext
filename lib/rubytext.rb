@@ -53,6 +53,7 @@ end
 make_exception(:RTError, "General error: $1 $2 $3")
 
 def debug(*args)
+  return unless $debug
   $debug.puts *args
   $debug.flush
 end
