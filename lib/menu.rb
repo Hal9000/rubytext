@@ -3,16 +3,16 @@ module RubyText
   def self.saveback(high, wide, r, c)
     @pos = STDSCR.rc
     @save = []
-    0.upto(high) do |h|
-      0.upto(wide) do |w|
+    0.upto(high-1) do |h|
+      0.upto(wide-1) do |w|
         @save << STDSCR[h+r, w+c]
       end
     end
   end
 
   def self.restback(high, wide, r, c)
-    0.upto(high) do |h|
-      0.upto(wide) do |w|
+    0.upto(high-1) do |h|
+      0.upto(wide-1) do |w|
         STDSCR[h+r, w+c] = @save.shift
       end
     end
@@ -20,22 +20,23 @@ module RubyText
     STDSCR.refresh
   end
 
-  def self.menu(r: 0, c: 0, items:, curr: 0)
+  def self.menu(r: 0, c: 0, items:, curr: 0,
+                fg: White, bg: Blue)
     high = items.size + 2
     wide = items.map(&:length).max + 4
     saveback(high, wide, r, c)
-    win = RubyText.window(high, wide, r, c, fg: White, bg: Blue)
-    RubyText.set(:raw)
+    win = RubyText.window(high, wide, r, c, fg: fg, bg: bg)
+#   RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
     sel = curr
     max = items.size - 1
-    norm = RubyText::Effects.new(win, :normal, White)
-    bold = RubyText::Effects.new(win, :bold, Yellow)
+    norm = RubyText::Effects.new(win, :normal)
+    rev = RubyText::Effects.new(win, :reverse)
     loop do
       items.each.with_index do |item, row|
         win.go row, 0
-        style = (sel == row) ? bold : norm
+        style = (sel == row) ? rev : norm
         win.print style, " #{item} "
       end
       ch = getch
@@ -54,23 +55,25 @@ module RubyText
     end
   end
 
-  def self.selector(r: 0, c: 0, rows: 10, cols: 20, items:, 
-               win:, callback:, enter: nil, quit: "q")
+  def self.selector(r: 0, c: 0, rows: 10, cols: 20, 
+                    items:, fg: White, bg: Blue,
+                    win:, callback:, enter: nil, quit: "q")
     high = rows
     wide = cols
     saveback(high, wide, r, c)
-    menu_win = RubyText.window(high, wide, r, c, fg: White, bg: Blue)
+    menu_win = RubyText.window(high, wide, r, c, fg: fg, bg: bg)
     win2 = win
     handler = callback
-    RubyText.set(:raw)
+#   RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
-    norm = RubyText::Effects.new(:normal, White)
-    rev  = RubyText::Effects.new(:reverse, White)
+    norm = RubyText::Effects.new(menu_win, :normal)
+    rev  = RubyText::Effects.new(menu_win, :reverse)
     sel = 0
     max = items.size - 1
     send(handler, sel, items[sel], win2)
     loop do
+      menu_win.home
       items.each.with_index do |item, row|
         menu_win.left
         style = (sel == row) ? rev : norm

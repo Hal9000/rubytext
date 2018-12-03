@@ -77,10 +77,22 @@ while others provide functionality unrelated to what curses provides.
 `scroll: _Boolean|Permit (or disallow) window scrolling for STDSCR.
 .end
 
-The defaults are: `:cbreak
+
+The defaults are as follows: 
+
+.mono
+  RubyText.start(:cbreak, :_raw, :_echo, :keypad, log: "/tmp/rubytext.log",
+                 fg: White, bg: Blue, scroll: true)
+
+  # can be abbreviated simply:
+
+  RubyText.start
+.end
 
 If you're a relative curses newbie (like me), you may have some confusion about
 the `cbreak and `raw modes.
+
+[TBD explanation]
 
 That's all for now.
 
