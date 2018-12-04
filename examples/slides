@@ -8,7 +8,7 @@ Dir.chdir(examples)
 rc = system("ruby check.rb")
 exit unless rc
 
-# FIXME 
+# FIXME later:
 #   - use names instead of numbers?
 #   - convert showme into a method?
 

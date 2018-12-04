@@ -2,21 +2,26 @@
 
 * - multitest example
 * - start docs
-  - putch with an attr list
+  - better putch 
+  -   with an attr list
+  -   with row/col
   - figure out settings and document them
   - more exceptions
-  - default log file
   - better handling of curses attrs
-  - maintain my own info on screen attrs?
-  - something like fx("some str", :bold, Red)...?
+  -   maintain my own attr info?
+  - Effects improvements
+  -   remove dependence on "win" parameter
+  -   something like fx("some str", :bold, Red)...? (singleton?)
   - fix automated tests
   -   use screen dump (and logging) for automated tests
   -   more automated tests
-  - fix menu/selector (colors/highlighting) (see above?)
-  -   fix menu/selector (no dependency on STDSCR)
-  - play with fviewer again
-  - concept of "current window"? (not thread-safe?)
-  - more standard debug statements
+  - fix menu/selector (no dependency on STDSCR)
+  - concept of "current window"? (thread-safe or not?)
+  - better debugging
+  -   default log file
+  -   more standard debug statements
+  -   debugging on/off
+  -   debug levels?
   - window positions: accept :top/:bottom/:center, :left/:right/:center
   -   go() should accept symbols like :top, :left? (Top, Left) :center?
   -   rcprint also?
@@ -26,7 +31,6 @@
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
-  - debugging on/off
   - Scroll buffers
   - Slide: Attrs
   - Slide: getch
@@ -34,6 +38,8 @@
   - CDK?
   - Forms and fields
 
+x - fix menu/selector (colors/highlighting)
+x - play with fviewer again
 x - bold/reverse/etc. are broken
 x - move colors into effects
 x - toplevel changes (puts etc.) only after #start?

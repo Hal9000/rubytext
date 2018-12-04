@@ -7,8 +7,6 @@ require 'rubytext'
 
 RubyText.start
 
-# print " "  # FIXME - bug requires this?
-
 @lib, @code = ARGV
 
 def shell(str)
