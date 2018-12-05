@@ -5,29 +5,26 @@
   - better putch 
   -   with an attr list
   -   with row/col
+  - do a 'stop' before crashing with backtrace?
   - figure out settings and document them
   - more exceptions
   - better handling of curses attrs
   -   maintain my own attr info?
-  - Effects improvements
-  -   remove dependence on "win" parameter
-  -   something like fx("some str", :bold, Red)...? (singleton?)
   - fix automated tests
   -   use screen dump (and logging) for automated tests
   -   more automated tests
   - fix menu/selector (no dependency on STDSCR)
   - concept of "current window"? (thread-safe or not?)
   - better debugging
-  -   default log file
+  -   debugging: default log file
   -   more standard debug statements
   -   debugging on/off
   -   debug levels?
   - window positions: accept :top/:bottom/:center, :left/:right/:center
   -   go() should accept symbols like :top, :left? (Top, Left) :center?
   -   rcprint also?
-  - add gets() into RubyText
-  -   fix gets() color bug
-  -   Readline-like features in gets()?
+  - fix gets() color bug
+  - Readline-like features in gets()?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
@@ -38,6 +35,10 @@
   - CDK?
   - Forms and fields
 
+x - add gets() into RubyText
+x - Effects improvements
+x -   remove dependence on "win" parameter
+x -   something like fx("some str", :bold, Red)...? (singleton?)
 x - fix menu/selector (colors/highlighting)
 x - play with fviewer again
 x - bold/reverse/etc. are broken

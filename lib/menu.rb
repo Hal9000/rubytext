@@ -31,8 +31,8 @@ module RubyText
     RubyText.hide_cursor
     sel = curr
     max = items.size - 1
-    norm = RubyText::Effects.new(win, :normal)
-    rev = RubyText::Effects.new(win, :reverse)
+    norm = RubyText::Effects.new(:normal)
+    rev = RubyText::Effects.new(:reverse)
     loop do
       items.each.with_index do |item, row|
         win.go row, 0
@@ -67,8 +67,8 @@ module RubyText
 #   RubyText.set(:raw)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
-    norm = RubyText::Effects.new(menu_win, :normal)
-    rev  = RubyText::Effects.new(menu_win, :reverse)
+    norm = RubyText::Effects.new(:normal)
+    rev  = RubyText::Effects.new(:reverse)
     sel = 0
     max = items.size - 1
     send(handler, sel, items[sel], win2)

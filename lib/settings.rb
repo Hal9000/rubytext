@@ -1,14 +1,15 @@
 module RubyText
   # Hmm, all these are module-level.
 
-  def self.start(*args, log: nil, fg: White, bg: Blue, scroll: false)
-    $debug ||= File.new(log, "w") if log
+  def self.start(*args, log: "/tmp/rubytext.log", 
+                 fg: White, bg: Blue, scroll: false)
+    $debug ||= File.new(log, "w") if log   # FIXME remove global
     main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
     Object.const_set(:STDSCR, main) unless defined? STDSCR
-    $stdscr = STDSCR
+    $stdscr = STDSCR  # FIXME global needed?
     Object.include(WindowIO)
-    self.set(:_echo, :cbreak)  # defaults
-    self.set(*args)  # override defaults
+    self.set(:_echo, :cbreak)  # defaults  (:keypad?)
+    self.set(*args)            # override defaults
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
@@ -33,7 +34,7 @@ module RubyText
 
   def self.set(*args)   # Allow a block?
     standard = [:cbreak, :raw, :echo, :keypad]
-    @defaults = [:cbreak, :echo, :keypad, :cursor, :_raw]
+    @defaults = [:cbreak, :_echo, :keypad]
     @flags = @defaults.dup
     save_flags
     args.each do |arg|

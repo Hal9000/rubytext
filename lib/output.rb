@@ -8,7 +8,7 @@ class RubyText::Window
     self.puts str
   end
 
-  def putch(ch)
+  def putch(ch)    # move to WindowIO?
     r, c = self.rc
     self[r, c] = ch[0]
   end
@@ -32,13 +32,11 @@ class RubyText::Window
     end
     args.each do |arg|  
       if arg.is_a?(RubyText::Effects)
-        attr, fg = arg.value, arg.fg
-        self.cwin.attron(attr)
-        self.set_colors(fg, @bg) if fg
+        arg.set(self)
       elsif arg.respond_to? :effect
-        attr, fg = arg.effect.value, arg.effect.fg
-        self.cwin.attron(attr)
-        self.set_colors(fg, @bg) if fg
+        arg.effect.set(self)
+        arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
+        @cwin.refresh
       else
         arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
         @cwin.refresh
@@ -155,5 +153,19 @@ module WindowIO
   def getch
     X.getch
   end
+
+  def gets  # still needs improvement
+    str = ""
+    loop do
+      ch = ::STDSCR.getch
+      if ch == 10
+        ::STDSCR.crlf
+        break 
+      end
+      str << ch
+    end
+    str
+  end
+
 end
 

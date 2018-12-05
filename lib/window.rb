@@ -2,7 +2,7 @@ class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
   attr_reader :cwin, :rows, :cols, :width, :height, :scrolling
-  attr_writer :fg, :bg
+  attr_accessor :fg, :bg
 
   # Better to use Window.window IRL
 
