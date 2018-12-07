@@ -4,7 +4,7 @@ lines = `gem list rubytext`.split("\n")
 
 line = lines[-1]
 ver = line.split[1][1..-2]
-path = "/Users/Hal/.rvm/gems/ruby-2.4.2/gems/rubytext-#{ver}/lib/"
+path = "/Users/Hal/.rvm/gems/ruby-2.5.3/gems/rubytext-#{ver}/lib/"
 
 cmd = "cp lib/* #{path}"
 system cmd

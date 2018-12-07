@@ -2,9 +2,6 @@
 
 * - multitest example
 * - start docs
-  - better putch 
-  -   with an attr list
-  -   with row/col
   - do a 'stop' before crashing with backtrace?
   - figure out settings and document them
   - more exceptions
@@ -35,6 +32,9 @@
   - CDK?
   - Forms and fields
 
+x - better putch 
+x -   with an attr list
+x -   with row/col
 x - add gets() into RubyText
 x - Effects improvements
 x -   remove dependence on "win" parameter

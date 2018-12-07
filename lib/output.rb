@@ -8,11 +8,6 @@ class RubyText::Window
     self.puts str
   end
 
-  def putch(ch)    # move to WindowIO?
-    r, c = self.rc
-    self[r, c] = ch[0]
-  end
-
 # FIXME Please refactor the Hal out of this.
 
   def effect?(arg)
@@ -66,6 +61,20 @@ class RubyText::Window
   def rcprint!(r, c, *args)
     @cwin.setpos(r, c)  # Cursor isn't restored
     self.print *args
+  end
+
+  def putch(ch, r: nil, c: nil, fx: nil)
+    r0, c0 = self.rc
+    r ||= r0
+    c ||= c0
+    go(r, c) do
+      fx.set(self) if fx
+      val = fx.value rescue 0
+      @cwin.addch(ch.ord|val)
+      # @win.refresh
+    end
+    fx.reset(self) if fx
+    # self[r, c] = ch[0]
   end
 
   def crlf     # Technically not output...
@@ -167,5 +176,8 @@ module WindowIO
     str
   end
 
+  def putch(ch, r: nil, c: nil, fx: nil)
+    $stdscr.putch(ch, r: r, c: c, fx: fx)
+  end
 end
 

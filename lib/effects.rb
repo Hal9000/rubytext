@@ -31,9 +31,17 @@ class RubyText::Effects   # dumb name?
   end
 
   def set(win)
+    # Save off current state?
+    @old_fg = win.fg
     attr, fg = self.value, self.fg
     win.cwin.attron(attr)
     win.set_colors(fg, win.bg) if fg
+  end
+
+  def reset(win)
+    attr = self.value
+    win.cwin.attroff(attr)
+    win.set_colors(@old_fg, win.bg) if fg
   end
 end
 
