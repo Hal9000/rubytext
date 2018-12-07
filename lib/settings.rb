@@ -1,9 +1,16 @@
 module RubyText
   # Hmm, all these are module-level.
 
+  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak]
+
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)
     $debug ||= File.new(log, "w") if log   # FIXME remove global
+
+    args.each {|arg| raise "#{arg} is not valid" unless ValidArgs.include?(arg) }
+    raise "#{fg} is not a color" unless ::Colors.include? fg
+    raise "#{bg} is not a color" unless ::Colors.include? bg
+
     main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
     Object.const_set(:STDSCR, main) unless defined? STDSCR
     $stdscr = STDSCR  # FIXME global needed?

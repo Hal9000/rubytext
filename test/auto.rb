@@ -19,26 +19,26 @@ class MyTest < Minitest::Test
     RubyText.start
     curr = RubyText.flags
     RubyText.stop
-    assert curr == [:cbreak, :echo, :keypad, :cursor, :_raw]
+    assert curr == [:cbreak, :_echo, :keypad], "Got #{curr.inspect}"
   end
 
-  def xtest_002_start_bad_param
+  def test_002_start_bad_param
     assert_raises(RTError) { RubyText.start(:foobar); RubyText.stop }
   end
 
-  def xtest_003_start_bad_color
+  def test_003_start_bad_color
     assert_raises(RTError) { RubyText.start(fg: :chartreuse); RubyText.stop }
   end
 
   def test_004_set_reset
     RubyText.start
-    orig = [:cbreak, :echo, :keypad, :cursor, :_raw]
+    orig = [:cbreak, :_echo, :keypad]
     assert RubyText.flags == orig
 
     used = [:raw, :_cursor, :_echo]
     RubyText.set(*used)
     curr = RubyText.flags
-    assert used.all? {|x| curr.include? x }
+    assert used.all? {|x| curr.include? x }, "Got #{curr.inspect}"
 
     RubyText.reset
     assert RubyText.flags == orig

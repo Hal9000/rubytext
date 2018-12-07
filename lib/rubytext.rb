@@ -45,7 +45,7 @@ def make_exception(sym, str)
   define_method(sym) do |*args|
     msg = str
     list = (args + [nil]*2)[0..2]
-    list.each.with_index {|arg, i| msg.sub!("$#{i+1}", arg) }
+    list.each.with_index {|arg, i| msg.sub!("$#{i+1}", arg.to_s) }
     Object.class_eval(sym.to_s).new(msg)
   end
 end
