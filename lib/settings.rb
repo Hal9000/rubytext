@@ -3,6 +3,10 @@ module RubyText
 
   ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak]
 
+  def self.started
+    @started
+  end
+
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)
     $debug ||= File.new(log, "w") if log   # FIXME remove global
@@ -17,6 +21,7 @@ module RubyText
     Object.include(WindowIO)
     self.set(:_echo, :cbreak)  # defaults  (:keypad?)
     self.set(*args)            # override defaults
+    @started = true
   rescue => err
     debug(err.inspect)
     debug(err.backtrace)
@@ -93,6 +98,7 @@ module RubyText
   end
 
   def self.stop
+    @started = false
     X.close_screen
   end
 

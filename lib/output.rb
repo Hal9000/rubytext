@@ -59,7 +59,7 @@ class RubyText::Window
   end
 
   def rcprint!(r, c, *args)
-    @cwin.setpos(r, c)  # Cursor isn't restored
+    self.go(r, c)  # Cursor isn't restored
     self.print *args
   end
 
@@ -71,10 +71,8 @@ class RubyText::Window
       fx.set(self) if fx
       val = fx.value rescue 0
       @cwin.addch(ch.ord|val)
-      # @win.refresh
     end
     fx.reset(self) if fx
-    # self[r, c] = ch[0]
   end
 
   def crlf     # Technically not output...
@@ -144,20 +142,26 @@ end
 
 module WindowIO
   def puts(*args)       # Doesn't affect STDOUT.puts, etc.
-    $stdscr.puts(*args)
+    recv = RubyText.started ? $stdscr : Kernel
+    recv.puts(*args)
   end
 
   def print(*args)
-    $stdscr.print(*args)
+    recv = RubyText.started ? $stdscr : Kernel
+    recv.print(*args)
   end
 
   def p(*args)
-    $stdscr.p(*args)
+    recv = RubyText.started ? $stdscr : Kernel
+    recv.p(*args)
   end
 
   def rcprint(r, c, *args)
-    $stdscr.rcprint r, c, *args
+    recv = RubyText.started ? $stdscr : Kernel
+    recv.rcprint r, c, *args
   end
+
+  # FIXME These don't/can't honor @started flag...
 
   def getch
     X.getch
@@ -177,7 +181,7 @@ module WindowIO
   end
 
   def putch(ch, r: nil, c: nil, fx: nil)
-    $stdscr.putch(ch, r: r, c: c, fx: fx)
+    STDSCR.putch(ch, r: r, c: c, fx: fx)
   end
 end
 

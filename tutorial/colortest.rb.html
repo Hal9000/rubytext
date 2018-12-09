@@ -1,0 +1,57 @@
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+tt { font-size: 15 }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+.Constant { color: #ff40ff; }
+.Special { color: #ffff00; }
+.Identifier { color: #00ffff; }
+.Statement { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Type { color: #00ff00; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">require</span> <span class="Special">'</span><span class="Constant">rubytext</span><span class="Special">'</span>
+
+<span class="Type">RubyText</span>.start(<span class="Constant">fg</span>: <span class="Type">White</span>, <span class="Constant">bg</span>: <span class="Type">Black</span>)
+
+print <span class="Special">&quot;</span><span class="Constant"> </span><span class="Special">&quot;</span>*<span class="Constant">10</span>
+<span class="Type">Colors</span>.each {|<span class="Identifier">col</span>| print <span class="Special">&quot;</span><span class="Constant">%-8s</span><span class="Special">&quot;</span> % col.to_s.capitalize }
+puts
+puts
+
+<span class="Type">Colors</span>.each <span class="Statement">do</span> |<span class="Identifier">col</span>|
+  puts <span class="Special">&quot;</span><span class="Constant"> </span><span class="Special">&quot;</span> + col.to_s.capitalize
+  puts
+<span class="Statement">end</span>
+
+<span class="Type">STDSCR</span>.bottom
+
+r0 = <span class="Constant">2</span>
+<span class="Type">Colors</span>.each <span class="Statement">do</span> |<span class="Identifier">fg</span>|
+  c0 = <span class="Constant">10</span>
+  <span class="Type">Colors</span>.each <span class="Statement">do</span> |<span class="Identifier">bg</span>|
+    win = <span class="Type">RubyText</span>.window(<span class="Constant">1</span>, <span class="Constant">7</span>, r0, c0,
+                          <span class="Constant">border</span>: <span class="Constant">false</span>,
+                          <span class="Constant">fg</span>: fg, <span class="Constant">bg</span>: bg)
+    win.puts <span class="Special">&quot;</span><span class="Constant"> TEXT  </span><span class="Special">&quot;</span>
+    c0 += <span class="Constant">8</span>
+  <span class="Statement">end</span>
+  r0 += <span class="Constant">2</span>
+<span class="Statement">end</span>
+
+getch
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

@@ -7,13 +7,11 @@
   - more exceptions
   - better handling of curses attrs
   -   maintain my own attr info?
-  - fix automated tests
-  -   use screen dump (and logging) for automated tests
+  - use screen dump (and logging) for automated tests
   -   more automated tests
   - fix menu/selector (no dependency on STDSCR)
   - concept of "current window"? (thread-safe or not?)
   - better debugging
-  -   debugging: default log file
   -   more standard debug statements
   -   debugging on/off
   -   debug levels?
@@ -32,6 +30,8 @@
   - CDK?
   - Forms and fields
 
+x -   debugging: default log file
+x - fix automated tests
 x - better putch 
 x -   with an attr list
 x -   with row/col

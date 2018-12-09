@@ -1,5 +1,31 @@
 class RubyText::Window
+
+  def coords(r, c)
+    r = case
+          when r == :center
+            self.rows / 2 
+          when r == :top
+            0
+          when r == :bottom
+            self.rows - 1
+          else
+            r
+          end
+    c = case
+          when c == :center
+            self.cols / 2 
+          when c == :left
+            0
+          when c == :right
+            self.cols - 1
+          else
+            c
+          end
+    [r, c]
+  end
+
   def go(r, c)
+    r, c = coords(r, c)
     save = self.rc
     @cwin.setpos(r, c)
     if block_given?

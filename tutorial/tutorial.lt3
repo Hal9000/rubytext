@@ -2,8 +2,6 @@
 
 .copy basic.css
 
-<body bgcolor=#f4f4ff>
-
 .h1 RubyText
 
 RubyText is a curses wrapper. The modern variant is ncurses, and there are also 
@@ -15,7 +13,8 @@ hope to produce an Elixir version. (Elixir is not usually used at the desktop,
 but it _can be.)
 
 .def example
-   arg = _args.first
+   arg, ppl = _args
+   ppl ||= 20
    file = arg + ".rb.html"
    sshot = arg + ".png"
    code = File.read(file)  # HTML from vim
@@ -26,14 +25,15 @@ but it _can be.)
 # hw.png PNG 283x190 283x190+0+0 8-bit sRGB 5443B 0.000u 0:00.000
    img_data = `identify #{sshot}`  # depends on imagemagick
    wimg, himg = img_data.split[2].split("x")
-   wide = wimg.to_i * 2
+   wide = (wimg.to_i * 2).to_i
    high = himg.to_i + 25
-   hmax = [high, nlines*20].max  # Code may be longer than screenshot height
-   _puts "<!-- high = #{high}   nlines*20 = #{nlines*20} -->"
+   hcode = nlines*ppl.to_i + 25
+   hmax = [high, hcode].max  # Code may be longer than screenshot height
+   _puts "<!-- high = #{high}   hcode = #{hcode} -->"
    File.open("wrap-#{arg}.html", "w") do |f|
      f.puts "<table width=100% cellpadding=2><tr><td width=50% valign=top>"
      f.puts code
-     f.puts "</td><td valign=top><img src=#{sshot} valign=top></td></tr></table>"
+     f.puts "</td><td width=50% valign=top><img src=#{sshot} valign=top></td></tr></table>"
    end
    _puts <<-HTML
      <iframe frameborder=0 
@@ -67,14 +67,14 @@ are keyword arguments. If you know curses, some of these will be familiar,
 while others provide functionality unrelated to what curses provides.
 
 .dlist |
-`:cbreak|Like `cbreak in curses. Inverse is `:\_cbreak (preferred) or `:nocbreak
-`:raw|Like `raw in curses. Inverse is `:\_raw (preferred) or `:noraw
-`:echo|Like `echo in curses. Inverse is `:\_echo (preferred) or `:noecho
-`:keypad|Like `keypad in curses. Inverse is `:\_keypad (preferred) or `:nokeypad
-`log: _logfile|Log debugging information to specified file.
-`fg: _foreground|Set foreground color for STDSCR.
-`bg: _background|Set background color for STDSCR.
-`scroll: _Boolean|Permit (or disallow) window scrolling for STDSCR.
+`:cbreak | Like `cbreak in curses. Inverse is `:\_cbreak (preferred) or `:nocbreak
+`:raw | Like `raw in curses. Inverse is `:\_raw (preferred) or `:noraw
+`:echo | Like `echo in curses. Inverse is `:\_echo (preferred) or `:noecho
+`:keypad | Like `keypad in curses. Inverse is `:\_keypad (preferred) or `:nokeypad
+`log: _logfile | Log debugging information to specified file.
+`fg: _foreground | Set foreground color for STDSCR.
+`bg: _background | Set background color for STDSCR.
+`scroll: _Boolean | Permit (or disallow) window scrolling for STDSCR.
 .end
 
 
@@ -88,18 +88,6 @@ The defaults are as follows:
 
   RubyText.start
 .end
-
-If you're a relative curses newbie (like me), you may have some confusion about
-the `cbreak and `raw modes.
-
-[TBD explanation]
-
-.table
-`cbreak :: NO buffering or line editing :: Permits interrupts (^C, ^Z, ...) :: Overrides `raw
-`raw :: NO buffering or line editing :: No interrupts (read as characters) :: 
-.end
-
-That's all for now.
 
 .comment
 MODE             buffering?         erase/kill?    IQSF   NOTES
@@ -147,3 +135,32 @@ Differences: in raw mode -- the interrupt, quit, suspend, and flow control chara
 are all passed through uninterpreted, instead of generating a signal. The behavior of 
 the BREAK key depends on other bits in the tty driver that are not set by curses.
 .end
+
+If you're a relative curses newbie (like me), you may have some confusion about
+the `cbreak and `raw modes. Let's clear it up a little with these four facts.
+
+.list
+First of all, _neither of these permits buffered keyboard input or line editing (such as backspace).
+As for interrupts such as `^C and ``^Z, `cbreak _permits these (handles them as usual).
+The same interrupts are _not honored by `[raw]; instead, they are read as characters.
+Finally, `cbreak mode overrides `raw mode if they are specified together.
+.end
+
+As to colors, the defaults of `White and `Blue are purely arbitrary. They may change.
+
+The standard curses implementation recognizes eight colors: ``Black, ``Blue, ``Cyan, 
+``Green, ``Magenta, ``Red, ``White, ``Yellow. Each of these constants refers to a symbol 
+of the same (lowercased) name. What these colors look like in your own local environment 
+may depend on many factors such as your operating system and terminal driver.
+
+My own environment is iterm on Mac OSX with fairly standard settings. Here is some code
+that will display all 64 possibilities of foreground/background. (Note that curses seems
+to "cheat" when these two are the same, presumably to preserve legibility.)
+
+.example colortest 16
+
+
+That's all for now.
+
+
+.cleanup toc.tmp
