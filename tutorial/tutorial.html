@@ -1,0 +1,124 @@
+<style>
+  pre {font-size: 15}
+  tt  {font-size: 15}
+</style>
+<h1>RubyText
+</h1>
+<p>
+
+RubyText is a curses wrapper. The modern variant is ncurses, and there are also 
+others. This tutorial doesn't cover much of "real" curses, as the aim is to 
+wrap it and make it simpler.
+<p>
+
+This project is somewhat in its infancy. Once it is a little more mature, I
+hope to produce an Elixir version. (Elixir is not usually used at the desktop,
+but it <i>can</i> be.)
+<p>
+
+Let's start at the beginning with the overused "hello world" example.
+<p>
+
+<!-- high = 215   hcode = 165 -->
+     <iframe frameborder=0 
+             width=566 height=215 
+             src='wrap-hw.html'>
+     </iframe>
+<p>
+
+Here are some things to notice:
+<ul>
+<li>Obviously you have to require the <tt>rubytext</tt> library.</li>
+<li>You have to invoke <tt>RubyText.start</tt> (possibly with parameters).</li>
+<li>When the curses environment is started, things like <tt>puts</tt> are overridden.</li>
+<li>We call <tt>getch</tt> here (get a character) to make the program "pause" so as not to exit before we see anything.</li>
+<li>At program exit, your screen will be restored to normal.</li>
+</ul>
+Here's another example.
+<p>
+
+<!-- high = 277   hcode = 465 -->
+     <iframe frameborder=0 
+             width=870 height=465 
+             src='wrap-stdscr.html'>
+     </iframe>
+<p>
+
+<h3>The start method
+</h3>
+<p>
+
+The <tt>start</tt> method can take a number of parameters, some of which
+are keyword arguments. If you know curses, some of these will be familiar,
+while others provide functionality unrelated to what curses provides.
+<p>
+
+<dl>
+<dt><tt>:cbreak</tt> </dt>
+<dd> Like <tt>cbreak</tt> in curses. Inverse is <tt>:_cbreak</tt> (preferred) or <tt>:nocbreak</tt></dd>
+<dt><tt>:raw</tt> </dt>
+<dd> Like <tt>raw</tt> in curses. Inverse is <tt>:_raw</tt> (preferred) or <tt>:noraw</tt></dd>
+<dt><tt>:echo</tt> </dt>
+<dd> Like <tt>echo</tt> in curses. Inverse is <tt>:_echo</tt> (preferred) or <tt>:noecho</tt></dd>
+<dt><tt>:keypad</tt> </dt>
+<dd> Like <tt>keypad</tt> in curses. Inverse is <tt>:_keypad</tt> (preferred) or <tt>:nokeypad</tt></dd>
+<dt><tt>log:</tt> <i>logfile</i> </dt>
+<dd> Log debugging information to specified file.</dd>
+<dt><tt>fg:</tt> <i>foreground</i> </dt>
+<dd> Set foreground color for STDSCR.</dd>
+<dt><tt>bg:</tt> <i>background</i> </dt>
+<dd> Set background color for STDSCR.</dd>
+<dt><tt>scroll:</tt> <i>Boolean</i> </dt>
+<dd> Permit (or disallow) window scrolling for STDSCR.</dd>
+</dl>
+<p>
+
+The defaults are as follows: 
+<p>
+
+<pre>
+  RubyText.start(:cbreak, :_raw, :_echo, :keypad, log: "/tmp/rubytext.log",
+                 fg: White, bg: Blue, scroll: true)
+
+  # can be abbreviated simply:
+
+  RubyText.start
+</pre>
+If you're a relative curses newbie (like me), you may have some confusion about
+the <tt>cbreak</tt> and <tt>raw</tt> modes. Let's clear it up a little with these four facts.
+<p>
+
+<ul>
+<li>First of all, <i>neither</i> of these permits buffered keyboard input or line editing (such as backspace).</li>
+<li>As for interrupts such as <tt>^C</tt> and <tt>^Z</tt>, <tt>cbreak</tt> <i>permits</i> these (handles them as usual).</li>
+<li>The same interrupts are <i>not</i> honored by <tt>raw</tt>; instead, they are read as characters.</li>
+<li>Finally, <tt>cbreak</tt> mode overrides <tt>raw</tt> mode if they are specified together.</li>
+</ul>
+As to colors, the defaults of <tt>White</tt> and <tt>Blue</tt> are purely arbitrary. They may change.
+<p>
+
+The standard curses implementation recognizes eight colors: <tt>Black</tt>, <tt>Blue</tt>, <tt>Cyan</tt>, 
+<tt>Green</tt>, <tt>Magenta</tt>, <tt>Red</tt>, <tt>White</tt>, <tt>Yellow</tt>. Each of these constants refers to a symbol 
+of the same (lowercased) name. What these colors look like in your own local environment 
+may depend on many factors such as your operating system and terminal driver.
+<p>
+
+My own environment is iterm on Mac OSX with fairly standard settings. Here is some code
+that will display all 64 possibilities of foreground/background. (Note that curses seems
+to "cheat" when these two are the same, presumably to preserve legibility.)
+<p>
+
+<!-- high = 248   hcode = 521 -->
+     <iframe frameborder=0 
+             width=828 height=521 
+             src='wrap-colortest.html'>
+     </iframe>
+<p>
+
+<p>
+
+That's all for now.
+<p>
+
+<p>
+
