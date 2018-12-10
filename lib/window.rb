@@ -2,6 +2,7 @@ class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
   attr_reader :cwin, :rows, :cols, :width, :height, :scrolling
+  attr_reader :r0, :c0
   attr_accessor :fg, :bg
 
   # Better to use Window.window IRL
@@ -90,6 +91,26 @@ class RubyText::Window
     end
     File.open(file, "w") {|f| f.puts lines }  if file
     lines
+  end
+
+  def saveback(high, wide, r, c)
+    @pos = self.rc
+    @save = []
+    0.upto(high-1) do |h|
+      0.upto(wide-1) do |w|
+        @save << self[h+r-1, w+c-1]
+      end
+    end
+  end
+
+  def restback(high, wide, r, c)
+    0.upto(high-1) do |h|
+      0.upto(wide-1) do |w|
+        self[h+r-1, w+c-1] = @save.shift
+      end
+    end
+    self.go *@pos
+    @cwin.refresh
   end
 
   def fg=(sym)

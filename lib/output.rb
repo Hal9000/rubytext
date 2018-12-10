@@ -63,16 +63,27 @@ class RubyText::Window
     self.print *args
   end
 
+  def _putch(ch)
+    @cwin.addch(ch)
+  end
+
   def putch(ch, r: nil, c: nil, fx: nil)
-    r0, c0 = self.rc
-    r ||= r0
-    c ||= c0
-    go(r, c) do
-      fx.set(self) if fx
-      val = fx.value rescue 0
-      @cwin.addch(ch.ord|val)
+    debug("putch: #{[ch, r, c, fx].inspect}")
+    if r.nil? && c.nil? && fx.nil?
+      _putch(ch) 
+    else
+      r0, c0 = self.rc
+      r ||= r0
+      c ||= c0
+      go(r, c) do
+        fx.set(self) if fx
+        val = fx.value rescue 0
+        @cwin.addch(ch.ord|val)
+        # @cwin.addch(ch)
+      end
+      fx.reset(self) if fx
     end
-    fx.reset(self) if fx
+    @cwin.refresh
   end
 
   def crlf     # Technically not output...
@@ -181,6 +192,9 @@ module WindowIO
   end
 
   def putch(ch, r: nil, c: nil, fx: nil)
+    r, c = STDSCR.rc
+    r ||= r0
+    c ||= c0
     STDSCR.putch(ch, r: r, c: c, fx: fx)
   end
 end

@@ -1,23 +1,19 @@
 ----  * = in progress   x = finished
 
 * - multitest example
-* - start docs
+* - improve README
+* - start tutorial
   - do a 'stop' before crashing with backtrace?
   - figure out settings and document them
   - more exceptions
-  - better handling of curses attrs
   -   maintain my own attr info?
   - use screen dump (and logging) for automated tests
   -   more automated tests
-  - fix menu/selector (no dependency on STDSCR)
   - concept of "current window"? (thread-safe or not?)
   - better debugging
   -   more standard debug statements
-  -   debugging on/off
   -   debug levels?
   - window positions: accept :top/:bottom/:center, :left/:right/:center
-  -   go() should accept symbols like :top, :left? (Top, Left) :center?
-  -   rcprint also?
   - fix gets() color bug
   - Readline-like features in gets()?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
@@ -30,6 +26,11 @@
   - CDK?
   - Forms and fields
 
+x - fix menu/selector (no dependency on STDSCR)
+x - better handling of curses attrs
+x -   debugging on/off
+x - go() should accept symbols like :top, :left? (Top, Left) :center?
+x - rcprint also?
 x -   debugging: default log file
 x - fix automated tests
 x - better putch 

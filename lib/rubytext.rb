@@ -52,7 +52,12 @@ end
 
 make_exception(:RTError, "General error: $1 $2 $3")
 
+def debugging(onoff)
+  $debugging = onoff
+end
+
 def debug(*args)
+  return unless $debugging
   return unless $debug
   $debug.puts *args
   $debug.flush

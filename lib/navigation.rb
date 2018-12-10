@@ -24,8 +24,9 @@ class RubyText::Window
     [r, c]
   end
 
-  def go(r, c)
-    r, c = coords(r, c)
+  def go(r0, c0)
+    r, c = coords(r0, c0)
+    debug("go: #{[r0, c0].inspect} => #{[r, c].inspect}")
     save = self.rc
     @cwin.setpos(r, c)
     if block_given?
