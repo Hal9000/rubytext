@@ -113,10 +113,10 @@ class RubyText::Window
   end
 
   def clear
-    num = @cwin.maxx * @cwin.maxy
-    home
-    @cwin.addstr(' '*num)
-    home
+    num = self.rows * self.cols
+    self.home
+    self.rows.times { @cwin.addstr(' '*self.cols); @cwin.refresh }
+    self.home
     @cwin.refresh
   end
 
@@ -147,6 +147,44 @@ class RubyText::Window
   def refresh
     @cwin.refresh
   end
+
+  def gets  # still needs improvement
+    # echo assumed to be OFF, keypad ON
+    str = ""
+    i = 0
+    r0, c0 = self.rc
+    loop do
+      ch = self.getch
+      debug "gets: found #{ch.inspect}; cursor at #{self.rc.inspect}"
+      case ch
+        when 10  # Enter
+          self.crlf
+          break 
+        when 8, 127, 63   # backspace, del, ^H (huh?)
+          if i >= 1
+            str = str[0..-2]
+            i -= 1
+            self.left
+            self[*self.rc] = ' '
+            self.left
+          end
+          when 260   # left-arrow
+            i -= 1
+            self.left
+          when 261   # right-arrow
+            i += 1
+            self.right
+        else
+          debug "  case 3 (#{ch.inspect})"
+          str.insert(i, ch)
+          self.right
+          self.go(r0, c0) { self.print str }
+          i += 1
+      end
+    end
+    str
+  end
+
 end
 
 # into top level...
@@ -179,16 +217,8 @@ module WindowIO
   end
 
   def gets  # still needs improvement
-    str = ""
-    loop do
-      ch = ::STDSCR.getch
-      if ch == 10
-        ::STDSCR.crlf
-        break 
-      end
-      str << ch
-    end
-    str
+    recv = RubyText.started ? $stdscr : Kernel
+    recv.gets
   end
 
   def putch(ch, r: nil, c: nil, fx: nil)

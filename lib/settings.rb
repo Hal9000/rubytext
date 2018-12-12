@@ -1,11 +1,13 @@
 module RubyText
   # Hmm, all these are module-level.
 
-  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak]
+  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak, :keypad, :_keypad]
 
   def self.started
     @started
   end
+
+  $debugging = true
 
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)

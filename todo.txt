@@ -3,6 +3,9 @@
 * - multitest example
 * - improve README
 * - start tutorial
+  - keypad option is broken
+  - gets has bugs (backspace/del/etc.)
+  - add metadata to screen_text dump?
   - do a 'stop' before crashing with backtrace?
   - figure out settings and document them
   - more exceptions
@@ -13,8 +16,7 @@
   - better debugging
   -   more standard debug statements
   -   debug levels?
-  - window positions: accept :top/:bottom/:center, :left/:right/:center
-  - fix gets() color bug
+  - window positions: defaults? accept :top/:bottom/:center, :left/:right/:center
   - Readline-like features in gets()?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
@@ -26,6 +28,7 @@
   - CDK?
   - Forms and fields
 
+x - fix gets() color bug
 x - fix menu/selector (no dependency on STDSCR)
 x - better handling of curses attrs
 x -   debugging on/off
