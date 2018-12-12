@@ -90,37 +90,6 @@ The defaults are as follows:
 .end
 
 .comment
-MODE             buffering?         erase/kill?    IQSF   NOTES
-
-cbreak           no                 no             yes    cbreak overrides raw.
-_cbreak          yes                yes            yes
-raw              no                 no             no     reads: interrupt, quit, suspend, flow control 
-
-Defaults: cbreak, _echo, keypad
-
-cbreak routine disables line buffering and erase/kill character-processing 
-(interrupt and flow control characters are unaffected), making characters 
-typed by the user immediately available to the program. 
-
-nocbreak returns the terminal to normal (cooked) mode.
-
-A program should call cbreak or nocbreak explicitly. 
-Most interactive programs using curses set the cbreak mode. 
-Note that cbreak overrides raw.
-
-The echo and noecho routines control whether characters are echoed by getch
-Echoing by the tty driver is always disabled, but initially getch is in echo mode.
-
-most interactive programs disable echoing 
-
-keypad option enables keypad of user's terminal. 
-User can press a function key (e.g. arrow) and getch returns a single 
-value e.g. KEY_LEFT. 
-
-Skip for now: 
-halfdelay 
-intrflush option 
-
 Skip?
 nodelay causes getch to be a non-blocking call. 
 If no input is ready, getch returns ERR.
@@ -128,12 +97,6 @@ If no input is ready, getch returns ERR.
 Skip?
 notimeout(win, TRUE) -- wgetch does not set a timer. 
 Differentiate between sequences received from a function key and those typed by a user.
-
-raw and noraw -- 
-Raw mode is similar to cbreak mode -- characters typed are immediately passed through.
-Differences: in raw mode -- the interrupt, quit, suspend, and flow control characters 
-are all passed through uninterpreted, instead of generating a signal. The behavior of 
-the BREAK key depends on other bits in the tty driver that are not set by curses.
 .end
 
 If you're a relative curses newbie (like me), you may have some confusion about
@@ -146,7 +109,7 @@ The same interrupts are _not honored by `[raw]; instead, they are read as charac
 Finally, `cbreak mode overrides `raw mode if they are specified together.
 .end
 
-As to colors, the defaults of `White and `Blue are purely arbitrary. They may change.
+As for colors: The defaults of `White and `Blue are purely arbitrary. They may change.
 
 The standard curses implementation recognizes eight colors: ``Black, ``Blue, ``Cyan, 
 ``Green, ``Magenta, ``Red, ``White, ``Yellow. Each of these constants refers to a symbol 

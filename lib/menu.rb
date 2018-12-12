@@ -5,7 +5,8 @@ module RubyText
     high = items.size + 2
     wide = items.map(&:length).max + 4
     win.saveback(high, wide, r, c)
-    mwin = RubyText.window(high, wide, r+win.r0, c+win.c0, fg: fg, bg: bg)
+    mwin = RubyText.window(high, wide, r+win.r0+1, c+win.c0+1, 
+                           fg: fg, bg: bg)
     X.stdscr.keypad(true)
     RubyText.hide_cursor
     sel = curr

@@ -3,7 +3,7 @@
 * - multitest example
 * - improve README
 * - start tutorial
-  - keypad option is broken
+x - keypad option is broken
   - gets has bugs (backspace/del/etc.)
   - add metadata to screen_text dump?
   - do a 'stop' before crashing with backtrace?

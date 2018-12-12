@@ -21,7 +21,7 @@ module RubyText
     Object.const_set(:STDSCR, main) unless defined? STDSCR
     $stdscr = STDSCR  # FIXME global needed?
     Object.include(WindowIO)
-    self.set(:_echo, :cbreak)  # defaults  (:keypad?)
+    self.set(:_echo, :cbreak, :keypad)  # defaults
     self.set(*args)            # override defaults
     @started = true
   rescue => err
@@ -47,7 +47,7 @@ module RubyText
   end
 
   def self.set(*args)   # Allow a block?
-    standard = [:cbreak, :raw, :echo, :keypad]
+    standard = [:cbreak, :raw, :echo]
     @defaults = [:cbreak, :_echo, :keypad]
     @flags = @defaults.dup
     save_flags
@@ -68,6 +68,10 @@ module RubyText
             X.curs_set(1)
           when :_cursor, :nocursor
             X.curs_set(0)
+          when :keypad
+            STDSCR.cwin.keypad(true)
+          when :_keypad
+            STDSCR.cwin.keypad(false)
           else 
             # self.stop
             rest_flags  # prevent propagating error in test

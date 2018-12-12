@@ -96,17 +96,17 @@ class RubyText::Window
   def saveback(high, wide, r, c)
     @pos = self.rc
     @save = []
-    0.upto(high-1) do |h|
-      0.upto(wide-1) do |w|
-        @save << self[h+r-1, w+c-1]
+    0.upto(high) do |h|
+      0.upto(wide) do |w|
+        @save << self[h+r, w+c]
       end
     end
   end
 
   def restback(high, wide, r, c)
-    0.upto(high-1) do |h|
-      0.upto(wide-1) do |w|
-        self[h+r-1, w+c-1] = @save.shift
+    0.upto(high) do |h|
+      0.upto(wide) do |w|
+        self[h+r, w+c] = @save.shift
       end
     end
     self.go *@pos
