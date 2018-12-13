@@ -2,13 +2,14 @@ module RubyText
 
   def self.menu(win: STDSCR, r: 0, c: 0, items:, curr: 0,
                 fg: White, bg: Blue)
+#   save_flags
+    RubyText.hide_cursor
     high = items.size + 2
     wide = items.map(&:length).max + 4
     win.saveback(high, wide, r, c)
     mwin = RubyText.window(high, wide, r+win.r0+1, c+win.c0+1, 
                            fg: fg, bg: bg)
     X.stdscr.keypad(true)
-    RubyText.hide_cursor
     sel = curr
     max = items.size - 1
     norm = RubyText::Effects.new(:normal)
@@ -27,11 +28,17 @@ module RubyText
           sel += 1 if sel < max
         when 27
           win.restback(high, wide, r, c)
+          RubyText.show_cursor
+#         rest_flags
           return [nil, nil]
         when 10
           win.restback(high, wide, r, c)
+          RubyText.show_cursor
+#         rest_flags
           return [sel, items[sel]]
       end
+      RubyText.show_cursor
+#     rest_flags
     end
   end
 

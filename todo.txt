@@ -3,7 +3,7 @@
 * - multitest example
 * - improve README
 * - start tutorial
-x - keypad option is broken
+  - flags save/restore is broken
   - gets has bugs (backspace/del/etc.)
   - add metadata to screen_text dump?
   - do a 'stop' before crashing with backtrace?
@@ -28,6 +28,7 @@ x - keypad option is broken
   - CDK?
   - Forms and fields
 
+x - keypad option is broken
 x - fix gets() color bug
 x - fix menu/selector (no dependency on STDSCR)
 x - better handling of curses attrs

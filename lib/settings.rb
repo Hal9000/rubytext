@@ -99,6 +99,7 @@ module RubyText
   def self.rest_flags
     @flags = @fstack.pop
     @flags.uniq!
+    self.set(*@flags)
   rescue 
     @flags = @defaults
   end
