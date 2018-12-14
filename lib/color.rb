@@ -19,12 +19,6 @@ class RubyText::Color
   def self.pair(fg, bg)
     nf = index(fg)
     nb = index(bg)
-    File.open("/tmp/pair.out", "w") do |f| 
-      f.puts "fg, bg = #{[fg, bg].inspect}" 
-      f.puts "Colors = #{Colors.inspect}"
-      f.puts "index fg = #{nf.inspect}"
-      f.puts "index bg = #{nb.inspect}"
-    end
     num = 8*nf + nb
     X.init_pair(num, sym2const(fg), sym2const(bg))
     num
@@ -32,17 +26,18 @@ class RubyText::Color
 end
 
 class RubyText::Window
-  def self.colorize!(win, fg, bg)
+  def self.colorize!(cwin, fg, bg)
     File.open("/tmp/cize.out", "w") do |f|
       f.puts "colorize: fg, bg = #{[fg, bg].inspect}"
     end
     cp = RubyText::Color.pair(fg, bg)
-    win.color_set(cp)
-    num = win.maxx * win.maxy
-    win.setpos 0,0
-    win.addstr(' '*num)
-    win.setpos 0,0
-    win.refresh
+    cwin.color_set(cp)
+    num = cwin.maxx * cwin.maxy
+    cwin.setpos 0,0
+    cwin.addstr(' '*num)
+    cwin.setpos 0,0
+    cwin.refresh
+    debug "returning from colorize! call"
   rescue => err
     File.open("/tmp/#{__method__}.out", "w") do |f|
       f.puts err

@@ -7,7 +7,8 @@ class RubyText::Window
 
   # Better to use Window.window IRL
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, fg=White, bg=Blue, scroll=false)
+  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, 
+                 fg=White, bg=Blue, scroll=false)
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
     @cwin = X::Window.new(high, wide, r0, c0)
@@ -29,12 +30,15 @@ class RubyText::Window
   end
 
   def self.main(fg: White, bg: Blue, scroll: false)
+    debug "Starting #main..."
     main_win = X.init_screen
     X.start_color
     self.colorize!(main_win, fg, bg)
     rows, cols = main_win.maxy, main_win.maxx
-    self.make(main_win, rows, cols, 0, 0, border: false,
+    win = self.make(main_win, rows, cols, 0, 0, border: false,
               fg: fg, bg: bg, scroll: scroll)
+    debug "...started #main"
+    win
   rescue => err
     File.open("/tmp/main.out", "w") {|f| f.puts err.inspect; f.puts err.backtrace } 
   end

@@ -1,15 +1,15 @@
 require 'rubytext'
-require 'timeout'
 
 def next_slide
   RubyText.hide_cursor
-  sleep 2
-  Timeout.timeout(999) do
-    STDSCR.go @rmax-1-@upward, 0
-    STDSCR.center "Press any key..."
-    getch
+  case @proceed
+    when /\d+/
+      sleep @proceed.to_i
+    when "pause"
+      STDSCR.go @rmax-1-@upward, 0
+      STDSCR.center "Press any key..."
+      getch
   end
-rescue Timeout::Error
 end
 
 def show_code(prog, upward=0)
@@ -48,7 +48,7 @@ RubyText.hide_cursor
 
 check_window
 
-prog, @upward = ARGV
+prog, @proceed, @upward = ARGV
 @upward ||= 0
 
 show_code(prog, @upward)

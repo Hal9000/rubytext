@@ -1,23 +1,30 @@
 module RubyText
 
   def self.menu(win: STDSCR, r: 0, c: 0, items:, curr: 0,
-                fg: White, bg: Blue)
+                title: nil, fg: White, bg: Blue)
     RubyText.hide_cursor
     high = items.size + 2
     wide = items.map(&:length).max + 4
+    tlen = title.length + 6  
+    wide = [wide, tlen].max
     win.saveback(high, wide, r, c)
-    mwin = RubyText.window(high, wide, r: r+win.r0+1, c: c+win.c0+1, 
+    mr, mc = r+win.r0+1, c+win.c0+1 
+    mwin = RubyText.window(high, wide, r: mr, c: mc, 
                            fg: fg, bg: bg)
+    win.go(mr-2, mc-win.c0) { win.print fx("[ #{title} ]", :bold, fg, bg: bg) } unless title.nil?
+
     X.stdscr.keypad(true)
     sel = curr
     max = items.size - 1
     norm = RubyText::Effects.new(:normal)
     rev = RubyText::Effects.new(:reverse)
     loop do
+      RubyText.hide_cursor  # FIXME should be unnecessary
       items.each.with_index do |item, row|
         mwin.go row, 0
-        style = (sel == row) ? rev : norm
-        mwin.print style, " #{item} "
+        style = (sel == row) ? :reverse : :normal
+        label = (" "*3 + item + " "*8)[0..wide-1]
+        mwin.print fx(label, style)
       end
       ch = getch
       case ch

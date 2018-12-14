@@ -7,7 +7,7 @@ win.puts
 getch
 
 days = %w[Monday Tuesday Wednesday Thursday Friday]
-num, day = RubyText.menu(win: win, r: 1, c: 5, items: days)
+num, day = RubyText.menu(win: win, r: 1, c: 5, title: "Which day?", items: days)
 
 puts
 if day.nil?
