@@ -121,7 +121,12 @@ module RubyText
     end
   end
 
-  def self.window(high, wide, r:, c:, border: true, fg: White, bg: Blue, scroll: false)
+  # Why did I put this here?
+
+  def self.window(high, wide, r: nil, c: nil, border: true, 
+                  fg: White, bg: Blue, scroll: false)
+    r ||= (STDSCR.rows - high)/2
+    c ||= (STDSCR.cols - wide)/2
     RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
   end
 

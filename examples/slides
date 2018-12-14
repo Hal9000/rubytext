@@ -34,4 +34,6 @@ system("ruby showme.rb prog20.rb")
 system("ruby showme.rb prog21.rb")
 system("ruby showme.rb prog22.rb 11")
 system("ruby showme.rb prog23.rb")
+system("ruby showme.rb prog24.rb")
+system("ruby showme.rb prog25.rb")
 
