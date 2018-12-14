@@ -18,7 +18,7 @@ r0 = 2
 Colors.each do |fg|
   c0 = 10
   Colors.each do |bg|
-    win = RubyText.window(1, 7, r0, c0, 
+    win = RubyText.window(1, 7, r: r0, c: c0, 
                           border: false, 
                           fg: fg, bg: bg)
     win.puts " TEXT  "

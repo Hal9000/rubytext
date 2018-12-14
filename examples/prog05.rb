@@ -1,4 +1,4 @@
-win = RubyText.window(10, 70, 4, 14, fg: Yellow, bg: Black)
+win = RubyText.window(10, 70, r: 4, c: 14, fg: Yellow, bg: Black)
 
 win.output do
   puts "Without scrolling, this is what happens when your window fills up..."

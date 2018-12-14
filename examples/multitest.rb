@@ -14,7 +14,7 @@ r0 = 3
 Colors.each do |fg|
   c0 = 0
   Colors.each do |bg|
-    win = RubyText.window(2, 12, r0, c0, border: false, fg: fg, bg: bg)
+    win = RubyText.window(2, 12, r: r0, c: c0, border: false, fg: fg, bg: bg)
     win.puts " #{fg} on\n #{bg}"
     c0 += 14
   end

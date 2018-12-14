@@ -50,7 +50,7 @@ delay 3
 
 puts "\n\nNow watch as I create a window:"
 
-mywin = RubyText.window(16, 40, 8, 14, fg: :blue, bg: :yellow)
+mywin = RubyText.window(16, 40, r: 8, c: 14, fg: Blue, bg: Yellow)
 
 delay 3
 mywin.puts "\nNow I'm writing in a window."

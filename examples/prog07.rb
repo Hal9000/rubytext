@@ -1,4 +1,4 @@
-win = RubyText.window(10, 50, 2, 15, fg: Yellow, bg: Blue)
+win = RubyText.window(10, 50, r: 2, c: 15, fg: Yellow, bg: Blue)
 
 win.output do
   puts "Of course, #puts and #print are unaffected \nfor other receivers."

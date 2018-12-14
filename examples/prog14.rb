@@ -1,4 +1,4 @@
-win = RubyText.window(13, 65, 2, 14, fg: Blue, bg: White)
+win = RubyText.window(13, 65, r: 2, c: 14, fg: Blue, bg: White)
 
 win.puts "The #rcprint method will print at the specified"
 win.puts "row/column, like go(r,c) followed by a print,"

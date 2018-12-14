@@ -1,4 +1,4 @@
-win = RubyText.window(10, 45, 1, 20, fg: Black, bg: Red)
+win = RubyText.window(10, 45, r: 1, c: 20, fg: Black, bg: Red)
 win.puts "This very crude menu is also EXPERIMENTAL."
 win.puts "It knows up, down, Enter, and Escape.\n "
 win.puts "Press any key to display the menu..."

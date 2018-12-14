@@ -1,4 +1,4 @@
-win = RubyText.window(11, 65, 3, 14, fg: Blue, bg: White)
+win = RubyText.window(11, 65, r: 3, c: 14, fg: Blue, bg: White)
 
 win.go 2,0
 win.puts "We also have: up!, down!, left!, and right! which can" 

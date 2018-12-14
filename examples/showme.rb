@@ -17,7 +17,7 @@ def show_code(prog, upward=0)
   nlines = text.split("\n").size
 
   prog_top = @rmax-nlines-3 - upward.to_i
-  code = RubyText.window(nlines+2, @cmax-2, prog_top, 1, 
+  code = RubyText.window(nlines+2, @cmax-2, r: prog_top, c: 1, 
                          fg: Green, bg: Black)
   code.puts text
 

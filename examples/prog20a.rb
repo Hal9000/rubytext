@@ -3,7 +3,7 @@ def effect(*args) # find better way
 end
 
 fg, bg = White, Blue
-win = RubyText.window(9, 65, 2, 26, fg: fg, bg: bg)
+win = RubyText.window(9, 65, r: 2, c: 26, fg: fg, bg: bg)
 
 win.puts "This is EXPERIMENTAL (and BUGGY)."
 win.puts "Use an \"effect\" to change the text color or \"look\":"

@@ -1,4 +1,4 @@
-win = RubyText.window(6, 30, 2, 5, fg: Yellow, bg: Blue)
+win = RubyText.window(6, 30, r: 2, c: 5, fg: Yellow, bg: Blue)
 
 win.puts "We default to cbreak mode, so that characters are "
 win.puts "accepted instantly, but control-C still works."

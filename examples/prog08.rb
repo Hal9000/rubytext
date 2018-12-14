@@ -1,4 +1,4 @@
-win = RubyText.window(11, 50, 2, 15, fg: Yellow, bg: Blue)
+win = RubyText.window(11, 50, r: 2, c: 15, fg: Yellow, bg: Blue)
 
 win.puts "We can use the []= method (0-based)"
 win.puts "to address individual window locations"

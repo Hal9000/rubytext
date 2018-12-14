@@ -2,7 +2,7 @@ puts "\n Methods such as go, rcprint, and putch \n can accept symbols such as"
 puts " :top :bottom :left :right :center"
 puts "\n Of course, printing starting at the far right \n can be problematic."
 
-win = RubyText.window(7, 29, 1, 60, fg: Red, bg: Black)
+win = RubyText.window(7, 29, r: 1, c: 60, fg: Red, bg: Black)
 
 win.putch "1", r: :bottom, c: :left;                 sleep 0.4
 win.go :center, :left;               win.puts "abc"; sleep 0.4
