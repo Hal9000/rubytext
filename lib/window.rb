@@ -98,20 +98,22 @@ class RubyText::Window
   end
 
   def saveback(high, wide, r, c)
+    debug "saveback: #{[high, wide, r, c].inspect}"
     @pos = self.rc
     @save = []
-    0.upto(high) do |h|
-      0.upto(wide) do |w|
-        @save << self[h+r, w+c]
+    0.upto(high-1) do |h|
+      0.upto(wide-1) do |w|
+        @save << self[h+r-1, w+c-1]
       end
     end
   end
 
   def restback(high, wide, r, c)
-    0.upto(high) do |h|
-      0.upto(wide) do |w|
-        self[h+r, w+c] = @save.shift
-      end
+    0.upto(high-1) do |h|
+      line = ""
+      0.upto(wide-1) {|w| line << @save.shift }
+      self.go h+r-1, c-1
+      self.print line
     end
     self.go *@pos
     @cwin.refresh

@@ -5,13 +5,20 @@ module RubyText
     RubyText.hide_cursor
     high = items.size + 2
     wide = items.map(&:length).max + 4
-    tlen = title.length + 6  
+    tlen = title.length + 8  
     wide = [wide, tlen].max
     win.saveback(high, wide, r, c)
-    mr, mc = r+win.r0+1, c+win.c0+1 
+    mr, mc = r+win.r0, c+win.c0
+    debug "menu: rc = #{[r,c].inspect} win r0c0 = #{[win.r0, win.c0].inspect}"
+#   debug "   and mr,mc = #{[mr,mc].inspect}"
     mwin = RubyText.window(high, wide, r: mr, c: mc, 
                            fg: fg, bg: bg)
-    win.go(mr-2, mc-win.c0) { win.print fx("[ #{title} ]", :bold, fg, bg: bg) } unless title.nil?
+
+    unless title.nil?
+      win.go(r-1, c+1) do   # same row as corner but farther right
+        win.print fx("[ #{title} ]", :bold, fg, bg: bg)
+      end
+    end
 
     X.stdscr.keypad(true)
     sel = curr

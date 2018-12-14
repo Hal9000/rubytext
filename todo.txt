@@ -3,7 +3,11 @@
 * - multitest example
 * - improve README
 * - start tutorial
+  - normalize fg/bg usage
+  - color pair names?
+  - restback has OBO
   - flags save/restore is broken
+  - move menu to Window
   - gets has bugs (backspace/del/etc.)
   - add metadata to screen_text dump?
   - do a 'stop' before crashing with backtrace?

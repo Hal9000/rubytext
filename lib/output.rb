@@ -135,7 +135,7 @@ class RubyText::Window
 
   def []=(r, c, char)
     @cwin.setpos(r, c)
-    @cwin.addch(char[0])
+    @cwin.addch(char[0].ord|X::A_NORMAL)
     @cwin.refresh
   end
 
