@@ -13,4 +13,6 @@ case cmd
     system("ruby #{path}/../examples/demo.rb")
   when "slides"
     system("#{path}/../examples/slides")
+  when "tutorial"
+    system("open #{path}/../tutorial/tutorial.html")
 end
