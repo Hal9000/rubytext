@@ -12,11 +12,26 @@ exit unless rc
 #   - use names instead of numbers?
 #   - convert showme into a method?
 
-1.upto(22) do |n|
-  next if n == 11  # junk this one
-  num = '%02d' % n
-  prog = "prog#{num}.rb"
-  upward = 10 if n == 22  # dumbest hack ever!
-  system("ruby showme.rb #{prog} #{upward}")
-end
+system("ruby showme.rb prog01.rb")
+system("ruby showme.rb prog02.rb")
+system("ruby showme.rb prog03.rb")
+system("ruby showme.rb prog04.rb")
+system("ruby showme.rb prog05.rb")
+system("ruby showme.rb prog06.rb")
+system("ruby showme.rb prog07.rb")
+system("ruby showme.rb prog08.rb")
+system("ruby showme.rb prog09.rb")
+system("ruby showme.rb prog10.rb")
+system("ruby showme.rb prog12.rb")
+system("ruby showme.rb prog13.rb")
+system("ruby showme.rb prog14.rb")
+system("ruby showme.rb prog15.rb")
+system("ruby showme.rb prog16.rb")
+system("ruby showme.rb prog17.rb")
+system("ruby showme.rb prog18.rb")
+system("ruby showme.rb prog19.rb")
+system("ruby showme.rb prog20.rb")
+system("ruby showme.rb prog21.rb")
+system("ruby showme.rb prog22.rb 11")
+system("ruby showme.rb prog23.rb")
 

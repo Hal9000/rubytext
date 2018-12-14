@@ -24,14 +24,17 @@ class RubyText::Window
     [r, c]
   end
 
+  def goto(r, c)  # only accepts numbers!
+    @cwin.setpos(r, c)
+  end
+
   def go(r0, c0)
     r, c = coords(r0, c0)
-    debug("go: #{[r0, c0].inspect} => #{[r, c].inspect}")
     save = self.rc
-    @cwin.setpos(r, c)
+    goto(r, c)
     if block_given?
-      yield
-      go(*save)   # No block here!
+      yield 
+      goto(*save)
     end
   end
 
@@ -88,11 +91,6 @@ class RubyText::Window
   def home
     go 0, 0
   end
-
-# def crlf
-#   r, c = rc
-#   go r+1, 0
-# end
 
   def rc
     [@cwin.cury, @cwin.curx]

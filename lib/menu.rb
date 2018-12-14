@@ -2,7 +2,6 @@ module RubyText
 
   def self.menu(win: STDSCR, r: 0, c: 0, items:, curr: 0,
                 fg: White, bg: Blue)
-#   save_flags
     RubyText.hide_cursor
     high = items.size + 2
     wide = items.map(&:length).max + 4
@@ -29,16 +28,13 @@ module RubyText
         when 27
           win.restback(high, wide, r, c)
           RubyText.show_cursor
-#         rest_flags
           return [nil, nil]
         when 10
           win.restback(high, wide, r, c)
           RubyText.show_cursor
-#         rest_flags
           return [sel, items[sel]]
       end
       RubyText.show_cursor
-#     rest_flags
     end
   end
 
@@ -47,7 +43,6 @@ module RubyText
                     win2:, callback:, enter: nil, quit: "q")
     high = rows
     wide = cols
-    win.saveback(high, wide, r, c)
     mwin = RubyText.window(high, wide, r, c, fg: fg, bg: bg)
     handler = callback
     X.stdscr.keypad(true)
@@ -56,29 +51,29 @@ module RubyText
     rev  = RubyText::Effects.new(:reverse)
     sel = 0
     max = items.size - 1
-    send(handler, sel, items[sel], win2)
+    handler.call(sel, items[sel], win2)
     loop do
       mwin.home
       items.each.with_index do |item, row|
-        mwin.left
-        style = (sel == row) ? rev : norm
-        mwin.puts style, " #{item} "
+        mwin.crlf
+        style = (sel == row) ? :reverse : :normal
+        mwin.print fx(" #{item}", style)
       end
       ch = getch
       case ch
         when X::KEY_UP
           if sel > 0
             sel -= 1
-            send(handler, sel, items[sel], win2)
+            handler.call(sel, items[sel], win2)
           end
         when X::KEY_DOWN
           if sel < max
             sel += 1
-            send(handler, sel, items[sel], win2)
+            handler.call(sel, items[sel], win2)
           end
         when 10  # Enter
           if enter
-            del = send(enter, sel, items[sel], win2)
+            del = enter.call(sel, items[sel], win2)
             if del
               items -= [items[sel]]
               raise 
