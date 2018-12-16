@@ -1,7 +1,8 @@
 module RubyText
-  # Hmm, all these are module-level.
+  # Hmm, all these are module-level...?
 
-  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak, :keypad, :_keypad]
+  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak, 
+               :keypad, :_keypad, :cursor, :_cursor]
 
   def self.started
     @started

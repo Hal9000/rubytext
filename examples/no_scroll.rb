@@ -4,4 +4,4 @@ win.puts "If your text is longer than " +
          "the width of the window, by default it will " +
          "wrap around."
 
-win.puts "Scrolling is not yet supported."
+win.puts "Scrolling is OFF by default."

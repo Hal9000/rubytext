@@ -6,7 +6,7 @@ Black, Blue, Cyan, Green, Magenta, Red, White, Yellow =
 Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
 
 class RubyText::Color
-  Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
+  Colors = ::Colors
 
   def self.sym2const(color)   # to curses constant
     X.const_get("COLOR_#{color.to_s.upcase}")
@@ -17,8 +17,7 @@ class RubyText::Color
   end
 
   def self.pair(fg, bg)
-    nf = index(fg)
-    nb = index(bg)
+    nf, nb = index(fg), index(bg)
     num = 8*nf + nb
     X.init_pair(num, sym2const(fg), sym2const(bg))
     num
@@ -27,9 +26,6 @@ end
 
 class RubyText::Window
   def self.colorize!(cwin, fg, bg)
-    File.open("/tmp/cize.out", "w") do |f|
-      f.puts "colorize: fg, bg = #{[fg, bg].inspect}"
-    end
     cp = RubyText::Color.pair(fg, bg)
     cwin.color_set(cp)
     num = cwin.maxx * cwin.maxy
@@ -37,7 +33,6 @@ class RubyText::Window
     cwin.addstr(' '*num)
     cwin.setpos 0,0
     cwin.refresh
-    debug "returning from colorize! call"
   rescue => err
     File.open("/tmp/#{__method__}.out", "w") do |f|
       f.puts err

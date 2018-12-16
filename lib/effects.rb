@@ -1,5 +1,4 @@
 
-
 def fx(str, *args, bg: nil)
   eff = RubyText::Effects.new(*args, bg: bg)
   str.define_singleton_method(:effect) { eff } 
@@ -45,7 +44,6 @@ class RubyText::Effects   # dumb name?
   def reset(win)
     attr = self.value
     win.cwin.attroff(attr)
-    win.set_colors(@old_fg, @old_bg)
+    win.set_colors(@old_fg, @old_bg)  # Does restore logic work?
   end
 end
-

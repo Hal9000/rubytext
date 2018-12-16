@@ -31,10 +31,10 @@ class RubyText::Window
   def go(r0, c0)
     r, c = coords(r0, c0)
     save = self.rc
-    goto(r, c)
+    goto r, c 
     if block_given?
       yield 
-      goto(*save)
+      goto *save
     end
   end
 

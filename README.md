@@ -355,7 +355,7 @@ puts "Press any key to display the menu..."
 getch
 
 days = %w[Monday Tuesday Wednesday Thursday Friday]
-num, day = RubyText.menu(c: 30, items: days)
+num, day = STDSCR.menu(c: 30, items: days)
 
 puts
 if day.nil?

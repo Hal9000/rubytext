@@ -2,7 +2,7 @@ $LOAD_PATH << "lib"
 
 require 'curses'
 
-X = Curses  # shorthand
+X = Curses  # shorthand. klunky I know
 
 module RubyText
 end
@@ -32,6 +32,8 @@ end
 ##########
 
 at_exit { RubyText.stop }
+
+# FIXME lots of changes to make here...
 
 def import(meth, recv)
   Kernel.module_eval do

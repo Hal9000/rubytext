@@ -40,7 +40,7 @@ end
 
 loop do
   show
-  n, str = RubyText.menu(r: 10, c: 5, items: items)
+  n, str = STDSCR.menu(r: 10, c: 5, items: items)
 puts n.inspect
   case n
     when 0; system("vi #{@lib}")

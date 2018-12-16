@@ -19,25 +19,18 @@ class RubyText::Window
     args = [""] if args.empty?
     args += ["\n"] if sym == :puts
     set_colors(@fg, @bg)
-#   debug "  set colors: #{[@fg, @bg].inspect}"
-    if sym == :p
-      args.map! {|x| effect?(x) ? x : x.inspect }
-    else
-      args.map! {|x| effect?(x) ? x : x.to_s }
-    end
+    meth = sym == :p ? :inspect : :to_s
+    args.map! {|x| effect?(x) ? x : x.send(meth) }
     args.each do |arg|  
       if arg.is_a?(RubyText::Effects)
         arg.set(self)
-      elsif arg.respond_to? :effect
-        arg.effect.set(self)
-        arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
-        @cwin.refresh
       else
+        arg.effect.set(self) if arg.respond_to? :effect
         arg.each_char {|ch| ch == "\n" ? crlf : @cwin.addch(ch) }
         @cwin.refresh
       end
     end
-    crlf if sym == :p
+    crlf if sym == :p   # no implicit newline
     set_colors(@fg, @bg)
     @cwin.refresh
   end
@@ -79,7 +72,6 @@ class RubyText::Window
         fx.set(self) if fx
         val = fx.value rescue 0
         @cwin.addch(ch.ord|val)
-        # @cwin.addch(ch)
       end
       fx.reset(self) if fx
     end
@@ -104,7 +96,7 @@ class RubyText::Window
     end
   end
 
-  def self.clear(win)
+  def self.clear(win)   # delete this?
     num = win.maxx * win.maxy
     win.setpos(0, 0)
     win.addstr(' '*num)
@@ -113,11 +105,8 @@ class RubyText::Window
   end
 
   def clear
-    num = self.rows * self.cols
     self.home
-    self.rows.times { @cwin.addstr(' '*self.cols); @cwin.refresh }
-    self.home
-    @cwin.refresh
+    self.scroll self.rows
   end
 
   def output(&block)
@@ -136,6 +125,7 @@ class RubyText::Window
   def []=(r, c, char)
     @cwin.setpos(r, c)
     @cwin.addch(char[0].ord|X::A_NORMAL)
+    @cwin.setpos(r, c)
     @cwin.refresh
   end
 
@@ -155,7 +145,6 @@ class RubyText::Window
     r0, c0 = self.rc
     loop do
       ch = self.getch
-      debug "gets: found #{ch.inspect}; cursor at #{self.rc.inspect}"
       case ch
         when 10  # Enter
           self.crlf
@@ -175,7 +164,6 @@ class RubyText::Window
             i += 1
             self.right
         else
-          debug "  case 3 (#{ch.inspect})"
           str.insert(i, ch)
           self.right
           self.go(r0, c0) { self.print str }
@@ -186,8 +174,6 @@ class RubyText::Window
   end
 
 end
-
-# into top level...
 
 module WindowIO
   def puts(*args)       # Doesn't affect STDOUT.puts, etc.

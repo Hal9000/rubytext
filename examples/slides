@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+def showme(name, up="", mode="pause")
+  system("ruby showme.rb #{name}.rb #{mode} #{up}")
+end
+
 mylib = `gem which rubytext`.chomp
 examples = mylib.sub(%r[/lib/rubytext.rb], "/examples")
 
@@ -8,32 +12,29 @@ Dir.chdir(examples)
 rc = system("ruby check.rb")
 exit unless rc
 
-# FIXME later:
-#   - use names instead of numbers?
-#   - convert showme into a method?
 
-system("ruby showme.rb prog01.rb")
-system("ruby showme.rb prog02.rb pause")
-system("ruby showme.rb prog03.rb pause")
-system("ruby showme.rb prog04.rb pause")
-system("ruby showme.rb prog05.rb pause")
-system("ruby showme.rb prog06.rb pause")
-system("ruby showme.rb prog07.rb pause")
-system("ruby showme.rb prog08.rb pause")
-system("ruby showme.rb prog09.rb pause")
-system("ruby showme.rb prog10.rb pause")
-system("ruby showme.rb prog12.rb pause")
-system("ruby showme.rb prog13.rb pause")
-system("ruby showme.rb prog14.rb pause")
-system("ruby showme.rb prog15.rb pause")
-system("ruby showme.rb prog16.rb pause")
-system("ruby showme.rb prog17.rb pause")
-system("ruby showme.rb prog18.rb pause")
-system("ruby showme.rb prog19.rb pause")
-system("ruby showme.rb prog20.rb pause")
-system("ruby showme.rb prog21.rb pause")
-system("ruby showme.rb prog22.rb pause 11")
-system("ruby showme.rb prog23.rb pause")
-system("ruby showme.rb prog24.rb pause")
-system("ruby showme.rb prog25.rb pause")
+  showme("simple_win")
+  showme("stdscr")
+  showme("stdout_etc")
+  showme("detect_rc")
+  showme("brackets")
+  showme("brack_equal")
+  showme("puts_print")
+  showme("output_meth")
+  showme("win_centering")
+  showme("putch")
+  showme("sym_navigate")
+  showme("effects")
+  showme("center_meth")
+  showme("topbottom")
+  showme("udlr_bang")
+  showme("updown_etc")
+  showme("home_udlr")
+  showme("rcprint")
+  showme("go_meth")
+  showme("no_border")
+  showme("no_scroll")
+  showme("window_full")
+  showme("ticker_threads", 11)
+  showme("simple_menu")
 

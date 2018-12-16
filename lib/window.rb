@@ -84,7 +84,7 @@ class RubyText::Window
     @cwin.refresh
   end
 
-  def screen_text(file = nil)
+  def screen_text(file = nil)   # rename?
     lines = []
     0.upto(self.rows-1) do |r|
       line = ""
