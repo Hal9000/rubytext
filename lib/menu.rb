@@ -1,12 +1,13 @@
 module RubyText
 
-  def self.menu(win: STDSCR, r: 0, c: 0, items:, curr: 0,
+  def self.menu(win: STDSCR, r: :center, c: :center, items:, curr: 0,
                 title: nil, fg: White, bg: Blue)
     RubyText.hide_cursor
     high = items.size + 2
     wide = items.map(&:length).max + 4
     tlen = title.length + 8  
     wide = [wide, tlen].max
+    r, c = win.coords(r, c)
     win.saveback(high, wide, r, c)
     mr, mc = r+win.r0, c+win.c0
     debug "menu: rc = #{[r,c].inspect} win r0c0 = #{[win.r0, win.c0].inspect}"
@@ -14,8 +15,10 @@ module RubyText
     mwin = RubyText.window(high, wide, r: mr, c: mc, 
                            fg: fg, bg: bg)
 
+    where = win == STDSCR ? [r, c+1] : [r-1, c+1]  # wtf?
+
     unless title.nil?
-      win.go(r-1, c+1) do   # same row as corner but farther right
+      win.go(*where) do   # same row as corner but farther right
         win.print fx("[ #{title} ]", :bold, fg, bg: bg)
       end
     end

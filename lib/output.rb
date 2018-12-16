@@ -19,7 +19,7 @@ class RubyText::Window
     args = [""] if args.empty?
     args += ["\n"] if sym == :puts
     set_colors(@fg, @bg)
-    debug "  set colors: #{[@fg, @bg].inspect}"
+#   debug "  set colors: #{[@fg, @bg].inspect}"
     if sym == :p
       args.map! {|x| effect?(x) ? x : x.inspect }
     else

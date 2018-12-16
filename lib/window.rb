@@ -7,7 +7,7 @@ class RubyText::Window
 
   # Better to use Window.window IRL
 
-  def initialize(high=nil, wide=nil, r0=1, c0=1, border=false, 
+  def initialize(high=nil, wide=nil, r0=0, c0=0, border=false, 
                  fg=White, bg=Blue, scroll=false)
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
@@ -103,7 +103,10 @@ class RubyText::Window
     @save = []
     0.upto(high-1) do |h|
       0.upto(wide-1) do |w|
-        @save << self[h+r-1, w+c-1]
+        row, col = h+r-1, w+c-1
+        row += 1 if self == STDSCR   # wtf?
+        col += 1 if self == STDSCR
+        @save << self[row, col]
       end
     end
   end
@@ -112,7 +115,10 @@ class RubyText::Window
     0.upto(high-1) do |h|
       line = ""
       0.upto(wide-1) {|w| line << @save.shift }
-      self.go h+r-1, c-1
+      row, col = h+r-1, c-1
+      row += 1 if self == STDSCR   # wtf?
+      col += 1 if self == STDSCR
+      self.go row, col
       self.print line
     end
     self.go *@pos
