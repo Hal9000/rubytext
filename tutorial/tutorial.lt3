@@ -25,15 +25,15 @@ but it _can be.)
 # hw.png PNG 283x190 283x190+0+0 8-bit sRGB 5443B 0.000u 0:00.000
    img_data = `identify #{sshot}`  # depends on imagemagick
    wimg, himg = img_data.split[2].split("x")
-   wide = (wimg.to_i * 2).to_i
+   wide = "100%"  # (wimg.to_i * 2.4).to_i
    high = himg.to_i + 25
    hcode = nlines*ppl.to_i + 25
    hmax = [high, hcode].max  # Code may be longer than screenshot height
    _puts "<!-- high = #{high}   hcode = #{hcode} -->"
    File.open("wrap-#{arg}.html", "w") do |f|
-     f.puts "<table width=100% cellpadding=2><tr><td width=60% valign=top>"
+     f.puts "<table width=100% cellpadding=2><tr><td width=65% valign=top>"
      f.puts code
-     f.puts "</td><td width=40% valign=top><img src=#{sshot} valign=top></td></tr></table>"
+     f.puts "</td><td width=35% valign=top><img src=#{sshot} valign=top></td></tr></table>"
    end
    _puts <<-HTML
      <iframe frameborder=0 
@@ -121,14 +121,17 @@ My own environment is iterm on Mac OSX with fairly standard settings. Here is so
 that will display all 64 possibilities of foreground/background. (Note that curses seems
 to "cheat" when these two are the same, presumably to preserve legibility.)
 
-.example colortest 16
+.example colortest 15
 
 You can use `[] to retrieve characters from the screen as though it were a 
 two-dimensional array. Similarly, `[]= will set characters.
 
 .example brackets 22
 
+Methods that specify coordinates for points can replace one or more of those coordinates
+with symbols such as ``:top, ``:left, and ``:center.
 
+.example sym_nav 18
 
 <h3>More later...</h3>
 

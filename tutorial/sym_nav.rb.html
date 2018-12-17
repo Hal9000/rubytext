@@ -1,0 +1,61 @@
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+pre { font-size: 15 }
+tt { font-size: 15 }
+* { font-size: 1em; }
+.Constant { color: #ff40ff; }
+.Special { color: #ffff00; }
+.Identifier { color: #00ffff; }
+.Statement { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Type { color: #00ff00; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">require</span> <span class="Special">'</span><span class="Constant">rubytext</span><span class="Special">'</span>
+
+<span class="Type">RubyText</span>.start
+
+puts <span class="Special">&quot;</span><span class="Special">\n</span><span class="Constant"> Methods such as go, rcprint, and putch</span><span class="Special">&quot;</span>
+puts <span class="Special">&quot;</span><span class="Constant"> can accept symbols such as</span><span class="Special">&quot;</span>
+puts <span class="Special">&quot;</span><span class="Constant"> :top :bottom :left :right :center</span><span class="Special">&quot;</span>
+
+win = <span class="Type">RubyText</span>.window(<span class="Constant">7</span>, <span class="Constant">25</span>, <span class="Constant">r</span>: <span class="Constant">5</span>, <span class="Constant">c</span>: <span class="Constant">10</span>, <span class="Constant">fg</span>: <span class="Type">Red</span>, <span class="Constant">bg</span>: <span class="Type">Black</span>)
+
+win.putch <span class="Special">&quot;</span><span class="Constant">1</span><span class="Special">&quot;</span>, <span class="Constant">r</span>: <span class="Constant">:bottom</span>, <span class="Constant">c</span>: <span class="Constant">:left</span>
+sleep <span class="Constant">0.4</span>
+win.go <span class="Constant">:center</span>, <span class="Constant">:left</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">abc</span><span class="Special">&quot;</span>
+sleep <span class="Constant">0.4</span>
+win.go <span class="Constant">:top</span>, <span class="Constant">:left</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">def</span><span class="Special">&quot;</span>
+sleep <span class="Constant">0.4</span>
+win.rcprint <span class="Constant">:top</span>, <span class="Constant">:center</span>, <span class="Special">&quot;</span><span class="Constant">4</span><span class="Special">&quot;</span>
+sleep <span class="Constant">0.4</span>
+
+others = [[<span class="Constant">:top</span>, <span class="Constant">:right</span>, <span class="Special">&quot;</span><span class="Constant">5</span><span class="Special">&quot;</span>], [<span class="Constant">:center</span>, <span class="Constant">:right</span>, <span class="Special">&quot;</span><span class="Constant">6</span><span class="Special">&quot;</span>],
+          [<span class="Constant">:bottom</span>, <span class="Constant">:right</span>, <span class="Special">&quot;</span><span class="Constant">7</span><span class="Special">&quot;</span>], [<span class="Constant">:bottom</span>, <span class="Constant">:center</span>, <span class="Special">&quot;</span><span class="Constant">8</span><span class="Special">&quot;</span>],
+          [<span class="Constant">:center</span>, <span class="Constant">:center</span>, <span class="Special">&quot;</span><span class="Constant">9</span><span class="Special">&quot;</span>]]
+
+others.each <span class="Statement">do</span> |<span class="Identifier">args</span>|
+  r, c, ch = *args
+  win.go r,c
+  win.putch(ch)
+  sleep <span class="Constant">0.4</span>
+<span class="Statement">end</span>
+
+getch
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
