@@ -1,8 +1,9 @@
 # RubyText
 
 RubyText is a curses wrapper that is in the early experimental
-stages. The code has bugs. Running it may cause general bad luck
-as well as demon infestation.
+stages. Unlike some similar projects, it is a "thick" wrapper;
+I am adding functionality that does not always correspond directly
+to the curses world. 
 
 Install the `rubytext` gem and then run the demo or the slides
 or both.
@@ -10,11 +11,9 @@ or both.
 ```
   $ gem install rubytext
   $ rubytext demo      # 2-minute demo
-  $ rubytext slides    # longer "slideshow"
+  $ rubytext slides    # Longer "slideshow"
+  $ rubytext tutorial  # (On OS/X) opens tutorial.html
 ```
-
-There is also `examples/ide.rb` ("world's simplest Ruby IDE").
-It is _very_ dumb.  :)
 
 ### Getting started
 
