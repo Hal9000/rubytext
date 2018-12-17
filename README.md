@@ -84,11 +84,12 @@ win = RubyText.window(8, 39, r: 4, c: 9, fg: Black, bg: Blue)
 win.puts "If your text is longer than " +
          "the width of the window, by default it will " +
          "wrap around."
-
-win.puts "Scrolling is not yet supported."
 ```
 
-Scrolling is not yet implemented.
+<img src=readme-images/noscroll.png>
+
+Scrolling is not enabled by default for a window (except STDSCR).
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(10, 70, r: 2, c: 14, fg: Yellow, bg: Black)
@@ -102,10 +103,12 @@ win.output do
   
   10.times {|i| puts "Printing line #{i}..."; sleep 0.2 }
 end
-
 ```
 
+<img src=readme-images/noscroll.png>
+
 You can use `print` and `p` as well as `puts`.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(10, 60, r: 2, c: 14, fg: Blue, bg: Black)
@@ -124,6 +127,7 @@ end
 ```
 
 You can still use `puts` (etc.) with files, but watch for `STDOUT` and `STDERR`.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(10, 50, r: 0, c: 5, fg: Yellow, bg: Blue)
