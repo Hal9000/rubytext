@@ -1,0 +1,48 @@
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+pre { font-size: 15 }
+tt { font-size: 15 }
+* { font-size: 1em; }
+.Constant { color: #ff40ff; }
+.Special { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Type { color: #00ff00; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">require</span> <span class="Special">'</span><span class="Constant">rubytext</span><span class="Special">'</span>
+
+<span class="Type">RubyText</span>.start
+
+win = <span class="Type">RubyText</span>.window(<span class="Constant">16</span>, <span class="Constant">60</span>, <span class="Constant">r</span>: <span class="Constant">3</span>, <span class="Constant">c</span>: <span class="Constant">10</span>, <span class="Constant">fg</span>: <span class="Type">Yellow</span>, <span class="Constant">bg</span>: <span class="Type">Blue</span>)
+
+win.puts <span class="Special">&quot;</span><span class="Constant">ABCDE    Method [] can retrieve characters </span><span class="Special">&quot;</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">FGHIJ    from a window.</span><span class="Special">&quot;</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">KLMNO</span><span class="Special">\n</span><span class="Constant">PQRST</span><span class="Special">\n</span><span class="Constant">UVWZYZ</span><span class="Special">\n</span><span class="Constant"> </span><span class="Special">&quot;</span>
+
+sleep <span class="Constant">1</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">(3,2) =&gt; '</span><span class="Special">#{</span>win[<span class="Constant">3</span>,<span class="Constant">2</span>]<span class="Special">}</span><span class="Constant">'    (0,4)  =&gt; '</span><span class="Special">#{</span>win[<span class="Constant">0</span>,<span class="Constant">4</span>]<span class="Special">}</span><span class="Constant">'</span><span class="Special">&quot;</span>
+win.puts <span class="Special">&quot;</span><span class="Constant">(7,7) =&gt; '</span><span class="Special">#{</span>win[<span class="Constant">7</span>,<span class="Constant">7</span>]<span class="Special">}</span><span class="Constant">'    (0,15) =&gt; '</span><span class="Special">#{</span>win[<span class="Constant">0</span>,<span class="Constant">15</span>]<span class="Special">}</span><span class="Constant">'</span><span class="Special">&quot;</span>
+
+sleep <span class="Constant">1</span>
+win.puts <span class="Special">&quot;</span><span class="Special">\n</span><span class="Constant">And []= can place characters at screen locations.</span><span class="Special">&quot;</span>
+
+sleep <span class="Constant">1</span>
+win[<span class="Constant">12</span>, <span class="Constant">15</span>] = <span class="Special">&quot;</span><span class="Constant">a</span><span class="Special">&quot;</span>; win.refresh; sleep <span class="Constant">0.4</span>
+win[<span class="Constant">11</span>, <span class="Constant">25</span>] = <span class="Special">&quot;</span><span class="Constant">b</span><span class="Special">&quot;</span>; win.refresh; sleep <span class="Constant">0.4</span>
+win[<span class="Constant">10</span>, <span class="Constant">35</span>] = <span class="Special">&quot;</span><span class="Constant">c</span><span class="Special">&quot;</span>
+getch
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

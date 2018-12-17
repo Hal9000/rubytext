@@ -31,9 +31,9 @@ but it _can be.)
    hmax = [high, hcode].max  # Code may be longer than screenshot height
    _puts "<!-- high = #{high}   hcode = #{hcode} -->"
    File.open("wrap-#{arg}.html", "w") do |f|
-     f.puts "<table width=100% cellpadding=2><tr><td width=50% valign=top>"
+     f.puts "<table width=100% cellpadding=2><tr><td width=60% valign=top>"
      f.puts code
-     f.puts "</td><td width=50% valign=top><img src=#{sshot} valign=top></td></tr></table>"
+     f.puts "</td><td width=40% valign=top><img src=#{sshot} valign=top></td></tr></table>"
    end
    _puts <<-HTML
      <iframe frameborder=0 
@@ -67,18 +67,19 @@ are keyword arguments. If you know curses, some of these will be familiar,
 while others provide functionality unrelated to what curses provides.
 
 .dlist |
-`:cbreak | Like `cbreak in curses. Inverse is `:\_cbreak (preferred) or `:nocbreak
-`:raw | Like `raw in curses. Inverse is `:\_raw (preferred) or `:noraw
-`:echo | Like `echo in curses. Inverse is `:\_echo (preferred) or `:noecho
-`:keypad | Like `keypad in curses. Inverse is `:\_keypad (preferred) or `:nokeypad
-`log: _logfile | Log debugging information to specified file.
-`fg: _foreground | Set foreground color for STDSCR.
-`bg: _background | Set background color for STDSCR.
-`scroll: _Boolean | Permit (or disallow) window scrolling for STDSCR.
+$$bt[:cbreak] | Like `cbreak in curses. Inverse is `:\_cbreak (preferred) or `:nocbreak
+$$bt[:raw] | Like `raw in curses. Inverse is `:\_raw (preferred) or `:noraw
+$$bt[:echo] | Like `echo in curses. Inverse is `:\_echo (preferred) or `:noecho
+$$bt[:keypad] | Like `keypad in curses. Inverse is `:\_keypad (preferred) or `:nokeypad
+$$bt[log: _logfile] | Log debugging information to specified file.
+$$bt[fg: _foreground] | Set foreground color for STDSCR.
+$$bt[bg: _background] | Set background color for STDSCR.
+$$bt[scroll: _Boolean] | Permit (or disallow) window scrolling for STDSCR.
+$$bt[cursor: _Boolean] | Turn the cursor on or off.
 .end
 
 
-The defaults are as follows: 
+The defaults for `STDSCR are as follows: 
 
 .mono
   RubyText.start(:cbreak, :_raw, :_echo, :keypad, log: "/tmp/rubytext.log",
@@ -122,8 +123,14 @@ to "cheat" when these two are the same, presumably to preserve legibility.)
 
 .example colortest 16
 
+You can use `[] to retrieve characters from the screen as though it were a 
+two-dimensional array. Similarly, `[]= will set characters.
 
-That's all for now.
+.example brackets 22
+
+
+
+<h3>More later...</h3>
 
 
 .cleanup toc.tmp

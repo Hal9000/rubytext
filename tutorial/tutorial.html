@@ -54,26 +54,28 @@ while others provide functionality unrelated to what curses provides.
 <p>
 
 <dl>
-<dt><tt>:cbreak</tt> </dt>
+<dt><b><tt>:cbreak</tt></b> </dt>
 <dd> Like <tt>cbreak</tt> in curses. Inverse is <tt>:_cbreak</tt> (preferred) or <tt>:nocbreak</tt></dd>
-<dt><tt>:raw</tt> </dt>
+<dt><b><tt>:raw</tt></b> </dt>
 <dd> Like <tt>raw</tt> in curses. Inverse is <tt>:_raw</tt> (preferred) or <tt>:noraw</tt></dd>
-<dt><tt>:echo</tt> </dt>
+<dt><b><tt>:echo</tt></b> </dt>
 <dd> Like <tt>echo</tt> in curses. Inverse is <tt>:_echo</tt> (preferred) or <tt>:noecho</tt></dd>
-<dt><tt>:keypad</tt> </dt>
+<dt><b><tt>:keypad</tt></b> </dt>
 <dd> Like <tt>keypad</tt> in curses. Inverse is <tt>:_keypad</tt> (preferred) or <tt>:nokeypad</tt></dd>
-<dt><tt>log:</tt> <i>logfile</i> </dt>
+<dt><b><tt>log: <i>logfile</tt></b></i> </dt>
 <dd> Log debugging information to specified file.</dd>
-<dt><tt>fg:</tt> <i>foreground</i> </dt>
+<dt><b><tt>fg: <i>foreground</tt></b></i> </dt>
 <dd> Set foreground color for STDSCR.</dd>
-<dt><tt>bg:</tt> <i>background</i> </dt>
+<dt><b><tt>bg: <i>background</tt></b></i> </dt>
 <dd> Set background color for STDSCR.</dd>
-<dt><tt>scroll:</tt> <i>Boolean</i> </dt>
+<dt><b><tt>scroll: <i>Boolean</tt></b></i> </dt>
 <dd> Permit (or disallow) window scrolling for STDSCR.</dd>
+<dt><b><tt>cursor: <i>Boolean</tt></b></i> </dt>
+<dd> Turn the cursor on or off.</dd>
 </dl>
 <p>
 
-The defaults are as follows: 
+The defaults for <tt>STDSCR</tt> are as follows: 
 <p>
 
 <pre>
@@ -115,9 +117,22 @@ to "cheat" when these two are the same, presumably to preserve legibility.)
      </iframe>
 <p>
 
+You can use <tt></tt> to retrieve characters from the screen as though it were a 
+two-dimensional array. Similarly, <tt></tt>= will set characters.
 <p>
 
-That's all for now.
+<!-- high = 252   hcode = 509 -->
+     <iframe frameborder=0 
+             width=782 height=509 
+             src='wrap-brackets.html'>
+     </iframe>
+<p>
+
+<p>
+
+<p>
+
+<h3>More later...</h3>
 <p>
 
 <p>

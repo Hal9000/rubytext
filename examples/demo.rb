@@ -104,7 +104,7 @@ end
 delay 5
 mywin.output do
   mywin.clear
-  mywin.puts "The [] method (zero-based) is still buggy, but let's try it."
+  mywin.puts "The [] method (zero-based) is available... let's try it."
   mywin.puts "XYZ"
   ch = mywin[2,2]
   mywin.puts "The char at [2,2] is: #{ch.chr.inspect}"
