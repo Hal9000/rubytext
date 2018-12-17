@@ -105,7 +105,7 @@ win.output do
 end
 ```
 
-<img src=readme-images/noscroll.png>
+<img src=readme-images/window_full.png>
 
 You can use `print` and `p` as well as `puts`.
 
