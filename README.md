@@ -126,6 +126,8 @@ win.output do
 end
 ```
 
+<img src=readme-images/puts_print.png>
+
 You can still use `puts` (etc.) with files, but watch for `STDOUT` and `STDERR`.
 
 ```ruby
