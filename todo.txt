@@ -18,7 +18,6 @@
   -   more standard debug statements
   -   debug levels?
   - window positions: defaults? accept :top/:bottom/:center, :left/:right/:center
-  - Readline-like features in gets()?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
@@ -32,6 +31,7 @@
   - CDK?
   - Forms and fields
 
+x - Readline-like features in gets()?
 x - gets has bugs (backspace/del/etc.)
 x - add spinner widget
 x - rename the example programs

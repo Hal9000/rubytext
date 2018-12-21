@@ -139,16 +139,19 @@ class RubyText::Window
   end
 
   class GetString
-    def initialize(win = STDSCR, str = "", i = 0)
+    def initialize(win = STDSCR, str = "", i = 0, history: nil)
       @win = win
       @r0, @c0 = @win.rc
       @str, @i = str, i
-      @len = @str.length
-      @max = @len - 1
+      @history = history
+      @h = @history.length - 1
+      @maxlen = 0
     end
 
     def enter
       @win.crlf
+      @history << @str
+      @h = @history.length - 1
     end
 
     def left_arrow
@@ -172,10 +175,33 @@ class RubyText::Window
       @str[@i] = ""
       @win.left
       @win.rcprint @r0, @c0, @str + " "
-
 #     @r, @c = @win.rc
 #     @win[@r0, @c0+@str.length+1] = ' '
 #     @win.go @r, @c
+    end
+
+    def history_prev
+      return if @history.empty?
+      @win.go @r0, @c0
+      @maxlen = @history.map(&:length).max
+      @win.print(" "*@maxlen)
+      @h = (@h - 1) % @history.length
+      @str = @history[@h]
+      @i = @str.length
+      @win.go @r0, @c0
+      @win.print @str
+    end
+
+    def history_next
+      return if @history.empty?
+      @h = (@h + 1) % @history.length
+      @win.go @r0, @c0
+      @maxlen = @history.map(&:length).max
+      @win.print(" "*@maxlen)
+      @str = @history[@h]
+      @i = @str.length
+      @win.go @r0, @c0
+      @win.print @str
     end
 
     def add(ch)
@@ -190,9 +216,10 @@ class RubyText::Window
     end
   end
 
-  def gets  # still needs improvement
+  def gets(history: nil)  # still needs improvement
     # echo assumed to be OFF, keypad ON
-    gs = GetString.new(self)
+    @history = history
+    gs = GetString.new(self, history: history)
     loop do
       ch = self.getch
       case ch
@@ -205,6 +232,12 @@ class RubyText::Window
           gs.left_arrow
         when 261   # right-arrow
           gs.right_arrow
+        when 259   # up
+          next if @history.nil?  # move this?
+          gs.history_prev
+        when 258   # down
+          next if @history.nil?  # move this?
+          gs.history_next
         else
           gs.add(ch)
       end
