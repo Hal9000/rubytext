@@ -138,7 +138,81 @@ class RubyText::Window
     @cwin.refresh
   end
 
+  class GetString
+    def initialize(win = STDSCR, str = "", i = 0)
+      @win = win
+      @r0, @c0 = @win.rc
+      @str, @i = str, i
+      @len = @str.length
+      @max = @len - 1
+    end
+
+    def enter
+      @win.crlf
+    end
+
+    def left_arrow
+      if @i > 0
+        @i -= 1
+        @win.left
+      end
+    end
+
+    def right_arrow
+      if @i < @str.length
+        @i += 1
+        @win.right
+      end
+    end
+
+    def backspace
+      # remember: may be in middle of string
+      return if @i == 0
+      @i -= 1
+      @str[@i] = ""
+      @win.left
+      @win.rcprint @r0, @c0, @str + " "
+
+#     @r, @c = @win.rc
+#     @win[@r0, @c0+@str.length+1] = ' '
+#     @win.go @r, @c
+    end
+
+    def add(ch)
+      @str.insert(@i, ch)
+      @win.right
+      @win.go(@r0, @c0) { @win.print @str }
+      @i += 1
+    end
+
+    def value
+      @str
+    end
+  end
+
   def gets  # still needs improvement
+    # echo assumed to be OFF, keypad ON
+    gs = GetString.new(self)
+    loop do
+      ch = self.getch
+      case ch
+        when 10
+          gs.enter
+          break
+        when 8, 127, 63   # backspace, del, ^H (huh?)
+          gs.backspace
+        when 260   # left-arrow
+          gs.left_arrow
+        when 261   # right-arrow
+          gs.right_arrow
+        else
+          gs.add(ch)
+      end
+    end
+    gs.value
+  end
+
+  def old_gets  # still needs improvement
     # echo assumed to be OFF, keypad ON
     str = ""
     i = 0
@@ -146,23 +220,26 @@ class RubyText::Window
     loop do
       ch = self.getch
       case ch
-        when 10  # Enter
-          self.crlf
-          break 
+        when 10;          self.crlf; break # Enter
         when 8, 127, 63   # backspace, del, ^H (huh?)
           if i >= 1
             str = str[0..-2]
             i -= 1
             self.left
             self[*self.rc] = ' '
-            self.left
+            r, c = self.rc
+            rcprint r, c, str[i+1..-1] + "   "
           end
           when 260   # left-arrow
-            i -= 1
-            self.left
+            if i > 0
+              i -= 1
+              self.left
+            end
           when 261   # right-arrow
-            i += 1
-            self.right
+            if i < str.length
+              i += 1
+              self.right
+            end
         else
           str.insert(i, ch)
           self.right

@@ -1,14 +1,10 @@
 ----  * = in progress   x = finished
 
-* - multitest example
-* - improve README
-* - start tutorial
   - make a scrolling example
   - normalize fg/bg usage
   - color pair names?
   - flags save/restore is broken
   - move menu to Window
-  - gets has bugs (backspace/del/etc.)
   - accumulate windows in a list??
   - add metadata to screen_text dump?
   - do a 'stop' before crashing with backtrace?
@@ -26,6 +22,9 @@
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
+* - improve README
+* - start tutorial
+* - multitest example
   - Scroll buffers
   - Slide: Attrs
   - Slide: getch
@@ -33,6 +32,8 @@
   - CDK?
   - Forms and fields
 
+x - gets has bugs (backspace/del/etc.)
+x - add spinner widget
 x - rename the example programs
 x - restback has OBO
 x - keypad option is broken

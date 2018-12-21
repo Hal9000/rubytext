@@ -12,4 +12,14 @@ module RubyText
       sleep delay
     end
   end
+
+  def self.spinner(win: STDSCR, &block)
+    chars = "-\\|/"
+    RubyText.hide_cursor
+    thread = Thread.new { i=0; loop { i = (i+1) % 4; win.print chars[i]; win.left; sleep 0.1 } }
+    block.call
+    win.puts
+    Thread.kill(thread)
+    RubyText.show_cursor
+  end
 end
