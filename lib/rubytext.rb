@@ -41,7 +41,7 @@ def import(meth, recv)
   end
 end
 
-def make_exception(sym, str)
+def make_exception(sym, str)   # FIXME refactor
   return if Object.constants.include?(sym)
   Object.const_set(sym, StandardError.dup)
   define_method(sym) do |*args|
@@ -53,14 +53,15 @@ def make_exception(sym, str)
 end
 
 make_exception(:RTError, "General error: $1 $2 $3")
+   # TODO more...
 
 def debugging(onoff)
-  $debugging = onoff
+  $debugging = onoff    # FIXME eschew global?
 end
 
 def debug(*args)
   return unless $debugging
-  return unless $debug
+  return unless $debug   # FIXME eschew global?
   $debug.puts *args
   $debug.flush
 end

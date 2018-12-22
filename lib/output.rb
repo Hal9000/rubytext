@@ -245,44 +245,6 @@ class RubyText::Window
     gs.value
   end
 
-  def old_gets  # still needs improvement
-    # echo assumed to be OFF, keypad ON
-    str = ""
-    i = 0
-    r0, c0 = self.rc
-    loop do
-      ch = self.getch
-      case ch
-        when 10;          self.crlf; break # Enter
-        when 8, 127, 63   # backspace, del, ^H (huh?)
-          if i >= 1
-            str = str[0..-2]
-            i -= 1
-            self.left
-            self[*self.rc] = ' '
-            r, c = self.rc
-            rcprint r, c, str[i+1..-1] + "   "
-          end
-          when 260   # left-arrow
-            if i > 0
-              i -= 1
-              self.left
-            end
-          when 261   # right-arrow
-            if i < str.length
-              i += 1
-              self.right
-            end
-        else
-          str.insert(i, ch)
-          self.right
-          self.go(r0, c0) { self.print str }
-          i += 1
-      end
-    end
-    str
-  end
-
 end
 
 module WindowIO

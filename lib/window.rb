@@ -1,3 +1,14 @@
+
+module RubyText
+  # TODO add title:?
+  def self.window(high, wide, r: nil, c: nil, border: true, 
+                  fg: White, bg: Blue, scroll: false)
+    r ||= (STDSCR.rows - high)/2
+    c ||= (STDSCR.cols - wide)/2
+    RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
+  end
+end
+
 class RubyText::Window
   Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
 
@@ -5,7 +16,7 @@ class RubyText::Window
   attr_reader :r0, :c0
   attr_accessor :fg, :bg
 
-  # Better to use Window.window IRL
+  # Better to use Window.window IRL 
 
   def initialize(high=nil, wide=nil, r0=0, c0=0, border=false, 
                  fg=White, bg=Blue, scroll=false)
@@ -42,6 +53,8 @@ class RubyText::Window
   rescue => err
     File.open("/tmp/main.out", "w") {|f| f.puts err.inspect; f.puts err.backtrace } 
   end
+
+# FIXME try again to inline this
 
   def self.make(cwin, high, wide, r0, c0, border: true, fg: White, bg: Black, scroll: false)
     obj = self.allocate

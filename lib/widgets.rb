@@ -13,7 +13,7 @@ module RubyText
     end
   end
 
-  def self.spinner(win: STDSCR, &block)
+  def self.spinner(win: STDSCR, &block) # TODO delay, etc.
     chars = "-\\|/"
     RubyText.hide_cursor
     thread = Thread.new { i=0; loop { i = (i+1) % 4; win.print chars[i]; win.left; sleep 0.1 } }
@@ -22,4 +22,6 @@ module RubyText
     Thread.kill(thread)
     RubyText.show_cursor
   end
+
+  # TODO add splash
 end

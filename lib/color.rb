@@ -8,6 +8,9 @@ Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
 class RubyText::Color
   Colors = ::Colors
 
+# FIXME some should be private
+# TODO  add color-pair constants
+
   def self.sym2const(color)   # to curses constant
     X.const_get("COLOR_#{color.to_s.upcase}")
   end

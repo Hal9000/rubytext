@@ -10,6 +10,8 @@ module RubyText
 
   $debugging = true
 
+  # FIXME refactor save/restore, etc.  - rep as binary vector?
+
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)
     $debug ||= File.new(log, "w") if log   # FIXME remove global
@@ -120,15 +122,6 @@ module RubyText
     else
       raise "#{name} #{args.inspect}" # NoMethodError
     end
-  end
-
-  # Why did I put this here?
-
-  def self.window(high, wide, r: nil, c: nil, border: true, 
-                  fg: White, bg: Blue, scroll: false)
-    r ||= (STDSCR.rows - high)/2
-    c ||= (STDSCR.cols - wide)/2
-    RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
   end
 
   def self.hide_cursor
