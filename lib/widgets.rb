@@ -16,7 +16,18 @@ module RubyText
   def self.spinner(win: STDSCR, &block) # TODO delay, etc.
     chars = "-\\|/"
     RubyText.hide_cursor
-    thread = Thread.new { i=0; loop { i = (i+1) % 4; win.print chars[i]; win.left; sleep 0.1 } }
+    t0 = Time.now.to_i
+    thread = Thread.new do
+      i=0
+      loop do 
+        t1 = Time.now.to_i
+        elapsed = "0:%02d" % (t1-t0)
+        i = (i+1) % 4
+        win.print " " + chars[i] + "  " + elapsed
+        win.left!
+        sleep 0.04
+      end
+    end
     block.call
     win.puts
     Thread.kill(thread)

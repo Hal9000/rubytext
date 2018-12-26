@@ -139,7 +139,7 @@ class RubyText::Window
   end
 
   class GetString
-    def initialize(win = STDSCR, str = "", i = 0, history: nil)
+    def initialize(win = STDSCR, str = "", i = 0, history: [])
       @win = win
       @r0, @c0 = @win.rc
       @str, @i = str, i
@@ -216,7 +216,7 @@ class RubyText::Window
     end
   end
 
-  def gets(history: nil)  # still needs improvement
+  def gets(history: [])  # still needs improvement
     # echo assumed to be OFF, keypad ON
     @history = history
     gs = GetString.new(self, history: history)
