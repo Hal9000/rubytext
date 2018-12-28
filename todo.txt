@@ -1,7 +1,12 @@
 ----  * = in progress   x = finished
 
-  - make a scrolling example
   - make examples individually runnable 
+  - make a scrolling example
+  - make a gets example
+  - selector is broken
+  - add splash widget (w/wo getch)
+  - add beep, flash?
+  - add gets tab completion?
   - normalize fg/bg usage
   - color pair names?
   - flags save/restore is broken
@@ -29,6 +34,7 @@
   - Slide: Attrs
   - Slide: getch
   - Slide: spinner
+  - Slide: gets (w/wo history, etc.)
   - CDK?
   - Forms and fields
 

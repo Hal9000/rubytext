@@ -16,14 +16,12 @@ module RubyText
       mr, mc = r+self.r0, c+self.c0
       mwin = RubyText.window(high, wide, r: mr, c: mc, 
                              fg: fg, bg: bg)
-
       where = self == STDSCR ? [r, c+1] : [r-1, c+1]  # wtf?
       unless title.nil?
         self.go(*where) do   # same row as corner but farther right
           self.print fx("[ #{title} ]", :bold, fg, bg: bg)
         end
       end
-
       X.stdscr.keypad(true)
       sel = curr
       max = items.size - 1
@@ -49,6 +47,7 @@ module RubyText
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             return [sel, items[sel]]
+          else X.beep
         end
         RubyText.show_cursor
       end
@@ -95,8 +94,11 @@ module RubyText
               raise 
             end
           end
+        when 9  # tab
+          X.flash
         when quit  # parameter
           exit
+        else X.beep    # all else is trash
       end
     end
   rescue

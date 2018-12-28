@@ -238,6 +238,8 @@ class RubyText::Window
         when 258   # down
           next if @history.nil?  # move this?
           gs.history_next
+        when Integer
+          X.beep
         else
           gs.add(ch)
       end

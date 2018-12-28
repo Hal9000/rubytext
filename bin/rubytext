@@ -4,7 +4,7 @@ require 'rubytext'   # Remember: Specify STDOUT as needed!
 
 path = RubyText::Path
 
-cmd = ARGV.first
+cmd, arg = ARGV
 
 case cmd
   when nil
@@ -15,4 +15,14 @@ case cmd
     system("#{path}/../examples/slides")
   when "tutorial"
     system("open #{path}/../tutorial/tutorial.html")
+  when "example"
+    if arg.nil?
+      list = Dir["#{path}/../examples/**"]
+      list.map! {|x| File.basename(x).sub(/.rb$/, "") }
+      list = list - %w[check demo duh fixme hmmm ide multitest README showme slides]
+      puts list
+    else
+      system("cd #{path}/../examples; ruby showme.rb #{arg}.rb pause; cd -")
+    end
 end
+

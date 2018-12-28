@@ -15,6 +15,16 @@ or both.
   $ rubytext tutorial  # (On OS/X) opens tutorial.html
 ```
 
+You can also use the `example` subcommand:
+
+```
+  $ rubytext example          # list all examples
+  $ rubytext example progname # run 'prog' example
+```
+
+When you specify the example name, there is no need to 
+use the `.rb` extension.
+
 ### Getting started
 
 Here's the obligatory hello-world program.
