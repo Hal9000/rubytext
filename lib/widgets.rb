@@ -13,7 +13,7 @@ module RubyText
     end
   end
 
-  def self.spinner(win: STDSCR, &block) # TODO delay, etc.
+  def self.spinner(label: "", win: STDSCR, &block) # TODO delay, etc.
     chars = "-\\|/"
     RubyText.hide_cursor
     t0 = Time.now.to_i
@@ -21,17 +21,18 @@ module RubyText
       i=0
       loop do 
         t1 = Time.now.to_i
-        elapsed = "0:%02d" % (t1-t0)
+        elapsed = "0:%02d" % (t1-t0)   # FIXME breaks at 60 sec
         i = (i+1) % 4
-        win.print " " + chars[i] + "  " + elapsed
+        win.print " #{label} #{chars[i]}  #{elapsed}"
         win.left!
         sleep 0.04
       end
     end
-    block.call
+    ret = block.call
     win.puts
     Thread.kill(thread)
     RubyText.show_cursor
+    ret
   end
 
   # TODO add splash
