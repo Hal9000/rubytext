@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
 
-system("vi lib/version.rb +3")
+system("vi lib/rubytext_version.rb +3")
 
 require 'date'
 
 $LOAD_PATH << "./lib"
 
-require "version"
+require "rubytext_version"
 
 today = Date.today.strftime("%Y-%m-%d")
 version = RubyText::VERSION
 
 system("git pull")
-system("git add lib/version.rb")
+system("git add lib/rubytext_version.rb")
 gs = `git status 2>&1`
 
 if gs =~ /not staged for commit/

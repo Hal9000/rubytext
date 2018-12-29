@@ -1,12 +1,13 @@
 ----  * = in progress   x = finished
 
-  - make examples individually runnable 
+  - gets: limit
+  - gets: default
+  - gets: tab completion?
   - make a scrolling example
   - make a gets example
   - selector is broken
   - add splash widget (w/wo getch)
   - add beep, flash?
-  - add gets tab completion?
   - normalize fg/bg usage
   - color pair names?
   - flags save/restore is broken
@@ -38,6 +39,7 @@
   - CDK?
   - Forms and fields
 
+x - make examples individually runnable 
 x - Readline-like features in gets()?
 x - gets has bugs (backspace/del/etc.)
 x - add spinner widget

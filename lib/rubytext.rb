@@ -7,7 +7,7 @@ X = Curses  # shorthand. klunky I know
 module RubyText
 end
 
-require 'version'
+require 'rubytext_version'
 require 'output'       # RubyText, RubyText::Window, Kernel
 require 'keys'         # RubyText::Keys
 require 'menu'         # RubyText
