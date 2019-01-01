@@ -6,7 +6,7 @@
   - make a scrolling example
   - make a gets example
   - selector is broken
-  - add splash widget (w/wo getch)
+x - add splash widget (w/wo getch)
   - add beep, flash?
   - normalize fg/bg usage
   - color pair names?

@@ -35,5 +35,16 @@ module RubyText
     ret
   end
 
+  def self.splash(msg)
+    lines = msg.split("\n")
+    high = lines.size + 2
+    wide = lines.map {|x| x.length }.max + 2
+    STDSCR.saveback(high, wide, 10, 20)
+    win = RubyText.window(high, wide, r: 10, c: 20, fg: White, bg: Red)
+    win.puts msg
+    getch
+    STDSCR.restback(high, wide, 10, 20)
+  end
+
   # TODO add splash
 end
