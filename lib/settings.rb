@@ -61,16 +61,16 @@ module RubyText
       @flags.uniq!
       flag = arg.to_s
       if standard.include?(flag.to_sym) || standard.include?(flag.sub(/no/, "_").to_sym)
-        X.send(flag)
+        Curses.send(flag)
       elsif flag[0] == "_" && standard.include?(flag[1..-1].to_sym)
         flag.sub!(/^_/, "no")
-        X.send(flag)
+        Curses.send(flag)
       else
         case flag.to_sym
           when :cursor
-            X.curs_set(1)
+            Curses.curs_set(1)
           when :_cursor, :nocursor
-            X.curs_set(0)
+            Curses.curs_set(0)
           when :keypad
             STDSCR.cwin.keypad(true)
           when :_keypad
@@ -109,7 +109,7 @@ module RubyText
 
   def self.stop
     @started = false
-    X.close_screen
+    Curses.close_screen
   end
 
   # For passing through arbitrary method calls
@@ -118,22 +118,22 @@ module RubyText
   def self.method_missing(name, *args)
     debug "method_missing: #{name}  #{args.inspect}"
     if name[0] == '_'
-      X.send(name[1..-1], *args)
+      Curses.send(name[1..-1], *args)
     else
       raise "#{name} #{args.inspect}" # NoMethodError
     end
   end
 
   def self.hide_cursor
-    X.curs_set(0)
+    Curses.curs_set(0)
   end
 
   def self.show_cursor
-    X.curs_set(1)
+    Curses.curs_set(1)
   end
 
   def self.show_cursor!
-    X.curs_set(2)  # Doesn't work? Device-dependent?
+    Curses.curs_set(2)  # Doesn't work? Device-dependent?
   end
 end
 

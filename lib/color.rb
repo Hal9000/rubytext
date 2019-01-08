@@ -12,7 +12,7 @@ class RubyText::Color
 # TODO  add color-pair constants
 
   def self.sym2const(color)   # to curses constant
-    X.const_get("COLOR_#{color.to_s.upcase}")
+    Curses.const_get("COLOR_#{color.to_s.upcase}")
   end
 
   def self.index(color)
@@ -22,7 +22,7 @@ class RubyText::Color
   def self.pair(fg, bg)
     nf, nb = index(fg), index(bg)
     num = 8*nf + nb
-    X.init_pair(num, sym2const(fg), sym2const(bg))
+    Curses.init_pair(num, sym2const(fg), sym2const(bg))
     num
   end
 end

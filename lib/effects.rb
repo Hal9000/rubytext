@@ -6,10 +6,10 @@ def fx(str, *args, bg: nil)
 end
 
 class RubyText::Effects   # dumb name?
-  Modes  = {bold:    X::A_BOLD,
-            normal:  X::A_NORMAL,
-            reverse: X::A_REVERSE, 
-            under:   X::A_UNDERLINE}
+  Modes  = {bold:    Curses::A_BOLD,
+            normal:  Curses::A_NORMAL,
+            reverse: Curses::A_REVERSE, 
+            under:   Curses::A_UNDERLINE}
 
   Others = %[:show, :hide]  # show/hide cursor; more later??
 

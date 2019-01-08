@@ -3,14 +3,12 @@
   - gets: limit
   - gets: default
   - gets: tab completion?
-  - make a scrolling example
+  - write (at least title) to window frame
   - make a gets example
-  - selector is broken
-x - add splash widget (w/wo getch)
+  - flags save/restore is broken
   - add beep, flash?
   - normalize fg/bg usage
   - color pair names?
-  - flags save/restore is broken
   - move menu to Window
   - accumulate windows in a list??
   - add metadata to screen_text dump?
@@ -39,6 +37,9 @@ x - add splash widget (w/wo getch)
   - CDK?
   - Forms and fields
 
+x - make a scrolling example
+x - selector is broken
+x - add splash widget (w/wo getch)
 x - make examples individually runnable 
 x - Readline-like features in gets()?
 x - gets has bugs (backspace/del/etc.)

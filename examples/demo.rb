@@ -2,15 +2,15 @@ $LOAD_PATH.unshift "lib"
 
 require 'rubytext'
 
-def delay(sec, speed=1.0)
-  sleep sec/speed
+def delay(sec)
+  sleep sec/@speed
 end
 
 speed = ARGV.first || 1.0
-speed = speed.to_f
-delay(speed)
+@speed = speed.to_f
+delay 1
 
-RubyText.start(log: "mylog.txt", fg: :green, bg: :black)
+RubyText.start(log: "mylog.txt", fg: Blue, bg: Black)
 
 print "Here goes... "
 delay 2

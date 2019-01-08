@@ -10,7 +10,7 @@ case cmd
   when nil
     STDOUT.puts "Usage: rubytext [demo|slides]"
   when "demo"
-    system("ruby #{path}/../examples/demo.rb")
+    system("ruby #{path}/../examples/demo.rb #{arg}")
   when "slides"
     system("#{path}/../examples/slides")
   when "tutorial"

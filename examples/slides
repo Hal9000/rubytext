@@ -36,5 +36,6 @@ showme("no_scroll")
 showme("window_full")
 showme("spin")
 showme("ticker_threads", 11)
+showme("scrolling")
 showme("simple_menu")
 

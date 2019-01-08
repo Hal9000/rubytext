@@ -15,9 +15,9 @@ def shell(str)
   system("stty sane")   # FIXME - dumb hack
   STDSCR.puts "\n\n  When you exit, you will\n  return to the IDE.\n "
   system(str)
-  X.noecho   # FIXME Shouldn't have to do this stuff
-  X.stdscr.keypad(true)
-  X.cbreak   # by default
+  Curses.noecho   # FIXME Shouldn't have to do this stuff
+  Curses.stdscr.keypad(true)
+  Curses.cbreak   # by default
 end
 
 items = ["Edit lib",   # 0

@@ -124,7 +124,7 @@ class RubyText::Window
 
   def []=(r, c, char)
     @cwin.setpos(r, c)
-    @cwin.addch(char[0].ord|X::A_NORMAL)
+    @cwin.addch(char[0].ord|Curses::A_NORMAL)
     @cwin.setpos(r, c)
     @cwin.refresh
   end
@@ -239,7 +239,7 @@ class RubyText::Window
           next if @history.nil?  # move this?
           gs.history_next
         when Integer
-          X.beep
+          Curses.beep
         else
           gs.add(ch)
       end
@@ -273,7 +273,7 @@ module WindowIO
   # FIXME These don't/can't honor @started flag...
 
   def getch
-    X.getch
+    Curses.getch
   end
 
   def gets  # still needs improvement

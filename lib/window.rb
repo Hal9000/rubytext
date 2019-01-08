@@ -10,7 +10,7 @@ module RubyText
 end
 
 class RubyText::Window
-  Vert, Horiz = X::A_VERTICAL, X::A_HORIZONTAL
+  Vert, Horiz = Curses::A_VERTICAL, Curses::A_HORIZONTAL
 
   attr_reader :cwin, :rows, :cols, :width, :height, :scrolling
   attr_reader :r0, :c0
@@ -22,13 +22,13 @@ class RubyText::Window
                  fg=White, bg=Blue, scroll=false)
     @wide, @high, @r0, @c0 = wide, high, r0, c0
     @border, @fg, @bg      = border, fg, bg
-    @cwin = X::Window.new(high, wide, r0, c0)
+    @cwin = Curses::Window.new(high, wide, r0, c0)
     colorize!(fg, bg)
     if @border
       @cwin.box(Vert, Horiz)
       @outer = @cwin
       @outer.refresh
-      @cwin = X::Window.new(high-2, wide-2, r0+1, c0+1)
+      @cwin = Curses::Window.new(high-2, wide-2, r0+1, c0+1)
       colorize!(fg, bg)
     else
       @outer = @cwin
@@ -42,8 +42,8 @@ class RubyText::Window
 
   def self.main(fg: White, bg: Blue, scroll: false)
     debug "Starting #main..."
-    main_win = X.init_screen
-    X.start_color
+    main_win = Curses.init_screen
+    Curses.start_color
     self.colorize!(main_win, fg, bg)
     rows, cols = main_win.maxy, main_win.maxx
     win = self.make(main_win, rows, cols, 0, 0, border: false,
@@ -75,11 +75,6 @@ class RubyText::Window
   def scrolling(flag=true)
     @scrolling = flag
     @cwin.scrollok(flag)
-  end
-
-  def noscroll
-    @scrolling = false
-    @cwin.scrollok(false)
   end
 
   def scroll(n=1)

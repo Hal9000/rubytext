@@ -2,8 +2,6 @@ $LOAD_PATH << "lib"
 
 require 'curses'
 
-X = Curses  # shorthand. klunky I know
-
 module RubyText
 end
 

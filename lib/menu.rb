@@ -22,7 +22,7 @@ module RubyText
           self.print fx("[ #{title} ]", :bold, fg, bg: bg)
         end
       end
-      X.stdscr.keypad(true)
+      Curses.stdscr.keypad(true)
       sel = curr
       max = items.size - 1
       loop do
@@ -35,9 +35,9 @@ module RubyText
         end
         ch = getch
         case ch
-          when X::KEY_UP
+          when Curses::KEY_UP
             sel -= 1 if sel > 0
-          when X::KEY_DOWN
+          when Curses::KEY_DOWN
             sel += 1 if sel < max
           when 27
             self.restback(high, wide, r, c)
@@ -47,7 +47,7 @@ module RubyText
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             return [sel, items[sel]]
-          else X.beep
+          else Curses.beep
         end
         RubyText.show_cursor
       end
@@ -60,9 +60,9 @@ module RubyText
                     win2:, callback:, enter: nil, quit: "q")
     high = rows
     wide = cols
-    mwin = RubyText.indow(high, wide, r: r, c: c, fg: fg, bg: bg)
+    mwin = RubyText.window(high, wide, r: r, c: c, fg: fg, bg: bg)
     handler = callback
-    X.stdscr.keypad(true)
+    Curses.stdscr.keypad(true)
     RubyText.hide_cursor
     sel = 0
     max = items.size - 1
@@ -76,12 +76,12 @@ module RubyText
       end
       ch = getch
       case ch
-        when X::KEY_UP
+        when Curses::KEY_UP
           if sel > 0
             sel -= 1
             handler.call(sel, items[sel], win2)
           end
-        when X::KEY_DOWN
+        when Curses::KEY_DOWN
           if sel < max
             sel += 1
             handler.call(sel, items[sel], win2)
@@ -95,10 +95,10 @@ module RubyText
             end
           end
         when 9  # tab
-          X.flash
+          Curses.flash
         when quit  # parameter
           exit
-        else X.beep    # all else is trash
+        else Curses.beep    # all else is trash
       end
     end
   rescue
