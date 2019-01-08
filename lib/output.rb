@@ -139,13 +139,15 @@ class RubyText::Window
   end
 
   class GetString
-    def initialize(win = STDSCR, str = "", i = 0, history: [])
+    def initialize(win = STDSCR, str = "", i = 0, history: [], limit: nil)
       @win = win
       @r0, @c0 = @win.rc
-      @str, @i = str, i
+      @limit = limit || (@win.cols - @r0 - 1)
+      raise ArgumentError unless @limit.is_a?(Numeric)
+      @str, @i = str[0..(@limit-1)], i
       @history = history
       @h = @history.length - 1
-      @maxlen = 0
+      @maxlen = 0    # longest string in history
     end
 
     def enter
@@ -175,9 +177,6 @@ class RubyText::Window
       @str[@i] = ""
       @win.left
       @win.rcprint @r0, @c0, @str + " "
-#     @r, @c = @win.rc
-#     @win[@r0, @c0+@str.length+1] = ' '
-#     @win.go @r, @c
     end
 
     def history_prev
@@ -205,6 +204,10 @@ class RubyText::Window
     end
 
     def add(ch)
+      if @str.length >= @limit
+        Curses.beep
+        return
+      end
       @str.insert(@i, ch)
       @win.right
       @win.go(@r0, @c0) { @win.print @str }
@@ -216,10 +219,10 @@ class RubyText::Window
     end
   end
 
-  def gets(history: [])  # still needs improvement
+  def gets(history: [], limit: nil)  # still needs improvement
     # echo assumed to be OFF, keypad ON
     @history = history
-    gs = GetString.new(self, history: history)
+    gs = GetString.new(self, history: history, limit: limit)
     loop do
       ch = self.getch
       case ch
