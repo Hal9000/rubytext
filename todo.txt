@@ -1,6 +1,5 @@
 ----  * = in progress   x = finished
 
-  - gets: default
   - gets: tab completion?
   - write (at least title) to window frame
   - make a gets example
@@ -36,6 +35,7 @@
   - CDK?
   - Forms and fields
 
+x - gets: default
 x - gets: limit
 x - make a scrolling example
 x - selector is broken

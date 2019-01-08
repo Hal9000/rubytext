@@ -145,6 +145,8 @@ class RubyText::Window
       @limit = limit || (@win.cols - @r0 - 1)
       raise ArgumentError unless @limit.is_a?(Numeric)
       @str, @i = str[0..(@limit-1)], i
+      @win.print @str
+      @win.left @str.length
       @history = history
       @h = @history.length - 1
       @maxlen = 0    # longest string in history
@@ -219,10 +221,10 @@ class RubyText::Window
     end
   end
 
-  def gets(history: [], limit: nil)  # still needs improvement
+  def gets(history: [], limit: nil, default: "")  # still needs improvement
     # echo assumed to be OFF, keypad ON
     @history = history
-    gs = GetString.new(self, history: history, limit: limit)
+    gs = GetString.new(self, default, history: history, limit: limit)
     loop do
       ch = self.getch
       case ch
