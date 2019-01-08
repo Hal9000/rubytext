@@ -19,12 +19,8 @@ def show_code(prog, upward=0)
   prog_top = @rmax-nlines-3 - upward.to_i
   code = RubyText.window(nlines+2, @cmax-2, r: prog_top, c: 1, 
                          fg: Green, bg: Black)
+  code.add_title "[ #{prog} ]", :right
   code.puts text
-
-  right = STDSCR.cols - prog.length - 8
-  STDSCR.go prog_top, right 
-  STDSCR.print "[ #{prog} ]"
-  STDSCR.go 0,0
 end
 
 def check_window

@@ -1,8 +1,7 @@
 ----  * = in progress   x = finished
 
-  - gets: tab completion?
-  - write (at least title) to window frame
   - make a gets example
+  - gets: tab completion?
   - flags save/restore is broken
   - add beep, flash?
   - normalize fg/bg usage
@@ -35,6 +34,7 @@
   - CDK?
   - Forms and fields
 
+x - add title to window frame
 x - gets: default
 x - gets: limit
 x - make a scrolling example

@@ -70,6 +70,19 @@ class RubyText::Window
     obj
   end
 
+  def add_title(str, align = :center)
+    raise "No border" unless @border
+    len = str.length  # What if it's too long?
+    start = case align
+              when :left;   1
+              when :center; (@outer.maxx - len)/2
+              when :right;  @outer.maxx - len - 1
+            end
+    @outer.setpos 0, start
+    @outer.addstr str
+    @outer.refresh
+  end
+
   # FIXME refactor bad code
 
   def scrolling(flag=true)
