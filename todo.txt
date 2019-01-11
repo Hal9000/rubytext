@@ -1,25 +1,23 @@
 ----  * = in progress   x = finished
 
-  - make a gets example
-  - gets: tab completion?
+  - more exceptions
+  - more automated tests
+  - use screen dump (and logging) for automated tests
   - flags save/restore is broken
-  - add beep, flash?
   - normalize fg/bg usage
   - color pair names?
-  - move menu to Window
-  - accumulate windows in a list??
-  - add metadata to screen_text dump?
-  - do a 'stop' before crashing with backtrace?
   - figure out settings and document them
-  - more exceptions
-  -   maintain my own attr info?
-  - use screen dump (and logging) for automated tests
-  -   more automated tests
+  - move menu to Window
+  - add metadata to screen_text dump?
+  - maintain my own attr info?
   - concept of "current window"? (thread-safe or not?)
   - better debugging
   -   more standard debug statements
   -   debug levels?
   - window positions: defaults? accept :top/:bottom/:center, :left/:right/:center
+  - accumulate windows in a list??
+  - make a gets example
+  - gets: tab completion?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
@@ -34,6 +32,8 @@
   - CDK?
   - Forms and fields
 
+x - do a 'stop' before crashing with backtrace?
+x - add beep, flash?
 x - add title to window frame
 x - gets: default
 x - gets: limit

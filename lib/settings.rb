@@ -8,6 +8,14 @@ module RubyText
     @started
   end
 
+  def self.beep
+    Curses.beep
+  end
+
+  def self.flash
+    Curses.flash
+  end
+
   $debugging = true
 
   # FIXME refactor save/restore, etc.  - rep as binary vector?

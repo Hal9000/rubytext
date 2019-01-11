@@ -2,10 +2,12 @@
 module RubyText
   # TODO add title:?
   def self.window(high, wide, r: nil, c: nil, border: true, 
-                  fg: White, bg: Blue, scroll: false)
+                  fg: White, bg: Blue, scroll: false, title: nil)
     r ||= (STDSCR.rows - high)/2
     c ||= (STDSCR.cols - wide)/2
-    RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
+    win = RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
+    win.add_title(title) if title
+    win
   end
 end
 
@@ -153,4 +155,13 @@ class RubyText::Window
   def bg=(sym)
     set_colors(@fg, bg)
   end
+
+  def beep
+    Curses.beep
+  end
+
+  def flash
+    Curses.flash
+  end
+
 end
