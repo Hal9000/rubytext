@@ -3,7 +3,7 @@
   - more exceptions
   - more automated tests
   - use screen dump (and logging) for automated tests
-  - flags save/restore is broken
+* - flags save/restore is broken
   - normalize fg/bg usage
   - color pair names?
   - figure out settings and document them
