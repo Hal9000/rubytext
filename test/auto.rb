@@ -8,6 +8,10 @@ at_exit { RubyText.stop }
 
 class MyTest < Minitest::Test
 
+  def setup
+    load "rubytext.rb"
+  end
+
   def show_lines(text)
     lines = text.split("\n")
     str = "#{lines.size} lines\n"
@@ -20,14 +24,20 @@ class MyTest < Minitest::Test
     curr = RubyText.flags
     RubyText.stop
     assert curr == [:cbreak, :_echo, :keypad], "Got #{curr.inspect}"
+  rescue
+    RubyText.stop
   end
 
   def test_002_start_bad_param
     assert_raises(RTError) { RubyText.start(:foobar); RubyText.stop }
+  rescue
+    RubyText.stop
   end
 
   def test_003_start_bad_color
     assert_raises(RTError) { RubyText.start(fg: :chartreuse); RubyText.stop }
+  rescue
+    RubyText.stop
   end
 
   def test_004_set_reset
@@ -44,6 +54,8 @@ class MyTest < Minitest::Test
     assert RubyText.flags == orig
 
     RubyText.stop
+  rescue
+    RubyText.stop
   end
 
   def test_005_set_block
@@ -57,6 +69,8 @@ class MyTest < Minitest::Test
     # outside block again...
     assert RubyText.flags == orig
 
+    RubyText.stop
+  rescue
     RubyText.stop
   end
 

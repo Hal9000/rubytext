@@ -1,12 +1,9 @@
 module RubyText
   # Hmm, all these are module-level...?
 
-  ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak, 
-               :keypad, :_keypad, :cursor, :_cursor]
-
-
   class Settings
-    # raw echo cbreak keypad cursor
+    ValidArgs = [:raw, :_raw, :echo, :_echo, :cbreak, :_cbreak, 
+                 :keypad, :_keypad, :cursor, :_cursor]
     def initialize
       @defaults = {raw: false, echo: false, cbreak: true, keypad: true, cursor: true}
       @current = @defaults.dup
@@ -26,8 +23,8 @@ module RubyText
           when [:raw, false];    Curses.noraw
           when [:echo, true];    Curses.echo
           when [:echo, false];   Curses.noecho
-          when [:keypad, true];  STDSCR.cwin.keypad(true)
-          when [:keypad, false]; STDSCR.cwin.keypad(false)
+          when [:keypad, true];  Curses.stdscr.keypad(true)
+          when [:keypad, false]; Curses.stdscr.keypad(false)
           when [:cursor, true];  Curses.curs_set(1)
           when [:cursor, false]; Curses.curs_set(0)
         end
@@ -50,8 +47,16 @@ module RubyText
       set_curses(@current)
     end
 
-    def set(syms)
+    def set(*syms)
+      raise ArgumentError unless syms - ValidArgs == []
       # FIXME - call set_boolean
+      list = {}
+      syms.each do |sym|
+        str = sym.to_s
+        val = str[0] != "_"
+        list[sym] = val
+      end
+      set_boolean(list)
       # allow a block here?
     end
 
@@ -82,18 +87,19 @@ module RubyText
 
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)
-    $debug ||= File.new(log, "w") if log   # FIXME remove global
+#   $debug ||= File.new(log, "w") if log   # FIXME remove global
 
-    args.each {|arg| raise "#{arg} is not valid" unless ValidArgs.include?(arg) }
+    args.each {|arg| raise "#{arg} is not valid" unless Settings::ValidArgs.include?(arg) }
     raise "#{fg} is not a color" unless ::Colors.include? fg
     raise "#{bg} is not a color" unless ::Colors.include? bg
+
+    @settings = Settings.new
+    @settings.set(*args)            # override defaults
 
     main = RubyText::Window.main(fg: fg, bg: bg, scroll: scroll)
     Object.const_set(:STDSCR, main) unless defined? STDSCR
     $stdscr = STDSCR  # FIXME global needed?
     Object.include(WindowIO)
-    self.set(:_echo, :cbreak, :keypad)  # defaults
-    self.set(*args)            # override defaults
     @started = true
   rescue => err
     debug(err.inspect)
@@ -101,85 +107,17 @@ module RubyText
     raise RTError("#{err}")
   end
 
-  def self.flags
-    @flags.uniq!
-    @flags
-  end
-
-# FIXME Refactor the Hal out of this...
-
-    def self.inverse_flag(flag)
-      sflag = flag.to_s
-      if sflag[0] == "_"
-        sflag[1..-1].to_sym
-      else
-        ("_" + sflag).to_sym
-      end
-    end
-
-    def self.set(*args)   # Allow a block?
-      standard = [:cbreak, :raw, :echo]
-      @defaults = [:cbreak, :_echo, :keypad]
-      @flags = @defaults.dup
-      save_flags
-      args.each do |arg|
-        @flags += [arg]
-        inv = inverse_flag(arg)
-        @flags -= [inv]
-        @flags.uniq!
-        flag = arg.to_s
-        if standard.include?(flag.to_sym) || standard.include?(flag.sub(/no/, "_").to_sym)
-          Curses.send(flag)
-        elsif flag[0] == "_" && standard.include?(flag[1..-1].to_sym)
-          flag.sub!(/^_/, "no")
-          Curses.send(flag)
-        else
-          case flag.to_sym
-            when :cursor
-              Curses.curs_set(1)
-            when :_cursor, :nocursor
-              Curses.curs_set(0)
-            when :keypad
-              STDSCR.cwin.keypad(true)
-            when :_keypad
-              STDSCR.cwin.keypad(false)
-            else 
-              # self.stop
-              rest_flags  # prevent propagating error in test
-              raise RTError("flag = #{flag.inspect}")
-          end
-        end
-      end
-
-      if block_given?
-        yield
-        rest_flags
-      end
-    end
-
-    def self.reset
-      rest_flags
-    end
-
-    def self.save_flags
-      @fstack ||= []
-      @flags.uniq!
-      @fstack.push @flags
-    end
-
-    def self.rest_flags
-      @flags = @fstack.pop
-      @flags.uniq!
-      self.set(*@flags)
-    rescue 
-      @flags = @defaults
-    end
-
-# ... end of ugly settings weirdness
-
   def self.stop
     @started = false
     Curses.close_screen
+  end
+
+  def set(*args)
+    @settings.set(*args)
+  end
+
+  def reset
+    @settings.reset
   end
 
   # For passing through arbitrary method calls
