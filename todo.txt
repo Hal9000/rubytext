@@ -9,6 +9,7 @@
   - figure out settings and document them
   - move menu to Window
   - add metadata to screen_text dump?
+  - incremental list menu
   - maintain my own attr info?
   - concept of "current window"? (thread-safe or not?)
   - better debugging
@@ -32,6 +33,7 @@
   - CDK?
   - Forms and fields
 
+x - multimenu
 x - do a 'stop' before crashing with backtrace?
 x - add beep, flash?
 x - add title to window frame

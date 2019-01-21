@@ -29,15 +29,11 @@ class MyTest < Minitest::Test
   end
 
   def test_002_start_bad_param
-    assert_raises(RTError) { RubyText.start(:foobar); RubyText.stop }
-  rescue
-    RubyText.stop
+    assert_raises(RuntimeError) { RubyText.start(:foobar); RubyText.stop }
   end
 
   def test_003_start_bad_color
     assert_raises(RTError) { RubyText.start(fg: :chartreuse); RubyText.stop }
-  rescue
-    RubyText.stop
   end
 
   def test_004_set_reset

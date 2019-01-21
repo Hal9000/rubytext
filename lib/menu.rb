@@ -16,12 +16,6 @@ module RubyText
       mr, mc = r+self.r0, c+self.c0
       mwin = RubyText.window(high, wide, r: mr, c: mc, 
                              fg: fg, bg: bg, title: title)
-#     where = self == STDSCR ? [r, c+1] : [r-1, c+1]  # wtf?
-#     unless title.nil?
-#       self.go(*where) do   # same row as corner but farther right
-#         self.print fx("[ #{title} ]", :bold, fg, bg: bg)
-#       end
-#     end
       Curses.stdscr.keypad(true)
       sel = curr
       max = items.size - 1
@@ -53,6 +47,56 @@ module RubyText
       end
     end
 
+    def multimenu(r: :center, c: :center, 
+                  items:, curr: 0, selected: [],
+                  title: nil, sel_fg: Yellow, fg: White, bg: Blue)
+      RubyText.hide_cursor
+      high = items.size + 2
+      wide = items.map(&:length).max + 5
+      tlen = title.length + 8 rescue 0
+      wide = [wide, tlen].max
+      row, col = self.coords(r, c)
+      row = row - high/2 if r == :center
+      col = col - wide/2 if c == :center
+      r, c = row, col
+      self.saveback(high, wide, r, c)
+      mr, mc = r+self.r0, c+self.c0
+      mwin = RubyText.window(high, wide, r: mr, c: mc, 
+                             fg: fg, bg: bg, title: title)
+      Curses.stdscr.keypad(true)
+      sel = curr
+      max = items.size - 1
+      loop do
+        RubyText.hide_cursor  # FIXME should be unnecessary
+        items.each.with_index do |item, row|
+          mwin.go row, 0
+          style = (sel == row) ? :reverse : :normal
+          color = selected.include?(row) ? sel_fg : fg
+          label = (" "*2 + item + " "*8)[0..wide-1]
+          mwin.print fx(label, color, style)
+        end
+        ch = getch
+        case ch
+          when Curses::KEY_UP
+            sel -= 1 if sel > 0
+          when Curses::KEY_DOWN
+            sel += 1 if sel < max
+          when 27
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return []
+          when 10
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return selected.map {|i| items[i] }
+          when " "
+            selected << sel
+            sel += 1 if sel < max
+          else Curses.beep
+        end
+        RubyText.show_cursor
+      end
+    end
   end
 
   def self.selector(win: STDSCR, r: 0, c: 0, rows: 10, cols: 20, 

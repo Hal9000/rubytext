@@ -48,14 +48,17 @@ module RubyText
     end
 
     def set(*syms)
+File.open("/tmp/dammit1", "w") {|f| f.puts "-- set: syms = #{syms.inspect}" }
       raise ArgumentError unless syms - ValidArgs == []
       # FIXME - call set_boolean
       list = {}
       syms.each do |sym|
         str = sym.to_s
         val = str[0] != "_"
-        list[sym] = val
+        sym0 = val ? sym : str[1..-1].to_sym
+        list[sym0] = val
       end
+File.open("/tmp/dammit2", "w") {|f| f.puts "-- list = #{list.inspect}" }
       set_boolean(list)
       # allow a block here?
     end
@@ -90,8 +93,8 @@ module RubyText
 #   $debug ||= File.new(log, "w") if log   # FIXME remove global
 
     args.each {|arg| raise "#{arg} is not valid" unless Settings::ValidArgs.include?(arg) }
-    raise "#{fg} is not a color" unless ::Colors.include? fg
-    raise "#{bg} is not a color" unless ::Colors.include? bg
+    raise RTError("#{fg} is not a color") unless ::Colors.include? fg
+    raise RTError("#{bg} is not a color") unless ::Colors.include? bg
 
     @settings = Settings.new
     @settings.set(*args)            # override defaults
@@ -101,10 +104,10 @@ module RubyText
     $stdscr = STDSCR  # FIXME global needed?
     Object.include(WindowIO)
     @started = true
-  rescue => err
-    debug(err.inspect)
-    debug(err.backtrace)
-    raise RTError("#{err}")
+# rescue => err
+#   puts(err.inspect)
+#   puts(err.backtrace)
+#   raise RTError("#{err}")
   end
 
   def self.stop

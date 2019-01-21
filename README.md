@@ -5,21 +5,21 @@ stages. Unlike some similar projects, it is a "thick" wrapper;
 I am adding functionality that does not always correspond directly
 to the curses world. 
 
-Install the `rubytext` gem and then run the demo or the slides
-or both.
+Install the `rubytext` gem and then run demo code or the examples
+or whatever you want:
 
 ```
   $ gem install rubytext
   $ rubytext demo      # 2-minute demo
-  $ rubytext slides    # Longer "slideshow"
   $ rubytext tutorial  # (On OS/X) opens tutorial.html
+  $ rubytext slides    # Longer "slideshow" (run all examples)
 ```
 
 You can also use the `example` subcommand:
 
 ```
-  $ rubytext example          # list all examples
-  $ rubytext example progname # run 'prog' example
+  $ rubytext example           # list all examples
+  $ rubytext example progname  # run 'progname' example
 ```
 
 When you specify the example name, there is no need to 
@@ -53,6 +53,7 @@ Here are some of the programs from the `rubytext slides` set of demos. See the `
 directory and the `showme.rb` script.
 
 A simple window:
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(6, 25, r: 2, c: 34, 
@@ -64,8 +65,8 @@ win.puts "This is a window..."
 
 <img src=readme-images/prog01.png>
 
-
 How `output` works. This name may change.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(9, 36, r: 2, c: 6, fg: White, bg: Red) 
@@ -78,6 +79,7 @@ end
 ```
 
 Windows are bordered by default.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(9, 35, r: 3, c: 7, border: false, fg: Black, bg: Green)
@@ -87,6 +89,7 @@ win.puts "have a border."
 ```
 
 Using `puts` will wrap around the window automagically.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(8, 39, r: 4, c: 9, fg: Black, bg: Blue)
@@ -156,10 +159,10 @@ win.output do
   STDERR.print "unexpected/undefined results "
   puts " in more ways than one."
 end
-
 ```
 
 Use `[]=` to stuff single characters into a window (like an array).
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 50, r: 0, c: 5, fg: Yellow, bg: Blue)
@@ -179,6 +182,7 @@ win[6,38] = "Z"; win.refresh
 ```
 
 Likewise use `[]` to retrieve characters from a window.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(12, 60, r: 2, c: 5, fg: Yellow, bg: Blue)
@@ -194,6 +198,7 @@ win.puts "(6,7) => '#{win[6,7]}'    (0,15) => '#{win[0,15]}'"
 ```
 
 You can write to `STDSCR` or to a subwindow.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(6, 30, r: 2, c: 5, fg: Yellow, bg: Blue)
@@ -210,10 +215,10 @@ puts "STDSCR is the default receiver."
 sleep 2
 STDSCR.go 5, 0
 puts "Nothing stops you from overwriting a window."
-
 ```
 
 You can retrieve cursor position and window size.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(12, 65, r: 1, c: 5, fg: Yellow, bg: Blue)
@@ -231,6 +236,7 @@ end
 ```
 
 Move the cursor with `go` (and use a block to jump/return).
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 65, r: 0, c: 15, fg: Blue, bg: Black)
@@ -250,6 +256,7 @@ win.print "DEF"
 ```
 
 Use `rcprint` to print at specific coordinates.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(13, 65, r: 0, c: 6, fg: Blue, bg: White)
@@ -266,6 +273,7 @@ win.rcprint 10,0, "Later there will be other ways to do this kind of thing."
 ```
 
 Window navigation: `home`, `up`, `down`, `left`, `right`
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 65, r: 0, c: 6, fg: Blue, bg: White)
@@ -285,6 +293,7 @@ win.go 7, 29; win.right; win.putch("R"); sleep 1
 ```
 
 More navigation: `up`, `down`, `left`, `right` with a parameter.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 65, r: 1, c: 6, fg: Blue, bg: White)
@@ -299,6 +308,7 @@ win.go 4, 29; win.right(5); win.putch("5"); sleep 1
 ```
 
 Still more navigation: `up!`, `down!`, `left!`, `right!`
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 65, r: 1, c: 6, fg: Blue, bg: White)
@@ -315,6 +325,7 @@ win.go 5, 21; win.right!; win.putch("R"); sleep 1
 ```
 
 And finally, `top` and `bottom`.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(11, 65, r: 1, c: 6, fg: Blue, bg: White)
@@ -328,6 +339,7 @@ win.go 5, 21; win.bottom; win.putch("B"); sleep 1
 ```
 
 Somewhat useless, but there is a `center` method.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(15, 65, r: 1, c: 6, fg: Green, bg: Blue)
@@ -343,6 +355,7 @@ stuff.each {|str| win.center(str) }
 ```
 
 Changing colors during printing. This syntax will change.
+
 ```ruby
 require 'rubytext'
 win = RubyText.window(12, 65, r: 0, c: 6, fg: Green, bg: Blue)
@@ -361,6 +374,7 @@ win.puts "The symbol is ", sym.inspect, " which works", sym, " just fine."
 ```
 
 A simple menu (incomplete, still experimental).
+
 ```ruby
 require 'rubytext'
 puts "This very crude menu is also EXPERIMENTAL."
@@ -380,12 +394,8 @@ else
 end
 ```
 
-DESC
-```ruby
-require 'rubytext'
-```
-
 A marquee or ticker example. This uses threads and is kind of cool.
+
 ```ruby
 require 'rubytext'
 msg = <<~EOS
@@ -413,6 +423,11 @@ threads.each {|t| t.join }
 <img src=readme-images/prog22.png>
 
 
-
 *More later...*
+
+
+DESC
+```ruby
+require 'rubytext'
+```
 
