@@ -139,7 +139,7 @@ class RubyText::Window
   end
 
   class GetString
-    def initialize(win = STDSCR, str = "", i = 0, history: [], limit: nil)
+    def initialize(win = STDSCR, str = "", i = 0, history: [], limit: nil, tab: [])
       @win = win
       @r0, @c0 = @win.rc
       @limit = limit || (@win.cols - @r0 - 1)
@@ -149,7 +149,8 @@ class RubyText::Window
       @win.left @str.length
       @history = history
       @h = @history.length - 1
-      @maxlen = 0    # longest string in history
+      @maxlen = 0    # longest string in history list
+      @tabcom = tab
     end
 
     def enter
@@ -205,6 +206,23 @@ class RubyText::Window
       @win.print @str
     end
 
+    def complete
+      targets = @tabcom.find_all {|x| x.start_with?(@str) }
+      if targets.nil?
+        Curses.beep
+        return
+      end
+      if targets.size > 1
+        num, target = STDSCR.menu(items: targets)
+      else
+        target = targets.first
+      end
+      @str = target.dup
+      @i = @str.length
+      @win.go @r0, @c0
+      @win.print @str
+    end
+
     def add(ch)
       if @str.length >= @limit
         Curses.beep
@@ -221,10 +239,10 @@ class RubyText::Window
     end
   end
 
-  def gets(history: [], limit: nil, default: "")  # still needs improvement
+  def gets(history: [], limit: nil, tab: [], default: "")  # still needs improvement
     # echo assumed to be OFF, keypad ON
     @history = history
-    gs = GetString.new(self, default, history: history, limit: limit)
+    gs = GetString.new(self, default, history: history, limit: limit, tab: tab)
     loop do
       ch = self.getch
       case ch
@@ -233,6 +251,8 @@ class RubyText::Window
           break
         when 8, 127, 63   # backspace, del, ^H (huh?)
           gs.backspace
+        when 9  # tab
+          gs.complete
         when 260   # left-arrow
           gs.left_arrow
         when 261   # right-arrow

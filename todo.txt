@@ -1,6 +1,12 @@
 ----  * = in progress   x = finished
 
   - more exceptions
+  - multimenu example
+  - selector example
+  - gets example: limit
+  - gets example: history
+  - gets example: default
+  - gets example: tab
   - more automated tests
   - use screen dump (and logging) for automated tests
 * - flags save/restore is broken
@@ -18,7 +24,6 @@
   - window positions: defaults? accept :top/:bottom/:center, :left/:right/:center
   - accumulate windows in a list??
   - make a gets example
-  - gets: tab completion?
   - document basic window scenarios: stdscr only, stdscr + nonoverlapping windows, menu/selector, ...
   - word wrapping (per output? per window?)
   - selective "toplevel import" feature
@@ -33,6 +38,7 @@
   - CDK?
   - Forms and fields
 
+x - gets: tab completion?
 x - multimenu
 x - do a 'stop' before crashing with backtrace?
 x - add beep, flash?
