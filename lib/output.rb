@@ -145,6 +145,7 @@ class RubyText::Window
       @limit = limit || (@win.cols - @r0 - 1)
       raise ArgumentError unless @limit.is_a?(Numeric)
       @str, @i = str[0..(@limit-1)], i
+      @str ||= ""
       @win.print @str
       @win.left @str.length
       @history = history
@@ -217,7 +218,7 @@ class RubyText::Window
       else
         target = targets.first
       end
-      @str = target.dup
+      @str = target.nil? ? "" : target.dup
       @i = @str.length
       @win.go @r0, @c0
       @win.print @str
@@ -263,6 +264,9 @@ class RubyText::Window
         when 258   # down
           next if @history.nil?  # move this?
           gs.history_next
+        when 27    # escape
+          gs.enter
+          break
         when Integer
           Curses.beep
         else

@@ -90,7 +90,7 @@ File.open("/tmp/dammit2", "w") {|f| f.puts "-- list = #{list.inspect}" }
 
   def self.start(*args, log: "/tmp/rubytext.log", 
                  fg: White, bg: Blue, scroll: false)
-#   $debug ||= File.new(log, "w") if log   # FIXME remove global
+    $debug ||= File.new(log, "w") if log   # FIXME remove global
 
     args.each {|arg| raise "#{arg} is not valid" unless Settings::ValidArgs.include?(arg) }
     raise RTError("#{fg} is not a color") unless ::Colors.include? fg
