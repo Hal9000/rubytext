@@ -214,7 +214,7 @@ class RubyText::Window
         return
       end
       if targets.size > 1
-        num, target = STDSCR.menu(items: targets)
+        num, target = @win.menu(items: targets)
       else
         target = targets.first
       end
@@ -274,6 +274,9 @@ class RubyText::Window
       end
     end
     gs.value
+  rescue => err
+    str = err.to_s + "\n" + err.backtrace.join("\n")
+    raise str
   end
 
 end
