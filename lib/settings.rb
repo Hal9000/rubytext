@@ -48,7 +48,6 @@ module RubyText
     end
 
     def set(*syms)
-File.open("/tmp/dammit1", "w") {|f| f.puts "-- set: syms = #{syms.inspect}" }
       raise ArgumentError unless syms - ValidArgs == []
       # FIXME - call set_boolean
       list = {}
@@ -58,7 +57,6 @@ File.open("/tmp/dammit1", "w") {|f| f.puts "-- set: syms = #{syms.inspect}" }
         sym0 = val ? sym : str[1..-1].to_sym
         list[sym0] = val
       end
-File.open("/tmp/dammit2", "w") {|f| f.puts "-- list = #{list.inspect}" }
       set_boolean(list)
       # allow a block here?
     end
