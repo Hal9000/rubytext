@@ -97,7 +97,7 @@ class RubyText::Window
   end
 
   def self.clear(win)   # delete this?
-    num = win.maxx * win.maxy
+    num = win.maxx * win.maxy - 1
     win.setpos(0, 0)
     win.addstr(' '*num)
     win.setpos(0, 0)
@@ -105,8 +105,12 @@ class RubyText::Window
   end
 
   def clear
-    self.home
-    self.scroll self.rows
+    cwin.setpos(cwin.maxx, cwin.maxy)
+    cwin.addstr(' ')
+    num = cwin.maxx * cwin.maxy - 1
+    cwin.addstr(' '*num)
+    cwin.setpos(0, 0)
+    cwin.refresh
   end
 
   def output(&block)
@@ -210,7 +214,8 @@ class RubyText::Window
     def complete
       targets = @tabcom.find_all {|x| x.start_with?(@str) }
       if targets.nil?
-        Curses.beep
+        # Curses.beep
+        @win.print "???"
         return
       end
       if targets.size > 1

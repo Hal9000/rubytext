@@ -1,11 +1,15 @@
 module RubyText
 
   class Window
-    def menu(r: :center, c: :center, items:, curr: 0,
-             title: nil, fg: White, bg: Blue)
+    def menu(r: :center, c: :center, items:, curr: 0, 
+             border: true,
+             title: nil, fg: Green, bg: Black)
       RubyText.hide_cursor
-      high = items.size + 2
-      wide = items.map(&:length).max + 5
+      high = items.size
+      wide = items.map(&:length).max + 3
+      high += 2 if border
+      wide += 2 if border
+      
       tlen = title.length + 8 rescue 0
       wide = [wide, tlen].max
       row, col = self.coords(r, c)
@@ -14,7 +18,8 @@ module RubyText
       r, c = row, col
       self.saveback(high, wide, r, c)
       mr, mc = r+self.r0, c+self.c0
-      mwin = RubyText.window(high, wide, r: mr, c: mc, 
+      title = nil unless border
+      mwin = RubyText.window(high, wide, r: mr, c: mc, border: border,
                              fg: fg, bg: bg, title: title)
       Curses.stdscr.keypad(true)
       sel = curr
