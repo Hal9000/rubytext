@@ -120,7 +120,7 @@ class RubyText::Window
     lines
   end
 
-  def saveback(high, wide, r, c)
+  def saveback(high=STDSCR.rows, wide=STDSCR.cols, r=0, c=0)
     debug "saveback: #{[high, wide, r, c].inspect}"
     @pos = self.rc
     @save = []
@@ -134,7 +134,7 @@ class RubyText::Window
     end
   end
 
-  def restback(high, wide, r, c)
+  def restback(high=STDSCR.rows, wide=STDSCR.cols, r=0, c=0)
     0.upto(high-1) do |h|
       line = ""
       0.upto(wide-1) {|w| line << @save.shift }

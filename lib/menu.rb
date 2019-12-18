@@ -5,11 +5,19 @@ module RubyText
              border: true,
              title: nil, fg: Green, bg: Black)
       RubyText.hide_cursor
+      if items.is_a?(Hash)
+        results = items.values
+        items = items.keys
+        hash_flag = true
+      else
+        results = items
+      end
+      
       high = items.size
       wide = items.map(&:length).max + 3
       high += 2 if border
       wide += 2 if border
-      
+
       tlen = title.length + 8 rescue 0
       wide = [wide, tlen].max
       row, col = self.coords(r, c)
@@ -45,7 +53,7 @@ module RubyText
           when 10
             self.restback(high, wide, r, c)
             RubyText.show_cursor
-            return [sel, items[sel]]
+            return [sel, results[sel]]
           else Curses.beep
         end
         RubyText.show_cursor
@@ -153,5 +161,13 @@ module RubyText
   rescue
     retry
   end
+
+  def yesno(question, noskip=false)
+    # TODO: Accept YyNn
+    r, c = STDSCR.rc
+    num, str = STDSCR.menu(r: r, c: c+6, items: ["yes", "no"])
+    num == 0
+  end
+
 end
 
