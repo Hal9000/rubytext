@@ -110,6 +110,13 @@ module RubyText
         RubyText.show_cursor
       end
     end
+
+    def yesno
+      # TODO: Accept YyNn
+      r, c = STDSCR.rc
+      num, str = STDSCR.menu(r: r, c: c+6, items: ["yes", "no"])
+      num == 0
+    end
   end
 
   def self.selector(win: STDSCR, r: 0, c: 0, rows: 10, cols: 20, 
@@ -161,13 +168,5 @@ module RubyText
   rescue
     retry
   end
-
-  def yesno(question, noskip=false)
-    # TODO: Accept YyNn
-    r, c = STDSCR.rc
-    num, str = STDSCR.menu(r: r, c: c+6, items: ["yes", "no"])
-    num == 0
-  end
-
 end
 
