@@ -1,6 +1,67 @@
 module RubyText
 
   class Window
+    def topmenu(items:, curr: 0, 
+             title: nil, fg: Green, bg: Black)
+      r, c = 0, 0
+      border = false
+      high = 1
+      wide = items.map(&:length).max + 3
+
+      RubyText.hide_cursor
+      if items.is_a?(Hash)
+        results = items.values
+        items = items.keys
+        hash_flag = true
+      else
+        results = items
+      end
+      
+      tlen = title.length + 8 rescue 0
+      wide = [wide, tlen].max + 2
+      width = items.size * wide
+      r, c = self.coords(r, c)
+      self.saveback(high, wide, r, c)
+      mr, mc = r+self.r0, c+self.c0
+      title = nil
+      mwin = RubyText.window(high, width, r: mr, c: mc, border: border,
+                             fg: fg, bg: bg, title: title)
+      Curses.stdscr.keypad(true)
+      sel = curr
+      max = items.size - 1
+      loop do
+#       RubyText.hide_cursor  # FIXME should be unnecessary
+        items.each.with_index do |item, num|
+          item = item.to_s
+          mwin.go 0, num*wide
+          style = (sel == num) ? :reverse : :normal
+          label = (" "*2 + item + " "*8)[0..wide-1]
+          mwin.print fx(label, style)
+        end
+        ch = getch
+        case ch
+          when Curses::KEY_LEFT
+            sel -= 1 if sel > 0
+          when Curses::KEY_RIGHT
+            sel += 1 if sel < max
+          when 27
+#           self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return [nil, nil]
+          when 10
+#           self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            choice = results[sel]
+            return [sel, choice] if choice.is_a? String
+            result = choice.call
+            next if result.first.nil?
+            return result
+          else Curses.beep
+        end
+        RubyText.show_cursor
+      end
+    end
+
     def menu(r: :center, c: :center, items:, curr: 0, 
              border: true,
              title: nil, fg: Green, bg: Black)
