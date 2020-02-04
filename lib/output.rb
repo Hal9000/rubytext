@@ -1,6 +1,10 @@
 $LOAD_PATH << "lib"
 
+require 'keys'
+
 class RubyText::Window
+  include ::RubyText::Keys
+
   def center(str)
     r, c = self.rc
     n = @cwin.maxx - str.length
@@ -249,29 +253,36 @@ class RubyText::Window
     # echo assumed to be OFF, keypad ON
     @history = history
     gs = GetString.new(self, default, history: history, limit: limit, tab: tab)
+    count = 0
     loop do
+      count += 1      # Escape has special meaning if first char
       ch = self.getch
       case ch
-        when 10
+        when Escape
+          return Escape if count == 1
           gs.enter
           break
-        when 8, 127, 63   # backspace, del, ^H (huh?)
+        when CtlD
+          return CtlD if count == 1
+          gs.enter
+          break
+        when Enter
+          gs.enter
+          break
+        when BS, DEL, 63   # backspace, del, ^H (huh?)
           gs.backspace
-        when 9  # tab
+        when Tab
           gs.complete
-        when 260   # left-arrow
+        when Left
           gs.left_arrow
-        when 261   # right-arrow
+        when Right
           gs.right_arrow
-        when 259   # up
+        when Up
           next if @history.nil?  # move this?
           gs.history_prev
-        when 258   # down
+        when Down
           next if @history.nil?  # move this?
           gs.history_next
-        when 27    # escape
-          gs.enter
-          break
         when Integer
           Curses.beep
         else

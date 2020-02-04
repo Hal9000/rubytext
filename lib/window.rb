@@ -13,6 +13,7 @@ end
 
 class RubyText::Window
   Vert, Horiz = Curses::A_VERTICAL, Curses::A_HORIZONTAL
+  ScreenStack = []
 
   attr_reader :cwin, :rows, :cols, :width, :height, :scrolling
   attr_reader :r0, :c0
@@ -120,32 +121,45 @@ class RubyText::Window
     lines
   end
 
+  def background(high=STDSCR.rows, wide=STDSCR.cols, r=0, c=0)
+    saveback(high, wide, r, c)
+    yield
+    restback(high, wide, r, c)
+  end
+
   def saveback(high=STDSCR.rows, wide=STDSCR.cols, r=0, c=0)
     debug "saveback: #{[high, wide, r, c].inspect}"
-    @pos = self.rc
-    @save = []
+    save = [self.rc]
     0.upto(high-1) do |h|
       0.upto(wide-1) do |w|
         row, col = h+r-1, w+c-1
         row += 1 if self == STDSCR   # wtf?
         col += 1 if self == STDSCR
-        @save << self[row, col]
+        save << self[row, col]
       end
     end
+    ScreenStack.push save
   end
 
   def restback(high=STDSCR.rows, wide=STDSCR.cols, r=0, c=0)
+    save = ScreenStack.pop
+    pos = save.shift
     0.upto(high-1) do |h|
       line = ""
-      0.upto(wide-1) {|w| line << @save.shift }
+      0.upto(wide-1) {|w| line << save.shift }
       row, col = h+r-1, c-1
       row += 1 if self == STDSCR   # wtf?
       col += 1 if self == STDSCR
       self.go row, col
       self.print line
     end
-    self.go *@pos
+    self.go *pos
     @cwin.refresh
+  rescue => err
+    puts "Error!"
+    puts err
+    puts err.backtrace.join("\n")
+    sleep 8
   end
 
   def fg=(sym)

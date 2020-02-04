@@ -6,7 +6,6 @@ module RubyText
       r, c = 0, 0
       border = false
       high = 1
-      wide = items.map(&:length).max + 3
 
       RubyText.hide_cursor
       if items.is_a?(Hash)
@@ -16,12 +15,20 @@ module RubyText
       else
         results = items
       end
-      
+
       tlen = title.length + 8 rescue 0
-      wide = [wide, tlen].max + 2
-      width = items.size * wide
+      width = 0   # total width
+      cols = []   # start-column of each item
+      items.each do |item| 
+        cols << width
+        iwide = item.to_s.length + 2
+        width += iwide
+      end
+
       r, c = self.coords(r, c)
-      self.saveback(high, wide, r, c)
+# puts "topmenu saved"
+# sleep 2
+      self.saveback(high, width, r, c)
       mr, mc = r+self.r0, c+self.c0
       title = nil
       mwin = RubyText.window(high, width, r: mr, c: mc, border: border,
@@ -30,13 +37,11 @@ module RubyText
       sel = curr
       max = items.size - 1
       loop do
-#       RubyText.hide_cursor  # FIXME should be unnecessary
         items.each.with_index do |item, num|
-          item = item.to_s
-          mwin.go 0, num*wide
+          item = " #{item} "
+          mwin.go 0, cols[num]
           style = (sel == num) ? :reverse : :normal
-          label = (" "*2 + item + " "*8)[0..wide-1]
-          mwin.print fx(label, style)
+          mwin.print fx(item, style)
         end
         ch = getch
         case ch
@@ -45,16 +50,19 @@ module RubyText
           when Curses::KEY_RIGHT
             sel += 1 if sel < max
           when 27
-#           self.restback(high, wide, r, c)
+            self.restback(high, width, r, c)
             RubyText.show_cursor
             return [nil, nil]
           when 10
-#           self.restback(high, wide, r, c)
+            self.restback(high, width, r, c)
+# puts "topmenu restored"
+# sleep 2
             RubyText.show_cursor
             choice = results[sel]
             return [sel, choice] if choice.is_a? String
             result = choice.call
-            next if result.first.nil?
+            next if result.nil?
+            next if result.empty?
             return result
           else Curses.beep
         end
@@ -85,6 +93,8 @@ module RubyText
       row = row - high/2 if r == :center
       col = col - wide/2 if c == :center
       r, c = row, col
+# puts "menu2 saved"
+# sleep 2
       self.saveback(high, wide, r, c)
       mr, mc = r+self.r0, c+self.c0
       title = nil unless border
@@ -98,7 +108,7 @@ module RubyText
         items.each.with_index do |item, row|
           mwin.go row, 0
           style = (sel == row) ? :reverse : :normal
-          label = (" "*2 + item + " "*8)[0..wide-1]
+          label = (" "*2 + item.to_s + " "*8)[0..wide-1]
           mwin.print fx(label, style)
         end
         ch = getch
@@ -114,7 +124,11 @@ module RubyText
           when 10
             self.restback(high, wide, r, c)
             RubyText.show_cursor
-            return [sel, results[sel]]
+            choice = results[sel]
+            return [sel, choice] if choice.is_a? String
+            result = choice.call
+            return [nil, nil] if result.nil? || result.empty?
+            return result
           else Curses.beep
         end
         RubyText.show_cursor

@@ -37,14 +37,17 @@ module RubyText
 
   def self.splash(msg)
     lines = msg.split("\n")
-    high = lines.size + 2
-    wide = lines.map {|x| x.length }.max + 2
-    STDSCR.saveback(high, wide, 10, 20)
-    win = RubyText.window(high, wide, r: 10, c: 20, fg: White, bg: Red)
+    high = lines.size + 4
+    wide = lines.map {|x| x.length }.max + 4
+    r0 = (STDSCR.rows - high)/2
+    c0 = (STDSCR.cols - wide)/2
+    STDSCR.saveback(high, wide, r0, c0)
+    win = RubyText.window(high, wide, r: r0, c: c0, 
+                          fg: White, bg: Red, title: "[Press any key]")
+    win.print "\n "
     win.puts msg
     getch
-    STDSCR.restback(high, wide, 10, 20)
+    STDSCR.restback(high, wide, r0, c0)
   end
 
-  # TODO add splash
 end
