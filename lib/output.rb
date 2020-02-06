@@ -147,7 +147,7 @@ class RubyText::Window
   end
 
   class GetString
-    def initialize(win = STDSCR, str = "", i = 0, history: [], limit: nil, tab: [])
+    def initialize(win = STDSCR, str = "", i = 0, history: [], limit: nil, tab: [], capture: [])
       @win = win
       @r0, @c0 = @win.rc
       @limit = limit || (@win.cols - @r0 - 1)
@@ -249,15 +249,20 @@ class RubyText::Window
     end
   end
 
-  def gets(history: [], limit: nil, tab: [], default: "")  # still needs improvement
+  def gets(history: [], limit: nil, tab: [], default: "", capture: [])
+    # needs improvement
     # echo assumed to be OFF, keypad ON
     @history = history
-    gs = GetString.new(self, default, history: history, limit: limit, tab: tab)
+    gs = GetString.new(self, default, history: history, limit: limit, tab: tab, 
+                       capture: capture)
     count = 0
     loop do
-      count += 1      # Escape has special meaning if first char
+      count += 1      # Escape and 'capture' chars have special meaning if first char
       ch = self.getch
       case ch
+        when *capture 
+          return ch if count == 1
+          gs.add(ch)
         when Escape
           return Escape if count == 1
           gs.enter

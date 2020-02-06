@@ -1,10 +1,8 @@
 module RubyText
 
   class Window
-    def topmenu(items:, curr: 0, 
-             title: nil, fg: Green, bg: Black)
+    def topmenu(items:, curr: 0, fg: Green, bg: Black)
       r, c = 0, 0
-      border = false
       high = 1
 
       RubyText.hide_cursor
@@ -16,7 +14,6 @@ module RubyText
         results = items
       end
 
-      tlen = title.length + 8 rescue 0
       width = 0   # total width
       cols = []   # start-column of each item
       items.each do |item| 
@@ -26,13 +23,9 @@ module RubyText
       end
 
       r, c = self.coords(r, c)
-# puts "topmenu saved"
-# sleep 2
       self.saveback(high, width, r, c)
       mr, mc = r+self.r0, c+self.c0
-      title = nil
-      mwin = RubyText.window(high, width, r: mr, c: mc, border: border,
-                             fg: fg, bg: bg, title: title)
+      mwin = RubyText.window(high, width, r: mr, c: mc, fg: fg, bg: bg, border: false, title: nil)
       Curses.stdscr.keypad(true)
       sel = curr
       max = items.size - 1
@@ -45,18 +38,16 @@ module RubyText
         end
         ch = getch
         case ch
-          when Curses::KEY_LEFT
+          when Left
             sel -= 1 if sel > 0
-          when Curses::KEY_RIGHT
+          when Right
             sel += 1 if sel < max
-          when 27
+          when Esc, " "   # spacebar also quits
             self.restback(high, width, r, c)
             RubyText.show_cursor
             return [nil, nil]
-          when 10
+          when Down, Enter
             self.restback(high, width, r, c)
-# puts "topmenu restored"
-# sleep 2
             RubyText.show_cursor
             choice = results[sel]
             return [sel, choice] if choice.is_a? String
@@ -93,8 +84,6 @@ module RubyText
       row = row - high/2 if r == :center
       col = col - wide/2 if c == :center
       r, c = row, col
-# puts "menu2 saved"
-# sleep 2
       self.saveback(high, wide, r, c)
       mr, mc = r+self.r0, c+self.c0
       title = nil unless border
@@ -113,15 +102,15 @@ module RubyText
         end
         ch = getch
         case ch
-          when Curses::KEY_UP
+          when Up
             sel -= 1 if sel > 0
-          when Curses::KEY_DOWN
+          when Down
             sel += 1 if sel < max
-          when 27
+          when Esc
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             return [nil, nil]
-          when 10
+          when Enter
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             choice = results[sel]
@@ -165,15 +154,15 @@ module RubyText
         end
         ch = getch
         case ch
-          when Curses::KEY_UP
+          when Up
             sel -= 1 if sel > 0
-          when Curses::KEY_DOWN
+          when Down
             sel += 1 if sel < max
-          when 27
+          when Esc
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             return []
-          when 10
+          when Enter
             self.restback(high, wide, r, c)
             RubyText.show_cursor
             return selected.map {|i| items[i] }
@@ -191,6 +180,75 @@ module RubyText
       r, c = STDSCR.rc
       num, str = STDSCR.menu(r: r, c: c+6, items: ["yes", "no"])
       num == 0
+    end
+
+    def radio_menu(r: :center, c: :center, items:, curr: 0, 
+             # Handle current value better?
+             border: true,
+             title: nil, fg: Green, bg: Black)
+      RubyText.hide_cursor
+      if items.is_a?(Hash)
+        results = items.values
+        items = items.keys
+        hash_flag = true
+      else
+        results = items
+      end
+      
+      high = items.size
+      wide = items.map(&:length).max + 3
+      high += 2 if border
+      wide += 2 if border
+
+      tlen = title.length + 8 rescue 0
+      wide = [wide, tlen].max
+      row, col = self.coords(r, c)
+      row = row - high/2 if r == :center
+      col = col - wide/2 if c == :center
+      r, c = row, col
+      self.saveback(high, wide, r, c)
+      mr, mc = r+self.r0, c+self.c0
+      title = nil unless border
+      mwin = RubyText.window(high, wide, r: mr, c: mc, border: border,
+                             fg: fg, bg: bg, title: title)
+      Curses.stdscr.keypad(true)
+      sel = curr
+      max = items.size - 1
+      loop do
+        RubyText.hide_cursor  # FIXME should be unnecessary
+        items.each.with_index do |item, row|
+          mark = row == curr ? ">" : " "
+          mwin.go row, 0
+          style = (sel == row) ? :reverse : :normal
+          label = "#{mark} #{item}"
+          mwin.print fx(label, style)
+        end
+        ch = getch
+        case ch
+          when Up
+            sel -= 1 if sel > 0
+          when Down
+            sel += 1 if sel < max
+          when Esc
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return [nil, nil]
+          when " "
+            mwin[curr, 0] = " "
+            mwin[sel, 0] = ">"
+            curr = sel
+          when Enter
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            choice = results[sel]
+            return [sel, choice] if choice.is_a? String
+            result = choice.call
+            return [nil, nil] if result.nil? || result.empty?
+            return result
+          else Curses.beep
+        end
+        RubyText.show_cursor
+      end
     end
   end
 
@@ -215,17 +273,17 @@ module RubyText
       end
       ch = getch
       case ch
-        when Curses::KEY_UP
+        when Up
           if sel > 0
             sel -= 1
             handler.call(sel, items[sel], win2)
           end
-        when Curses::KEY_DOWN
+        when Down
           if sel < max
             sel += 1
             handler.call(sel, items[sel], win2)
           end
-        when 10  # Enter
+        when Enter
           if enter
             del = enter.call(sel, items[sel], win2)
             if del
@@ -233,7 +291,7 @@ module RubyText
               raise 
             end
           end
-        when 9  # tab
+        when Tab
           Curses.flash
         when quit  # parameter
           exit

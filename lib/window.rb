@@ -1,6 +1,5 @@
 
 module RubyText
-  # TODO add title:?
   def self.window(high, wide, r: nil, c: nil, border: true, 
                   fg: White, bg: Blue, scroll: false, title: nil)
     r ||= (STDSCR.rows - high)/2
