@@ -5,19 +5,28 @@ Black, Blue, Cyan, Green, Magenta, Red, White, Yellow =
 
 Colors = [Black, Blue, Cyan, Green, Magenta, Red, White, Yellow]
 
+# Handles color constants and fg/bg pairs
+
 class RubyText::Color
+
   Colors = ::Colors
 
 # FIXME some should be private
 # TODO  add color-pair constants
 
+  # Convert Ruby symbol to curses color constant name
+
   def self.sym2const(color)   # to curses constant
     Curses.const_get("COLOR_#{color.to_s.upcase}")
   end
 
+  # Find "our" color number
+
   def self.index(color)
     Colors.find_index(color)  # "our" number
   end
+
+  # Define a fg/bg color pair
 
   def self.pair(fg, bg)
     nf, nb = index(fg), index(bg)
@@ -27,7 +36,12 @@ class RubyText::Color
   end
 end
 
+# Reopening: Wrapper for curses windows
+
 class RubyText::Window
+
+  # Set up a window with fg/bg
+
   def self.colorize!(cwin, fg, bg)
     cp = RubyText::Color.pair(fg, bg)
     cwin.color_set(cp)
@@ -43,10 +57,14 @@ class RubyText::Window
     end
   end
 
+  # Assign color pair to curses window
+
   def set_colors(fg, bg)
     cp = RubyText::Color.pair(fg, bg)
     @cwin.color_set(cp)
   end
+
+  # Set up a window with fg/bg
 
   def colorize!(fg, bg)
     set_colors(fg, bg)
@@ -56,9 +74,13 @@ class RubyText::Window
     @cwin.refresh
   end
 
+  # Set foreground color
+
   def fg=(sym)
     set_colors(sym, @bg)
   end
+
+  # Set background color
 
   def bg=(sym)
     set_colors(@fg, sym)

@@ -1,6 +1,13 @@
+# The top-level module
+
 module RubyText
 
+  # Wrapper for a curses window
+
   class Window
+
+    # One-line menu at top of window
+
     def topmenu(items:, curr: 0, fg: Green, bg: Black)
       r, c = 0, 0
       high = 1
@@ -55,14 +62,16 @@ module RubyText
             next if result.nil?
             next if result.empty?
             return result
-          else Curses.beep
+        else Curses.beep
         end
         RubyText.show_cursor
       end
     end
 
+    # Simple menu with rows of strings (or Procs)
+
     def menu(r: :center, c: :center, items:, curr: 0, 
-             border: true,
+             border: true, sticky: false,
              title: nil, fg: Green, bg: Black)
       RubyText.hide_cursor
       if items.is_a?(Hash)
@@ -111,7 +120,7 @@ module RubyText
             RubyText.show_cursor
             return [nil, nil]
           when Enter
-            self.restback(high, wide, r, c)
+            self.restback(high, wide, r, c) unless sticky
             RubyText.show_cursor
             choice = results[sel]
             return [sel, choice] if choice.is_a? String
@@ -123,6 +132,8 @@ module RubyText
         RubyText.show_cursor
       end
     end
+
+    # Menu for multiple selections (buggy/unused?)
 
     def multimenu(r: :center, c: :center, 
                   items:, curr: 0, selected: [],
@@ -175,12 +186,16 @@ module RubyText
       end
     end
 
+    # Simple yes/no decision
+
     def yesno
       # TODO: Accept YyNn
       r, c = STDSCR.rc
       num, str = STDSCR.menu(r: r, c: c+6, items: ["yes", "no"])
       num == 0
     end
+
+    # Menu to choose a single setting and retain it
 
     def radio_menu(r: :center, c: :center, items:, curr: 0, 
              # Handle current value better?
@@ -251,6 +266,11 @@ module RubyText
       end
     end
   end
+end
+
+module RubyText
+
+  # Two-paned widget with menu on left, informtional area on right
 
   def self.selector(win: STDSCR, r: 0, c: 0, rows: 10, cols: 20, 
                     items:, fg: White, bg: Blue,
@@ -301,5 +321,59 @@ module RubyText
   rescue
     retry
   end
+
+  # "Menu" for checklists
+
+    def checklist(r: :center, c: :center, 
+                  items:, curr: 0, selected: [],
+                  title: nil, sel_fg: Yellow, fg: White, bg: Blue)
+      RubyText.hide_cursor
+      high = items.size + 2
+      wide = items.map(&:length).max + 8
+      tlen = title.length + 8 rescue 0
+      wide = [wide, tlen].max
+      row, col = self.coords(r, c)
+      row = row - high/2 if r == :center
+      col = col - wide/2 if c == :center
+      r, c = row, col
+      self.saveback(high, wide, r, c)
+      mr, mc = r+self.r0, c+self.c0
+      mwin = RubyText.window(high, wide, r: mr, c: mc, 
+                             fg: fg, bg: bg, title: title)
+      Curses.stdscr.keypad(true)
+      sel = curr
+      max = items.size - 1
+      loop do
+        RubyText.hide_cursor  # FIXME should be unnecessary
+        items.each.with_index do |item, row|
+          mwin.go row, 0
+          style = (sel == row) ? :reverse : :normal
+          color = selected.find {|x| x[0] == row } ? sel_fg : fg
+          label = "[ ]" + item
+          mwin.print fx(label, color, style)
+        end
+        ch = getch
+        case ch
+          when Up
+            sel -= 1 if sel > 0
+          when Down
+            sel += 1 if sel < max
+          when Esc
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return []
+          when Enter
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return selected.map {|i| items[i] }
+          when " "
+            selected << [sel, items[sel]]
+            sel += 1 if sel < max
+        else Curses.beep
+        end
+        RubyText.show_cursor
+      end
+    end
+
 end
 

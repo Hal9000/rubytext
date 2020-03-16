@@ -1,4 +1,7 @@
+# Ruby constants for curses key definitions
+
 module RubyText::Keys
+
   Down   = 258
   Up     = 259
   Left   = 260

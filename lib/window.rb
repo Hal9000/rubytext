@@ -6,6 +6,7 @@ module RubyText
     c ||= (STDSCR.cols - wide)/2
     win = RubyText::Window.new(high, wide, r, c, border, fg, bg, scroll)
     win.add_title(title) if title
+    0.upto(high) {|row| 0.upto(wide) {|col| win[row, col] = " " } }
     win
   end
 end

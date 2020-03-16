@@ -101,6 +101,7 @@ module RubyText
     Object.const_set(:STDSCR, main) unless defined? STDSCR
     $stdscr = STDSCR  # FIXME global needed?
     Object.include(WindowIO)
+    Curses.ESCDELAY = 10
     @started = true
 # rescue => err
 #   puts(err.inspect)

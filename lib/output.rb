@@ -123,17 +123,31 @@ class RubyText::Window
     $stdscr = STDSCR
   end
 
+=begin
+  def go(r0, c0)
+    r, c = coords(r0, c0)
+    save = self.rc
+    goto r, c 
+    if block_given?
+      yield 
+      goto *save
+    end
+  end
+=end
+
   def [](r, c)
-    ch = nil
-    go(r, c) { ch = @cwin.inch }
-    debug "ch = #{ch}  ch.chr = #{ch.chr}"
+    r0, c0 = self.rc
+    @cwin.setpos(r, c)
+    ch = @cwin.inch
+    @cwin.setpos(r0, c0)
     ch.chr
   end
 
   def []=(r, c, char)
+    r0, c0 = self.rc
     @cwin.setpos(r, c)
     @cwin.addch(char[0].ord|Curses::A_NORMAL)
-    @cwin.setpos(r, c)
+    @cwin.setpos(r0, c0)
     @cwin.refresh
   end
 
