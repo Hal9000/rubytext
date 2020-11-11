@@ -265,6 +265,78 @@ module RubyText
         RubyText.show_cursor
       end
     end
+
+    def rectmenu(r: :center, c: :center, items:, curr: [0,0], 
+             border: true,
+             title: nil, fg: Green, bg: Black)
+      RubyText.hide_cursor
+      # items: array of hashes [{c1a => str, c1b => str, ...}, {c2a => str, ...}, ...]
+      maxw = 0
+      maxh = 0
+      items.each do |hash|
+        maxh = [maxh, items.keys.size].max
+        hash.each_pair do |title, str|
+          maxw = [maxw, title.length].max
+        end
+      end
+
+      wide = items.size * maxw
+      high = maxh
+      high += 2 if border
+      wide += 2 if border
+
+      tlen = title.length + 8 rescue 0
+      wide = [wide, tlen].max
+      row, col = self.coords(r, c)
+      row = row - high/2 if r == :center
+      col = col - wide/2 if c == :center
+      r, c = row, col
+      self.saveback(high, wide, r, c)
+      mr, mc = r+self.r0, c+self.c0
+      title = nil unless border
+
+      mwin = RubyText.window(high, wide, r: mr, c: mc, border: border,
+                             fg: fg, bg: bg, title: title)
+      Curses.stdscr.keypad(true)
+      sel = curr
+      max = items.size - 1
+
+      loop do
+        RubyText.hide_cursor  # FIXME should be unnecessary
+        items.each.with_index do |item, row|
+          mark = row == curr ? ">" : " "
+          mwin.go row, 0
+          style = (sel == row) ? :reverse : :normal
+          label = "#{mark} #{item}"
+          mwin.print fx(label, style)
+        end
+        ch = getch
+        case ch
+          when Up
+            sel -= 1 if sel > 0
+          when Down
+            sel += 1 if sel < max
+          when Esc
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            return [nil, nil]
+          when " "
+            mwin[curr, 0] = " "
+            mwin[sel, 0] = ">"
+            curr = sel
+          when Enter
+            self.restback(high, wide, r, c)
+            RubyText.show_cursor
+            choice = results[sel]
+            return [sel, choice] if choice.is_a? String
+            result = choice.call
+            return [nil, nil] if result.nil? || result.empty?
+            return result
+          else Curses.beep
+        end
+        RubyText.show_cursor
+      end
+    end
   end
 end
 

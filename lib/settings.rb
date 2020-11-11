@@ -9,7 +9,7 @@ module RubyText
       @current = @defaults.dup
       @stack = []
       @stack.push @current   # Note: Never let stack be empty
-      set_curses(@current)   # Set them for real
+      set_curses(**@current)   # Set them for real
       # FIXME To be continued...
     end
 
@@ -39,7 +39,7 @@ module RubyText
       cursor ||= @current[:cursor]
       @stack.push @current
       @current = {raw: raw, echo: echo, cbreak: cbreak, keypad: keypad, cursor: cursor}
-      set_curses(@current)
+      set_curses(**@current)
     end
 
     def reset_boolean
@@ -57,7 +57,7 @@ module RubyText
         sym0 = val ? sym : str[1..-1].to_sym
         list[sym0] = val
       end
-      set_boolean(list)
+      set_boolean(**list)
       # allow a block here?
     end
 
