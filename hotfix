@@ -8,8 +8,11 @@ rver = `ruby -v`.split[1][0..4]
 path = "/Users/Hal/.rvm/gems/ruby-#{rver}/gems/rubytext-#{ver}/lib/"
 
 cmd = "cp lib/* #{path}"
+puts cmd
 system cmd
 cmd = "cp bin/* #{path}/../bin"
+puts cmd
 system cmd
 cmd = "cp examples/* #{path}/../examples"
+puts cmd
 system cmd

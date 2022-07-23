@@ -130,7 +130,7 @@ module RubyText
     if name[0] == '_'
       Curses.send(name[1..-1], *args)
     else
-      raise "#{name} #{args.inspect}" # NoMethodError
+      raise "Missing: #{name} #{args.inspect}" # NoMethodError
     end
   end
 

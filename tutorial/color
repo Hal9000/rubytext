@@ -1,0 +1,2 @@
+vi $1 <color1.in 2>/dev/null
+vi $1.html <color2.in 2>/dev/null

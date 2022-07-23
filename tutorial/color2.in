@@ -1,0 +1,6 @@
+:1,10d
+:%s/808080/000000/g
+:4
+opre { font-size: 15 }
+tt { font-size: 15 }
+:wq

@@ -1,3 +1,5 @@
+require 'stringio'
+
 module RubyText
   def self.ticker(row: STDSCR.rows-1, col: 0, width: STDSCR.cols, 
                   fg: White, bg: Blue, text:, delay: 0.1)
@@ -35,14 +37,20 @@ module RubyText
     ret
   end
 
-  def self.splash(msg)
+  def self.splash(msg = nil)
+    io = StringIO.new("")
+    if msg.nil?
+      yield io 
+      msg = io.string
+    end
+
     lines = msg.split("\n")
     high = lines.size + 4
     wide = lines.map {|x| x.length }.max + 4
     r0 = (STDSCR.rows - high)/2
     c0 = (STDSCR.cols - wide)/2
     STDSCR.saveback(high, wide, r0, c0)
-    win = RubyText.window(high, wide, r: r0, c: c0, 
+    win = RubyText.window(high, wide, r: r0, c: c0, scroll: true,
                           fg: White, bg: Red, title: "[Press any key]")
     win.print "\n "
     win.puts msg
