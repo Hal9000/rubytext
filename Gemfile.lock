@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    rubytext (0.1.26)
+      curses (~> 1.4.5)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    curses (1.4.5)
+
+PLATFORMS
+  arm64-darwin-22
+
+DEPENDENCIES
+  rubytext!
+
+BUNDLED WITH
+   2.4.10
