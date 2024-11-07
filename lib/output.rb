@@ -140,7 +140,12 @@ class RubyText::Window
     @cwin.setpos(r, c)
     ch = @cwin.inch
     @cwin.setpos(r0, c0)
-    ch.chr
+    begin
+      ch.chr 
+    rescue
+      STDERR.puts "RubyText error: win[#{r}, #{c}] --> #{ch}"
+      ""
+    end
   end
 
   def []=(r, c, char)

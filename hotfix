@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 
+# /Users/Hal/.rbenv/versions/3.0.0/lib/ruby/gems/3.0.0/gems/livetext-0.9.48/lib/livetext
+
 lines = `gem list rubytext`.split("\n")
 
 line = lines[-1]
 ver = line.split[1][1..-2]
-rver = `ruby -v`.split[1][0..4]
-path = "/Users/Hal/.rvm/gems/ruby-#{rver}/gems/rubytext-#{ver}/lib/"
+# ver = `ruby -v`.split[1][0..4]
+# path = "/Users/Hal/.rvm/gems/ruby-#{rver}/gems/rubytext-#{ver}/lib/"
+path = "/Users/Hal/.rbenv/versions/3.0.0/lib/ruby/gems/3.0.0/gems/rubytext-#{ver}/lib/"
 
 cmd = "cp lib/* #{path}"
 puts cmd
